@@ -1,6 +1,6 @@
 # custom_shaders
 
-awesome flutter shaders, manual migration from https://www.shadertoy.com shaders one by one
+awesome flutter shaders, manual migration from https://www.shadertoy.com some of most viewed shaders one by one
 
 ## Considerations
 Currently, Flutter supports some shaders, but there isn't a collection to showcase Flutter-supported shader examples.
