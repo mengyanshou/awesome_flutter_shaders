@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGL Shader Example</title>
+    <style>
+        canvas { width: 100%; height: 100%; display: block; }
+        body { margin: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="glCanvas"></canvas>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 aVertexPosition;
+        void main(void) {
+            gl_Position = aVertexPosition;
+        }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision highp float;
+        uniform float iTime;
+        uniform vec2 iResolution;
+        uniform sampler2D iChannel0;
+
+        #define time (iTime)*0.12
+        #define tau 6.2831853
+
+        mat2 makem2(in float theta) {
+            float c = cos(theta);
+            float s = sin(theta);
+            return mat2(c,-s,s,c);
+        }
+        
+        float noise(in vec2 x) {
+            return texture2D(iChannel0, x * .01).x;
+        }
+
+        float fbm(in vec2 p) {    
+            float z = 2.;
+            float rz = 0.;
+            vec2 bp = p;
+            for (float i = 1.; i < 6.; i++) {
+                rz += abs((noise(p) - 0.5) * 2.) / z;
+                z = z * 2.;
+                p = p * 2.;
+            }
+            return rz;
+        }
+
+        float dualfbm(in vec2 p) {
+            vec2 p2 = p * .7;
+            vec2 basis = vec2(fbm(p2 - time * 1.6), fbm(p2 + time * 1.7));
+            basis = (basis - .5) * .2;
+            p += basis;
+            return fbm(p * makem2(time * 0.2));
+        }
+
+        float circ(vec2 p) {
+            float r = length(p);
+            r = log(sqrt(r));
+            return abs(mod(r * 4., tau) - 3.14) * 3. + .2;
+        }
+
+        void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+            vec2 p = fragCoord.xy / iResolution.xy - 0.5;
+            p.x *= iResolution.x / iResolution.y;
+            float len = length(p);
+            p *= 4.;
+
+            float rz = dualfbm(p);
+            float artifacts_radious_fade = pow(max(1., 6.5 * len), 0.2);
+            rz = artifacts_radious_fade * rz + (1. - artifacts_radious_fade) * dualfbm(p + 5.0 * sin(time));
+            float my_time = time + 0.08 * rz;
+
+            p /= exp(mod((my_time * 10. + rz), 3.38159));
+            rz *= pow(abs((0.1 - circ(p))), .9);
+
+            vec3 col = 0.4 * vec3(.2, 0.1, 0.4) / rz;
+            col = pow(abs(col), vec3(.99));
+            fragColor = vec4(col, 1.);
+        }
+
+        void main(void) {
+            mainImage(gl_FragColor, gl_FragCoord.xy);
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const canvas = document.getElementById('glCanvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+            if (!gl) {
+                alert('Unable to initialize WebGL. Your browser may not support it.');
+                return;
+            }
+
+            const vsSource = document.getElementById('vertex-shader').text;
+            const fsSource = document.getElementById('fragment-shader').text;
+
+            const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+            const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+            const shaderProgram = gl.createProgram();
+            gl.attachShader(shaderProgram, vertexShader);
+            gl.attachShader(shaderProgram, fragmentShader);
+            gl.linkProgram(shaderProgram);
+
+            if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+                alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+                return;
+            }
+
+            gl.useProgram(shaderProgram);
+
+            const vertexPosition = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
+            gl.enableVertexAttribArray(vertexPosition);
+
+            const vertices = new Float32Array([
+                -1.0, -1.0,
+                 1.0, -1.0,
+                 1.0,  1.0,
+                -1.0,  1.0
+            ]);
+
+            const vertexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            gl.vertexAttribPointer(vertexPosition, 2, gl.FLOAT, false, 0, 0);
+
+            const iResolution = gl.getUniformLocation(shaderProgram, "iResolution");
+            const iTime = gl.getUniformLocation(shaderProgram, "iTime");
+            const iChannel0 = gl.getUniformLocation(shaderProgram, "iChannel0");
+
+            const texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 256, 256, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, null);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+            function loadTextureData() {
+                const noiseData = new Uint8Array(256 * 256);
+                for (let i = 0; i < 256 * 256; i++) {
+                    noiseData[i] = Math.random() * 256;
+                }
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 256, 256, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, noiseData);
+            }
+            loadTextureData();
+
+            function resizeCanvasToDisplaySize(canvas) {
+                const displayWidth = canvas.clientWidth;
+                const displayHeight = canvas.clientHeight;
+                if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+                    canvas.width = displayWidth;
+                    canvas.height = displayHeight;
+                    gl.viewport(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            function render(time) {
+                resizeCanvasToDisplaySize(canvas);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                gl.uniform2f(iResolution, canvas.width, canvas.height);
+                gl.uniform1f(iTime, time * 0.001);
+                gl.uniform1i(iChannel0, 0);
+                gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+                requestAnimationFrame(render);
+            }
+
+            gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            requestAnimationFrame(render);
+        });
+
+        function loadShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+
+            return shader;
+        }
+    </script>
+</body>
+</html>
