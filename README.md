@@ -1,26 +1,125 @@
 # custom_shaders
 
-A new Flutter project.
+awesome flutter shaders, manual migration from https://www.shadertoy.com shaders one by one
 
-## Getting Started
+## Considerations
+Currently, Flutter supports some shaders, but there isn't a collection to showcase Flutter-supported shader examples.
 
-This project is a starting point for a Flutter application.
+This surprising discovery led me to learn a bit about shaders and realize that some shaders can be directly used in Flutter. I then embarked on extensive exploration, manually migrating shaders I found to Flutter. Although most attempts were unsuccessful, I eventually obtained some usable shaders.
 
-A few resources to get you started if this is your first Flutter project:
+## Issues
+The problems encountered can be categorized into three types:
+1. Compilation errors such as `Only simple shader sampling is supported` or `syntax error, unexpected IDENTIFIER`. The former is particularly challenging to resolve.
+2. Runtime errors like `for loop(;;)`, unsupported `uvec3`, or `program is too large`.
+3. Shader effects not matching expectations, typically when multiple buffers are involved, resulting in discrepancies from the effect displayed on the `shadertoy` website.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Gallery
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Migration
+For example, consider https://www.shadertoy.com/view/ctSSDR:
 
+```glsl
+#define PI 3.1415926535897932384626433832795
 
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 center = fragCoord / iResolution.xy - vec2(0.5, 0.5);
+    
+    float dist = length(center);
+    float p = (atan(center.y, center.x)) / (2.0 * PI);
+    float numStripes = 12.0;
+        
+    bool stripeA = mod(floor((p * numStripes) + (sin(dist * 10.0 + sin(iTime)))), 2.0) == 1.0;
+    bool stripeB = mod(floor((p * numStripes) - (sin(dist * 10.0 + cos(iTime)))), 2.0) == 1.0;
+    
+    vec3 col;
+    
+    if (stripeA && stripeB) {
+        col = vec3(0.4);
+    } else if (!stripeA && stripeB) {
+        col = vec3(0.5, 0.2, 0.1);
+    } else if (stripeA && !stripeB) {
+        col = vec3(0.3, 0.2, 0.1);
+    } else {
+        col = vec3(0.7);
+    }
 
-有更简单的方式移植到
+    fragColor = vec4(col, 1.0);
+}
+Traditionally, you would change void mainImage(out vec4 fragColor, in vec2 fragCoord) to void main(void) and then import the runtime_effect.glsl package at the top of the current file, modifying the main function as follows:
+```
+#include <flutter/runtime_effect.glsl>
+void main(void) {
+    iResolution = uSize;
+    vec2 fragCoord = FlutterFragCoord();
+    // *
+}
+```
+However, this approach becomes cumbersome when migrating many shaders.
 
-考虑到目前 Flutter 已经支持部分着色器，但是没有一个集合来展示，flutter支持的着色器样例
+Referring to the shader_buffers approach, you only need to import #include <common/common_header.frag> at the top and #include <common/main_shadertoy.frag> at the bottom of the file. If the current shader requires inputs like iChannel0, iChannel1..., declare them below the import line:
 
-是一个非常意外的方式，让我认识到一点 shader 的皮毛，并且我得知，其中部分shader可以直接用于flutter中
-然后我便开始了大量的探索，纯手动的将我浏览到的shaders移植到Flutter，虽然大部分都不顺利，但最终获得了一些可用的shaders
+```uniform sampler2D iChannel0;```
+You can determine the number and type of inputs from the shader's details on shadertoy.
 
+Here is the complete code for this example:
+```glsl
+#include <common/common_header.frag>
+#define PI 3.1415926535897932384626433832795
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+    vec2 center = fragCoord / iResolution.xy - vec2(0.5, 0.5);
+    
+    float dist = length(center);
+    float p = (atan(center.y, center.x)) / (2.0 * PI);
+    float numStripes = 12.0;
+        
+    bool stripeA = mod(floor((p * numStripes) + (sin(dist * 10.0 + sin(iTime)))), 2.0) == 1.0;
+    bool stripeB = mod(floor((p * numStripes) - (sin(dist * 10.0 + cos(iTime)))), 2.0) == 1.0;
+    
+    vec3 col;
+    
+    if (stripeA && stripeB) {
+        col = vec3(0.4);
+    } else if (!stripeA && stripeB) {
+        col = vec3(0.5, 0.2, 0.1);
+    } else if (stripeA && !stripeB) {
+        col = vec3(0.3, 0.2, 0.1);
+    } else {
+        col = vec3(0.7);
+    }
+
+    fragColor = vec4(col, 1.0);
+}
+#include <common/main_shadertoy.frag>
+```
+common_header.frag
+```glsl
+// This include is mandatory for all shaders since the [LayerBuffer] always
+// sets the uniforms defined here
+#version 460 core
+#include <flutter/runtime_effect.glsl>
+precision mediump float;
+
+// Add `uniform sampler2D iChannel[0-N];` into the fragment source as needed
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float iFrame;
+uniform vec4 iMouse;
+
+out vec4 fragColor;
+```
+main_shadertoy
+```glsl
+void main() {
+    // Shader compiler optimizations will remove unusued uniforms.
+    // Since [LayerBuffer.computeLayer] needs to always set these uniforms, when 
+    // this happens, an error occurs when calling setFloat()
+    // `IndexError (RangeError (index): Index out of range: index should be less than 3: 3)`
+    // With the following line, the compiler will not remove unusued
+    float tmp = (iFrame/iFrame) * (iMouse.x/iMouse.x) * 
+        (iTime/iTime) * (iResolution.x/iResolution.x);
+    if (tmp != 1.) tmp = 1.;
+
+    mainImage( fragColor, FlutterFragCoord().xy * tmp );
+}
+```
