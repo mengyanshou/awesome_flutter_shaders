@@ -57,7 +57,7 @@ void main(void) {
 ```
 However, this approach becomes cumbersome when migrating many shaders.
 
-Referring to the shader_buffers approach, you only need to import #include <common/common_header.frag> at the top and #include <common/main_shadertoy.frag> at the bottom of the file. If the current shader requires inputs like iChannel0, iChannel1..., declare them below the import line:
+Referring to the shader_buffers approach, you only need to import `#include <common/common_header.frag>` at the top and `#include <common/main_shadertoy.frag>` at the bottom of the file. If the current shader requires inputs like iChannel0, iChannel1..., declare them below the import line:
 
 ```uniform sampler2D iChannel0;```
 You can determine the number and type of inputs from the shader's details on shadertoy.
