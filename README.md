@@ -46,7 +46,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(col, 1.0);
 }
 ```
-Traditionally, you would change void mainImage(out vec4 fragColor, in vec2 fragCoord) to void main(void) and then import the runtime_effect.glsl package at the top of the current file, modifying the main function as follows:
+Traditionally, you would change `void mainImage(out vec4 fragColor, in vec2 fragCoord)` to void `main(void)` and then import the `runtime_effect.glsl` package at the top of the current file, modifying the main function as follows:
 ```
 #include <flutter/runtime_effect.glsl>
 void main(void) {
