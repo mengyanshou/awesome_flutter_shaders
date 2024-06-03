@@ -1,9 +1,4 @@
 {
-    "files.associations": {
-        "temp": "c",
-        "*.frag": "c",
-        "__locale": "c",
-        "ios": "c",
-        "complex": "c"
-    }
+    "editor.formatOnSave": true,
+    "dart.lineLength": 200
 }

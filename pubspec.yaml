@@ -1,11 +1,11 @@
 name: awesome_flutter_shaders
 description: awesome flutter shaders, manual migration from https://www.shadertoy.com shaders one by one
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.0 <4.0.0'
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -13,6 +13,7 @@ dependencies:
   shader_buffers:
     path: /Users/nightmare/shader_buffers
 
+  image: ^3.0.1
   cupertino_icons: ^1.0.6
   flutter_shaders: ^0.1.2
 
@@ -23,11 +24,10 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-
   uses-material-design: true
   assets:
     - assets/
-    
+
   shaders:
     - shaders/6.frag
     - shaders/7.frag
@@ -281,3 +281,60 @@ flutter:
     - shaders/colorful Kaleidoscope 7.frag
     - shaders/star and black hole.frag
     - shaders/MONSTER.frag
+    - shaders/FWA logo.frag
+    - shaders/Basic How To Use Buffer Demo.frag
+    - shaders/Basic How To Use Buffer Demo BufferA.frag
+    #! Only sampler and position arguments are supported in texture()
+    # - shaders/Jupiter and Io.frag
+    # - shaders/Jupiter and Io BufferA.frag
+    # - shaders/Jupiter and Io BufferB.frag
+    #! runtime error
+    # - shaders/Something I Saw at a Rave.frag
+    # - shaders/Something I Saw at a Rave BufferA.frag
+    #! compile error
+    # - shaders/Looping Polyhedron Mirrors.frag
+    #! runtime error: program is too large
+    # - shaders/Ray Marching Part 6.frag
+    #! runtime error
+    # - shaders/posterize antialiased.frag
+    #! program is too large
+    # - shaders/Galvanize.frag
+    #! compile error
+    # - shaders/Filmic mandelbulb animation.frag
+    # - shaders/Filmic mandelbulb animation BufferA.frag
+    # - shaders/Filmic mandelbulb animation BufferB.frag
+    # - shaders/Filmic mandelbulb animation BufferC.frag
+    #!runtime error
+    # - shaders/Fork mandelbulb rogo1965 883.frag
+    - shaders/Mandelbulb - derivative.frag
+    #! program is too large
+    - shaders/Mandelbulb Deconstructed.frag
+    #! runtime error: for loop
+    # - shaders/Volumetric Mandelbulb.frag
+    #! compile error
+    # - shaders/Vortex.frag
+    - shaders/fractal pyramid.frag
+    - shaders/NotSoGreeeen - Chromatic Hole.frag
+    #! compile error
+    # - shaders/Mirror Looping w Mouse Control.frag
+    # - shaders/Mirror Looping w Mouse Control BufferA.frag
+    #! do-while loops are not supported
+    # - shaders/Mandelbulb 3D Fractal.frag
+    - shaders/Menger Sponge.frag
+    - shaders/Rainier mood.frag
+    #! compile error: only simple shader sampling is supported
+    # - shaders/Buoy.frag
+    - shaders/Warp Speed 2.frag
+    #! Only simple shader sampling is supported
+    # - shaders/Canyon.frag
+    #! Only simple shader sampling is supported.
+    # - shaders/furball.frag
+    - shaders/Galaxy of Universes.frag
+    - shaders/Inverse Bilinear.frag
+    - shaders/Bubbles.frag
+    #! Only simple shader sampling is supported
+    # - shaders/Chrome Dino game.frag
+    # - shaders/Chrome Dino game BufferA.frag
+    - shaders/electron.frag
+    #! runtime error
+    # - shaders/Input Time.frag

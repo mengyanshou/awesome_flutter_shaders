@@ -35,6 +35,22 @@ class NormalShader extends StatefulWidget {
   final double? height;
   final List<String> simplers;
 
+  NormalShader copyWith({
+    String? asset,
+    double? width,
+    double? height,
+    List<String>? simplers,
+    Key? key,
+  }) {
+    return NormalShader(
+      asset: asset ?? this.asset,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      simplers: simplers ?? this.simplers,
+      key: key ?? UniqueKey(),
+    );
+  }
+
   @override
   State<NormalShader> createState() => _NormalShaderState();
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noise Image Generator</title>
+</head>
+
+<body>
+    <canvas id="noiseCanvas" width="256" height="256"></canvas>
+    <button id="saveButton">Save Image</button>
+
+    <script>
+        function generateNoise(canvas) {
+            const context = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const imageData = context.createImageData(width, height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const value = Math.random() * 255;
+                data[i] = value;     // Red
+                data[i + 1] = value; // Green
+                data[i + 2] = value; // Blue
+                data[i + 3] = 255;   // Alpha
+            }
+
+            context.putImageData(imageData, 0, 0);
+        }
+
+        function saveImage(canvas) {
+            const link = document.createElement('a');
+            link.download = 'noise.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('noiseCanvas');
+            const button = document.getElementById('saveButton');
+
+            generateNoise(canvas);
+
+            button.addEventListener('click', () => {
+                saveImage(canvas);
+            });
+        });
+    </script>
+</body>
+
+</html>
