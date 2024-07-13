@@ -14,6 +14,7 @@ The problems encountered can be categorized into three types:
 3. Shader effects not matching expectations, typically when multiple buffers are involved, resulting in discrepancies from the effect displayed on the `shadertoy` website.
 
 ## Gallery
+<iframe src="https://mengyanshou.github.io/awesome_flutter_shaders/" width="600" height="400"></iframe>
 
 ## Migration
 For example, consider https://www.shadertoy.com/view/ctSSDR:
@@ -124,3 +125,4 @@ void main() {
     mainImage( fragColor, FlutterFragCoord().xy * tmp );
 }
 ```
+
