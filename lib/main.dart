@@ -57,6 +57,20 @@ List<Widget> shadersWidget(BuildContext context) {
       key: UniqueKey(),
       controller: controller,
       mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Dive to Cloud.frag',
+      ),
+    ),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: controller,
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Galvanize.frag',
+      ),
+    ),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: controller,
+      mainImage: LayerBuffer(
         shaderAssetsName: ShaderAssets.bubbles,
       ),
     ),

@@ -234,7 +234,7 @@ flutter:
     # - shaders/Aqua in glass.frag
     # - shaders/Aqua in glass BufferA.frag
     #! runtime error: program is too large
-    # - shaders/Dive to Cloud.frag
+    - shaders/Dive to Cloud.frag
     #! compile error
     # - shaders/Goodbye Dream Clouds.frag
     - shaders/rotate and points circle.frag
@@ -298,7 +298,7 @@ flutter:
     #! runtime error
     # - shaders/posterize antialiased.frag
     #! program is too large
-    # - shaders/Galvanize.frag
+    - shaders/Galvanize.frag
     #! compile error
     # - shaders/Filmic mandelbulb animation.frag
     # - shaders/Filmic mandelbulb animation BufferA.frag
