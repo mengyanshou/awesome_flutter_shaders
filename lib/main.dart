@@ -57,6 +57,16 @@ List<Widget> shadersWidget(BuildContext context) {
       key: UniqueKey(),
       controller: controller,
       mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Refraction post proc.frag',
+      )..setChannels([
+          IChannel(assetsTexturePath: 'shaders/Refraction post proc BufferA.frag'),
+          IChannel(assetsTexturePath: 'shaders/Refraction post proc BufferB.frag'),
+        ]),
+    ),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: controller,
+      mainImage: LayerBuffer(
         shaderAssetsName: 'shaders/Dive to Cloud.frag',
       ),
     ),

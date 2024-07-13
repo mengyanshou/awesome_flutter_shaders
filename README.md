@@ -15,8 +15,7 @@ The problems encountered can be categorized into three types:
 
 ## Gallery
 
-![Gallery](https://mengyanshou.github.io/awesome_flutter_shaders/)
-<iframe src="https://mengyanshou.github.io/awesome_flutter_shaders/" width="600" height="400"></iframe>
+[Gallery](https://mengyanshou.github.io/awesome_flutter_shaders/)
 
 ## Migration
 For example, consider https://www.shadertoy.com/view/ctSSDR:

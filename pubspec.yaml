@@ -36,6 +36,7 @@ flutter:
     - shaders/Phantom Star for CineShader.frag
     - shaders/GLSL ray tracing test.frag
     # - shaders/Mystify Screensaver.frag
+    # - shaders/Mystify Screensaver Buffer A.frag
     - shaders/DeathStar.frag
     - shaders/Octagrams.frag
     - shaders/Ray Marching.frag
@@ -126,9 +127,9 @@ flutter:
     # work
     - shaders/stars and cosmos 8.frag
     #! program is too large
-    # - shaders/Refraction post proc.frag
-    # - shaders/Refraction post proc BufferA.frag
-    # - shaders/Refraction post proc BufferB.frag
+    - shaders/Refraction post proc.frag
+    - shaders/Refraction post proc BufferA.frag
+    - shaders/Refraction post proc BufferB.frag
     #! Only simple shader sampling is supported
     # - shaders/Streamlines Youtube Tutorial.frag
     # - shaders/Streamlines Youtube Tutorial BufferA.frag
