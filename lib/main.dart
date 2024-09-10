@@ -26,6 +26,19 @@ class ShaderCustomPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
+void main() {
+  runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
+}
+
 List<Widget> shadersWidget(BuildContext context) {
   List<Widget> children = [
     // ShaderBuffers(
@@ -53,6 +66,75 @@ List<Widget> shadersWidget(BuildContext context) {
     //     shaderAssetsName: ShaderAssets.electron,
     //   ),
     // ),
+
+    // ShaderBuffers(
+    //   key: UniqueKey(),
+    //   controller: controller,
+    //   mainImage: LayerBuffer(
+    //     shaderAssetsName: 'shaders/Hex Glitch.frag',
+    //   )..setChannels([
+    //       IChannel(assetsTexturePath: 'shaders/Hex Glitch BufferA.frag'),
+    //       IChannel(assetsTexturePath: 'shaders/Hex Glitch BufferB.frag'),
+    //     ]),
+    // ),
+    // TODO 显示是上下颠倒的,提issue试试
+    Text('ED-209'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/ED-209.frag',
+      ),
+    ),
+    Text('octagrams'),
+    NormalShader(asset: ShaderAssets.octagrams),
+    Text('hexagons'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: controller,
+      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.fractalPyramid),
+    ),
+    Text('Byt3-daily-013'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Byt3-daily-013.frag',
+      ),
+    ),
+    Text('Starry planes'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Starry planes.frag',
+      ),
+    ),
+    Text('Mandelbulb 3D Fractal'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Mandelbulb 3D Fractal.frag',
+      ),
+    ),
+    Text('electron'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/electron.frag',
+      ),
+    ),
+    Text('Input Time'),
+    ShaderBuffers(
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(
+        shaderAssetsName: 'shaders/Input Time.frag',
+      ),
+    ),
+    Text('Refraction post proc'),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -63,6 +145,7 @@ List<Widget> shadersWidget(BuildContext context) {
           IChannel(assetsTexturePath: 'shaders/Refraction post proc BufferB.frag'),
         ]),
     ),
+    Text('Dive to Cloud'),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -70,6 +153,7 @@ List<Widget> shadersWidget(BuildContext context) {
         shaderAssetsName: 'shaders/Dive to Cloud.frag',
       ),
     ),
+    Text('Galvanize'),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -77,6 +161,7 @@ List<Widget> shadersWidget(BuildContext context) {
         shaderAssetsName: 'shaders/Galvanize.frag',
       ),
     ),
+    Text(ShaderAssets.bubbles),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -84,6 +169,7 @@ List<Widget> shadersWidget(BuildContext context) {
         shaderAssetsName: ShaderAssets.bubbles,
       ),
     ),
+    Text(ShaderAssets.inverseBilinear),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -98,6 +184,7 @@ List<Widget> shadersWidget(BuildContext context) {
     //     shaderAssetsName: ShaderAssets.noiseImageGenerator,
     //   )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
     // ),
+    Text(ShaderAssets.warpSpeed2),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -105,6 +192,7 @@ List<Widget> shadersWidget(BuildContext context) {
         shaderAssetsName: ShaderAssets.warpSpeed2,
       )..setChannels([IChannel(assetsTexturePath: ShaderAssets.noiseImageGenerator)]),
     ),
+    Text(ShaderAssets.rainierMood),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -126,11 +214,6 @@ List<Widget> shadersWidget(BuildContext context) {
       mainImage: LayerBuffer(
         shaderAssetsName: ShaderAssets.notSoGreeeenChromaticHole,
       )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.fractalPyramid),
     ),
     Builder(
       builder: (context) {
@@ -354,7 +437,6 @@ List<Widget> shadersWidget(BuildContext context) {
       )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
     ),
     NormalShader(asset: ShaderAssets.deathStar),
-    NormalShader(asset: ShaderAssets.octagrams),
     NormalShader(asset: ShaderAssets.rayMarchingPart2),
     NormalShader(asset: ShaderAssets.rayMarchingPart3),
     NormalShader(asset: ShaderAssets.rayMarchingPart4),
@@ -413,19 +495,6 @@ List<Widget> shadersWidget(BuildContext context) {
   return children;
 }
 
-void main() {
-  runApp(const MyApp());
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ),
-  );
-}
-
 Future<FragmentShader> getShader(String asset) async {
   var program = await FragmentProgram.fromAsset(asset);
   return program.fragmentShader();
@@ -463,6 +532,7 @@ class MyApp extends StatelessWidget {
               },
               child: SizedBox(
                 height: height,
+                width: double.infinity,
                 child: children[index],
               ),
             );

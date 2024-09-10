@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shader_buffers:
-    path: /Users/nightmare/shader_buffers
+  shader_buffers: 1.0.1
 
   image: ^3.0.1
   cupertino_icons: ^1.0.6
@@ -319,8 +318,8 @@ flutter:
     #! compile error
     # - shaders/Mirror Looping w Mouse Control.frag
     # - shaders/Mirror Looping w Mouse Control BufferA.frag
-    #! do-while loops are not supported
-    # - shaders/Mandelbulb 3D Fractal.frag
+    #! skia: do-while loops are not supported
+    - shaders/Mandelbulb 3D Fractal.frag
     - shaders/Menger Sponge.frag
     - shaders/Rainier mood.frag
     #! compile error: only simple shader sampling is supported
@@ -333,9 +332,22 @@ flutter:
     - shaders/Galaxy of Universes.frag
     - shaders/Inverse Bilinear.frag
     - shaders/Bubbles.frag
-    #! Only simple shader sampling is supported
+    # #! Only simple shader sampling is supported
     # - shaders/Chrome Dino game.frag
     # - shaders/Chrome Dino game BufferA.frag
     - shaders/electron.frag
-    #! runtime error
-    # - shaders/Input Time.frag
+    #! skia runtime error,but work on impeller
+    - shaders/Input Time.frag
+    - shaders/Starry planes.frag
+    - shaders/Starry planes.frag
+    # - shaders/Hex Glitch.frag
+    # - shaders/Hex Glitch BufferA.frag
+    # - shaders/Hex Glitch BufferB.frag
+    # - shaders/Hex Glitch Common.frag
+    - shaders/Byt3-daily-013.frag
+    #! Only simple shader sampling is supported
+    # - shaders/Delaunay SDF To Mesh.frag
+    # - shaders/Delaunay SDF To Mesh BufferA.frag
+    # - shaders/Delaunay SDF To Mesh BufferB.frag
+    # - shaders/Delaunay SDF To Mesh BufferC.frag
+    - shaders/ED-209.frag
