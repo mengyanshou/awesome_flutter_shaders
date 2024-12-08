@@ -270,11 +270,11 @@ flutter:
     #! compile error
     # - shaders/Nebula Explained.frag
     # - shaders/Nebula Explained BufferA.frag
-    - shaders/Base warp fBM.frag
     - shaders/Phantom Star for CineShader.frag
     #! runtime error
     # - shaders/Cube lines.frag
     - shaders/Broken Time Portal.frag
+    - shaders/Broken.frag
     #! program is too large
     # - shaders/Full Spectrum Cyber.frag
     - shaders/cubular.frag
@@ -351,3 +351,4 @@ flutter:
     # - shaders/Delaunay SDF To Mesh BufferB.frag
     # - shaders/Delaunay SDF To Mesh BufferC.frag
     - shaders/ED-209.frag
+    - shaders/sula.frag

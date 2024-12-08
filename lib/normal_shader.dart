@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:awesome_flutter_shaders/noise_image.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 
@@ -64,7 +65,7 @@ class _NormalShaderState extends State<NormalShader> {
   void loadMyShader() async {
     if (widget.simplers.isNotEmpty) {
       for (var simpler in widget.simplers) {
-        image = await loadImageFromAsset(simpler);
+        image = await generateNoiseImageV2(16, 16);
       }
     }
     var program = await ui.FragmentProgram.fromAsset(widget.asset);

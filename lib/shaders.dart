@@ -1,26 +1,23 @@
 class ShaderAssets {
-  // 初始化包路径
   static void initPackage() {
     package = 'packages/awesome_flutter_shaders/';
   }
 
   static String package = '';
 
-  // 拼接路径的静态方法
   static String path(String shader) {
     return '$package$shader';
   }
 
-  // 调整后的着色器和通道路径
   static String brokenTimePortal = path('shaders/Broken Time Portal.frag');
+  static String starry = path('shaders/Starry planes.frag');
+  static String electron = path('shaders/electron.frag');
   static String brokenTimePortalChannel = path('assets/Noise Image Generator.png');
   static String cubular = path('shaders/cubular.frag');
   static String cubularChannel = path('assets/Cubular.png');
   static String monster = path('shaders/MONSTER.frag');
   static String starandblackhole = path('shaders/star and black hole.frag');
   static String colorfulKaleidoscope7 = path('shaders/colorful Kaleidoscope 7.frag');
-  static String baseWarpFbm = path('shaders/Base warp fBM.frag');
-  static String baseWarpFbmChannel = path('assets/Base warp fBM.png');
   static String phantomStarForCineShader = path('shaders/Phantom Star for CineShader.frag');
   static String blue = path('shaders/Blue.frag');
   static String mandelbulb = path('shaders/mandelbulb.frag');
@@ -73,8 +70,6 @@ class ShaderAssets {
   static String warp = path('shaders/warp.frag');
   // 'shaders/Input Time.frag'
   static String inputTime = path('shaders/Input Time.frag');
-  // 'shaders/electron.frag'
-  static String electron = path('shaders/electron.frag');
   // 'shaders/Bubbles.frag'
   static String bubbles = path('shaders/Bubbles.frag');
   // 'shaders/Inverse Bilinear.frag'

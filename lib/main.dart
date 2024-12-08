@@ -39,6 +39,19 @@ void main() {
   );
 }
 
+ShaderBuffers shader(String asset, {List<String> channels = const []}) {
+  return ShaderBuffers(
+    key: UniqueKey(),
+    controller: ShaderController(),
+    mainImage: LayerBuffer(shaderAssetsName: asset)
+      ..setChannels(
+        channels.map((channel) => IChannel(assetsTexturePath: channel)).toList(),
+      ),
+  );
+}
+
+bool enableImpller = false;
+
 List<Widget> shadersWidget(BuildContext context) {
   List<Widget> children = [
     // ShaderBuffers(
@@ -77,214 +90,78 @@ List<Widget> shadersWidget(BuildContext context) {
     //       IChannel(assetsTexturePath: 'shaders/Hex Glitch BufferB.frag'),
     //     ]),
     // ),
-    // TODO 显示是上下颠倒的,提issue试试
-    Text('ED-209'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/ED-209.frag',
-      ),
-    ),
-    Text('octagrams'),
-    NormalShader(asset: ShaderAssets.octagrams),
-    Text('hexagons'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.fractalPyramid),
-    ),
-    Text('Byt3-daily-013'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Byt3-daily-013.frag',
-      ),
-    ),
-    Text('Starry planes'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Starry planes.frag',
-      ),
-    ),
-    Text('Mandelbulb 3D Fractal'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Mandelbulb 3D Fractal.frag',
-      ),
-    ),
-    Text('electron'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/electron.frag',
-      ),
-    ),
-    Text('Input Time'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: ShaderController(),
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Input Time.frag',
-      ),
-    ),
-    Text('Refraction post proc'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Refraction post proc.frag',
-      )..setChannels([
-          IChannel(assetsTexturePath: 'shaders/Refraction post proc BufferA.frag'),
-          IChannel(assetsTexturePath: 'shaders/Refraction post proc BufferB.frag'),
-        ]),
-    ),
-    Text('Dive to Cloud'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Dive to Cloud.frag',
-      ),
-    ),
-    Text('Galvanize'),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: 'shaders/Galvanize.frag',
-      ),
-    ),
-    Text(ShaderAssets.bubbles),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.bubbles,
-      ),
-    ),
-    Text(ShaderAssets.inverseBilinear),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.inverseBilinear,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
+    // shader('shaders/Broken.frag', channels: [ShaderAssets.brokenTimePortalChannel]),
+    // shader(ShaderAssets.brokenTimePortal, channels: [ShaderAssets.brokenTimePortalChannel]),
     // ShaderBuffers(
     //   key: UniqueKey(),
-    //   controller: controller,
+    //   controller: ShaderController(),
     //   mainImage: LayerBuffer(
-    //     shaderAssetsName: ShaderAssets.noiseImageGenerator,
-    //   )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
+    //     shaderAssetsName: 'shaders/sula.frag',
+    //     uniforms: Uniforms(
+    //       [
+    //         Uniform(
+    //           name: 'time',
+    //           value: 0.0,
+    //           range: const RangeValues(0, 10),
+    //           defaultValue: 0,
+    //         ),
+    //       ],
+    //     ),
+    //   ),
     // ),
-    Text(ShaderAssets.warpSpeed2),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.warpSpeed2,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.noiseImageGenerator)]),
-    ),
-    Text(ShaderAssets.rainierMood),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.rainierMood,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
-
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.mengerSponge,
-      ),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.notSoGreeeenChromaticHole,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
+    if (enableImpller) shader('shaders/ED-209.frag'),
+    shader(ShaderAssets.octagrams),
+    shader(ShaderAssets.fractalPyramid),
+    if (enableImpller) shader('shaders/Byt3-daily-013.frag'),
+    shader(ShaderAssets.starry),
+    if (enableImpller) shader('shaders/Mandelbulb 3D Fractal.frag'),
+    shader(ShaderAssets.electron),
+    if (enableImpller) shader('shaders/Input Time.frag'),
+    if (enableImpller)
+      shader('shaders/Refraction post proc.frag', channels: [
+        'shaders/Refraction post proc BufferA.frag',
+        'shaders/Refraction post proc BufferB.frag',
+      ]),
+    if (enableImpller) shader('shaders/Dive to Cloud.frag'),
+    if (enableImpller) shader('shaders/Galvanize.frag'),
+    shader(ShaderAssets.bubbles),
+    shader(ShaderAssets.inverseBilinear, channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.warpSpeed2, channels: [ShaderAssets.noiseImageGenerator]),
+    shader(ShaderAssets.rainierMood, channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.mengerSponge),
+    shader(ShaderAssets.notSoGreeeenChromaticHole, channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.mandelbulbDeconstructed),
+    shader(ShaderAssets.mandelbulbDerivative),
     Builder(
       builder: (context) {
-        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.mandelbulbDeconstructed);
+        final bufferA = LayerBuffer(shaderAssetsName: ShaderAssets.basicHowToUseBufferDemoBufferA);
+        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.basicHowToUseBufferDemo);
+        mainLayer.setChannels([
+          IChannel(buffer: bufferA),
+        ]);
         return ShaderBuffers(
           key: UniqueKey(),
           controller: controller,
           mainImage: mainLayer,
+          buffers: [bufferA],
         );
       },
     ),
-    Builder(
-      builder: (context) {
-        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.mandelbulbDerivative);
-        return ShaderBuffers(
-          key: UniqueKey(),
-          controller: controller,
-          mainImage: mainLayer,
-        );
-      },
-    ),
-    SizedBox(
-      child: Builder(
-        builder: (context) {
-          final bufferA = LayerBuffer(shaderAssetsName: ShaderAssets.basicHowToUseBufferDemoBufferA);
-          final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.basicHowToUseBufferDemo);
-          mainLayer.setChannels([
-            IChannel(buffer: bufferA),
-          ]);
-          return ShaderBuffers(
-            key: UniqueKey(),
-            controller: controller,
-            mainImage: mainLayer,
-            buffers: [bufferA],
-          );
-        },
-      ),
-    ),
-    NormalShader(asset: ShaderAssets.fwaLogo),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.brokenTimePortal,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.brokenTimePortalChannel)]),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.cubular,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.cubularChannel)]),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.monster,
-      ),
-    ),
-    NormalShader(asset: ShaderAssets.starandblackhole),
-    NormalShader(asset: ShaderAssets.colorfulKaleidoscope7),
-    NormalShader(asset: ShaderAssets.baseWarpFbm, simplers: [ShaderAssets.baseWarpFbmChannel]),
+    // shader(ShaderAssets.basicHowToUseBufferDemo, channels: [ShaderAssets.basicHowToUseBufferDemoBufferA]),
+    shader(ShaderAssets.fwaLogo),
+    shader(ShaderAssets.cubular, channels: [ShaderAssets.cubularChannel]),
+    shader(ShaderAssets.monster),
+    shader(ShaderAssets.starandblackhole),
+    shader(ShaderAssets.colorfulKaleidoscope7),
     NormalShader(asset: ShaderAssets.phantomStarForCineShader),
-    NormalShader(asset: ShaderAssets.blue),
-    NormalShader(asset: ShaderAssets.mandelbulb),
-    NormalShader(asset: ShaderAssets.raymarchingBasic),
-    NormalShader(asset: ShaderAssets.rotateAndPointsCircle),
-    NormalShader(asset: ShaderAssets.pinku),
-    NormalShader(asset: ShaderAssets.blackHolesAndCrosses),
-    NormalShader(asset: ShaderAssets.studiogustoComGooeyCover),
+    // shader(ShaderAssets.phantomStarForCineShader),
+    shader(ShaderAssets.blue),
+    shader(ShaderAssets.mandelbulb),
+    shader(ShaderAssets.raymarchingBasic),
+    shader(ShaderAssets.rotateAndPointsCircle),
+    shader(ShaderAssets.pinku),
+    shader(ShaderAssets.blackHolesAndCrosses),
+    shader(ShaderAssets.studiogustoComGooeyCover),
     Builder(
       builder: (context) {
         final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.pageCurl);
@@ -299,39 +176,19 @@ List<Widget> shadersWidget(BuildContext context) {
         );
       },
     ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.soundEclipseRpm,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.blackHoleOdeGeodesicSolver)]),
+    shader(ShaderAssets.soundEclipseRpm, channels: [ShaderAssets.blackHoleOdeGeodesicSolver]),
+
+    shader(ShaderAssets.blackHoleOdeGeodesicSolverFrag, channels: ['assets/Black Hole ODE Geodesic Solver.png']),
+
+    shader(ShaderAssets.simpleSuperSphericalShading),
+    shader(
+      ShaderAssets.mainSequenceStar,
+      channels: [
+        ShaderAssets.mainSequenceStarPng,
+        ShaderAssets.wall,
+      ],
     ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.blackHoleOdeGeodesicSolverFrag,
-      )..setChannels([IChannel(assetsTexturePath: 'assets/Black Hole ODE Geodesic Solver.png')]),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.simpleSuperSphericalShading),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.mainSequenceStar)
-        ..setChannels([
-          IChannel(assetsTexturePath: ShaderAssets.mainSequenceStarPng),
-          IChannel(assetsTexturePath: ShaderAssets.wall),
-        ]),
-    ),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.noiseLab3D),
-    ),
+    shader(ShaderAssets.noiseLab3D),
     SizedBox(
       child: Builder(builder: (context) {
         final bufferA = LayerBuffer(shaderAssetsName: ShaderAssets.fluidSolverBufferA);
@@ -402,22 +259,11 @@ List<Widget> shadersWidget(BuildContext context) {
         );
       }),
     ),
-    NormalShader(asset: ShaderAssets.starsAndCosmos8),
-    ShaderBuffers(
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.marioWorld,
-      ),
-    ),
-    NormalShader(asset: ShaderAssets.clouds2D),
-    NormalShader(asset: ShaderAssets.palaceOfMind),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.wavyfire,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
+    shader(ShaderAssets.starsAndCosmos8),
+    shader(ShaderAssets.marioWorld),
+    // shader(ShaderAssets.clouds2D),
+    // shader(ShaderAssets.palaceOfMind),
+    shader(ShaderAssets.wavyfire, channels: [ShaderAssets.wall]),
     ShaderBuffers(
       key: UniqueKey(),
       controller: controller,
@@ -425,18 +271,21 @@ List<Widget> shadersWidget(BuildContext context) {
         shaderAssetsName: ShaderAssets.grayscale,
       )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
     ),
-    NormalShader(asset: ShaderAssets.seascape),
+    // shader(ShaderAssets.grayscale,channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.seascape),
     NormalShader(asset: ShaderAssets.six),
     NormalShader(asset: ShaderAssets.seven),
     NormalShader(asset: ShaderAssets.shaderArtCodingIntroduction),
-    ShaderBuffers(
-      key: UniqueKey(),
-      controller: controller,
-      mainImage: LayerBuffer(
-        shaderAssetsName: ShaderAssets.shaderArtCodingIntroduction,
-      )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
-    ),
+    // shader(ShaderAssets.shaderArtCodingIntroduction),
+    // ShaderBuffers(
+    //   key: UniqueKey(),
+    //   controller: controller,
+    //   mainImage: LayerBuffer(
+    //     shaderAssetsName: ShaderAssets.shaderArtCodingIntroduction,
+    //   )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
+    // ),
     NormalShader(asset: ShaderAssets.deathStar),
+    shader(ShaderAssets.deathStar),
     NormalShader(asset: ShaderAssets.rayMarchingPart2),
     NormalShader(asset: ShaderAssets.rayMarchingPart3),
     NormalShader(asset: ShaderAssets.rayMarchingPart4),
@@ -521,19 +370,30 @@ class MyApp extends StatelessWidget {
         child: ListView.builder(
           itemCount: children.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                    backgroundColor: Colors.black,
-                    body: children[index],
-                  );
-                }));
-              },
-              child: SizedBox(
-                height: height,
-                width: double.infinity,
-                child: children[index],
+            String message() {
+              Widget child = children[index];
+              if (child is ShaderBuffers) {
+                return child.mainImage.shaderAssetsName;
+              }
+              return child.toString();
+            }
+
+            return Tooltip(
+              message: message(),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    return Scaffold(
+                      backgroundColor: Colors.black,
+                      body: children[index],
+                    );
+                  }));
+                },
+                child: SizedBox(
+                  height: height,
+                  width: double.infinity,
+                  child: children[index],
+                ),
               ),
             );
           },
