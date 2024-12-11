@@ -136,6 +136,8 @@ class NormalShaderPainter extends CustomPainter {
     if (image != null) shader.setImageSampler(0, image!);
     paint.style = PaintingStyle.fill;
     paint.shader = shader;
+    paint.isAntiAlias = true;
+    paint.filterQuality = FilterQuality.low;
 
     // Create a matrix that flips the y-axis
     final matrix4 = Matrix4.identity();

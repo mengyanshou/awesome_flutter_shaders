@@ -41,6 +41,8 @@ void main() {
 
 ShaderBuffers shader(String asset, {List<String> channels = const []}) {
   return ShaderBuffers(
+    // width: 100,
+    // height: 100,
     key: UniqueKey(),
     controller: ShaderController(),
     mainImage: LayerBuffer(shaderAssetsName: asset)
@@ -54,6 +56,15 @@ bool enableImpller = false;
 
 List<Widget> shadersWidget(BuildContext context) {
   List<Widget> children = [
+    // NormalShader(asset: ShaderAssets.deathStar),
+    ShaderBuffers(
+      // width: 100,
+      // height: 100,
+      key: UniqueKey(),
+      controller: ShaderController(),
+      mainImage: LayerBuffer(shaderAssetsName: ShaderAssets.deathStar),
+    ),
+    // shader(ShaderAssets.deathStar),
     // ShaderBuffers(
     //   key: UniqueKey(),
     //   controller: controller,
@@ -284,8 +295,6 @@ List<Widget> shadersWidget(BuildContext context) {
     //     shaderAssetsName: ShaderAssets.shaderArtCodingIntroduction,
     //   )..setChannels([IChannel(assetsTexturePath: ShaderAssets.wall)]),
     // ),
-    NormalShader(asset: ShaderAssets.deathStar),
-    shader(ShaderAssets.deathStar),
     NormalShader(asset: ShaderAssets.rayMarchingPart2),
     NormalShader(asset: ShaderAssets.rayMarchingPart3),
     NormalShader(asset: ShaderAssets.rayMarchingPart4),
@@ -341,7 +350,30 @@ List<Widget> shadersWidget(BuildContext context) {
       ),
     )
   ];
+  final shaderd = buildShader();
+
+  return [
+    ShaderBuffers(
+      controller: ShaderController(),
+
+      /// You can fix the widget size
+      // width: 250,
+      // height: 300,
+      mainImage: shaderd.mainImage,
+      buffers: shaderd.buffers,
+    ),
+    NormalShader(asset: ShaderAssets.deathStar),
+    // shader(ShaderAssets.deathStar),
+  ];
   return children;
+}
+
+typedef Layers = ({LayerBuffer mainImage, List<LayerBuffer> buffers});
+Layers buildShader() {
+  final mainLayer = LayerBuffer(
+    shaderAssetsName: ShaderAssets.deathStar,
+  );
+  return (mainImage: mainLayer, buffers: []);
 }
 
 Future<FragmentShader> getShader(String asset) async {
