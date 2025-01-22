@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shader_buffers: 1.0.1
+  shader_buffers: 1.1.0
 
   image: ^3.0.1
   cupertino_icons: ^1.0.6

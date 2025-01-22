@@ -350,30 +350,7 @@ List<Widget> shadersWidget(BuildContext context) {
       ),
     )
   ];
-  final shaderd = buildShader();
-
-  return [
-    ShaderBuffers(
-      controller: ShaderController(),
-
-      /// You can fix the widget size
-      // width: 250,
-      // height: 300,
-      mainImage: shaderd.mainImage,
-      buffers: shaderd.buffers,
-    ),
-    NormalShader(asset: ShaderAssets.deathStar),
-    // shader(ShaderAssets.deathStar),
-  ];
   return children;
-}
-
-typedef Layers = ({LayerBuffer mainImage, List<LayerBuffer> buffers});
-Layers buildShader() {
-  final mainLayer = LayerBuffer(
-    shaderAssetsName: ShaderAssets.deathStar,
-  );
-  return (mainImage: mainLayer, buffers: []);
 }
 
 Future<FragmentShader> getShader(String asset) async {
