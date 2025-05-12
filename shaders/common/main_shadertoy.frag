@@ -12,7 +12,7 @@ void main() {
     vec2 fragCoord = FlutterFragCoord().xy;
 
     // Flip the y coordinate
-    fragCoord.y = iResolution.y - fragCoord.y;
+    // fragCoord.y = iResolution.y - fragCoord.y;
 
     // Pass the flipped fragCoord to mainImage
     mainImage(fragColor, fragCoord * tmp);
