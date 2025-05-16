@@ -12,3 +12,14 @@ uniform float iFrame;
 uniform vec4 iMouse;
 
 out vec4 fragColor;
+
+vec4 textureLod(sampler2D sam, vec2 uv, float lod) {
+    // 在Flutter中，我们只能使用texture函数，忽略lod参数
+    return texture(sam, uv);
+}
+
+// texelFetch
+vec4 textureFetch(sampler2D sam, vec2 uv, int lod) {
+    // 在Flutter中，我们只能使用texture函数，忽略lod参数
+    return texture(sam, uv);
+}

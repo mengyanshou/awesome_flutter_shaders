@@ -1,3 +1,6 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/MdfGRX
+
 // Copyright Inigo Quilez, 2013 - https://iquilezles.org/
 // I am the sole copyright owner of this Work.
 // You cannot host, display, distribute or share this Work neither
@@ -11,17 +14,56 @@
 // these conditions are too restrictive please contact me and we'll
 // definitely work it out.
 
-#include <../common/common_header.frag>
-uniform sampler2D iChannel0;
-float noise(in vec3 x) {
-    vec3 p = floor(x);
-    vec3 f = fract(x);
-    f = f * f * (3.0 - 2.0 * f);
 
-    vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z) + f.xy;
-    vec2 rg = textureLod(iChannel0, (uv + 0.5) / 256.0, 0.0).yx;
-    return mix(rg.x, rg.y, f.z);
+uniform sampler2D iChannel0;
+// 伪随机数生成
+float hash(vec3 p) {
+    p  = fract(p * .1031);
+    p += dot(p, p.zyx + 31.32);
+    return fract((p.x + p.y) * p.z);
 }
+
+// 替换原有的noise函数
+float noise(in vec3 x) {
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    
+    // 平滑插值
+    f = f * f * (3.0 - 2.0 * f);
+    
+    // 8个顶点的值噪声插值
+    float a = hash(i);
+    float b = hash(i + vec3(1.0, 0.0, 0.0));
+    float c = hash(i + vec3(0.0, 1.0, 0.0));
+    float d = hash(i + vec3(1.0, 1.0, 0.0));
+    float e = hash(i + vec3(0.0, 0.0, 1.0));
+    float f1 = hash(i + vec3(1.0, 0.0, 1.0));
+    float g = hash(i + vec3(0.0, 1.0, 1.0));
+    float h = hash(i + vec3(1.0, 1.0, 1.0));
+    
+    // 三线性插值
+    float k0 = a;
+    float k1 = b - a;
+    float k2 = c - a;
+    float k3 = e - a;
+    float k4 = (d - b) - (c - a);
+    float k5 = (f1 - b) - (e - a);
+    float k6 = (g - c) - (e - a);
+    float k7 = ((h - f1) - (g - e)) - ((d - b) - (c - a));
+
+    return k0 + k1*f.x + k2*f.y + k3*f.z +
+           k4*f.x*f.y + k5*f.x*f.z + k6*f.y*f.z +
+           k7*f.x*f.y*f.z;
+}
+// float noise(in vec3 x) {
+//     vec3 p = floor(x);
+//     vec3 f = fract(x);
+//     f = f * f * (3.0 - 2.0 * f);
+
+//     vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z) + f.xy;
+//     vec2 rg = textureLod(iChannel0, (uv + 0.5) / 256.0, 0.0).yx;
+//     return mix(rg.x, rg.y, f.z);
+// }
 
 vec4 map(vec3 p) {
     float den = 0.2 - p.y;
@@ -89,7 +131,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     // camera
     vec3 ro = 4.0 * normalize(vec3(1.0, 1.5, 0.0));
-    vec3 ta = vec3(0.0, 1.0, 0.0) + 0.05 * (-1.0 + 2.0 * textureLod(iChannel0, iTime * vec2(0.013, 0.008), 0.0).xyz);
+    vec3 ta = vec3(0.0, 1.0, 0.0) + 0.05 * vec3(
+        sin(iTime * 0.013),
+        sin(iTime * 0.008),
+        sin(iTime * 0.011)
+    );
     float cr = 0.5 * cos(0.7 * iTime);
 
 	// build ray

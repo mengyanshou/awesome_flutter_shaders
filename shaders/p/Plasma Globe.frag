@@ -1,8 +1,11 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/XsjXRm
+
 // Plasma Globe by nimitz (twitter: @stormoid)
 // https://www.shadertoy.com/view/XsjXRm
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 // Contact the author for other licensing options
-#include <../common/common_header.frag>
+
 uniform sampler2D iChannel0;
 // looks best with around 25 rays
 #define NUM_RAYS 13.

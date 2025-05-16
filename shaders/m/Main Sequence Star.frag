@@ -1,7 +1,8 @@
+// https://www.shadertoy.com/view/4dXGR4
+#include <../common/common_header.frag>
 // based on https://www.shadertoy.com/view/lsf3RH by
 // trisomie21 (THANKS!)
 // My apologies for the ugly code.
-#include <../common/common_header.frag>
 
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;

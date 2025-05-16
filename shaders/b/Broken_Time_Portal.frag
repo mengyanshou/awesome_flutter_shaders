@@ -1,4 +1,14 @@
+// https://www.shadertoy.com/view/XXcGWr
 #include <../common/common_header.frag>
+// #include <../common/fast_noise.frag>
+// #include <../common/noise_fbm.frag>
+// #include <../common/noise_perlin.frag>
+// #include <../common/noise_simplex.frag>
+// #include <../common/noise_voronoi.frag>
+// #include <../common/noise_value.frag>
+// #include <../common/noise_flow.frag>
+#include <../common/noise_white.frag>
+
 uniform sampler2D iChannel0;
 
 // Credit to nimitz (stormoid.com) (twitter: @stormoid)
@@ -16,24 +26,10 @@ mat2 makem2(in float theta) {
 	float s = sin(theta);
 	return mat2(c, -s, s, c);
 }
-float noise(in vec2 x) {
-	vec2 uv = x * 0.005;
-	vec2 res = vec2(1024.0); // 纹理分辨率
-	vec2 st = uv * res;
+// float noise(in vec2 x) {
+// 	return texture(iChannel0, x * .01).x;
+// }
 
-	vec2 i = floor(st);
-	vec2 f = fract(st);
-
-  // 四个临近像素
-	float a = texture(iChannel0, (i + vec2(0.0, 0.0)) / res).x;
-	float b = texture(iChannel0, (i + vec2(1.0, 0.0)) / res).x;
-	float c = texture(iChannel0, (i + vec2(0.0, 1.0)) / res).x;
-	float d = texture(iChannel0, (i + vec2(1.0, 1.0)) / res).x;
-
-  // 双线性插值
-	vec2 u = smoothstep(0.0, 1.0, f);
-	return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-}
 float fbm(in vec2 p) {
 	float z = 2.;
 	float rz = 0.;
@@ -59,7 +55,7 @@ float dualfbm(in vec2 p) {
 
 float circ(vec2 p) {
 	float r = length(p);
-	r = 0.5 * log(r);
+	r = log(sqrt(r));
 	return abs(mod(r * 4., tau) - 3.14) * 3. + .2;
 
 }
@@ -85,5 +81,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 	col = pow(abs(col), vec3(.99));
 	fragColor = vec4(col, 1.);
 }
-
 #include <../common/main_shadertoy.frag>

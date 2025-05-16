@@ -1,8 +1,10 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/MdXyzX
 // afl_ext 2017-2024
 // MIT License
 
 // Use your mouse to move the camera around! Press the Left Mouse Button on the image to look around!
-#include <../common/common_header.frag>
+
 #define DRAG_MULT 0.38 // changes how much waves pull on the water
 #define WATER_DEPTH 1.0 // how deep is the water
 #define CAMERA_HEIGHT 1.5 // how high the camera should be

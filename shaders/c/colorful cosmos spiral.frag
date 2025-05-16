@@ -72,7 +72,7 @@ float noise(in vec3 p) {
 	vec3 ip = floor(p), fp = fract(p);
 	fp = fp * fp * (3.0 - 2.0 * fp);
 	vec2 tap = (ip.xy + vec2(37.0, 17.0) * ip.z) + fp.xy;
-	vec2 cl = textureLod(iChannel0, (tap + 0.5) / 256.0, 0.0).yx;
+	vec2 cl = texture(iChannel0, (tap + 0.5) / 256.0).yx;
 	return mix(cl.x, cl.y, fp.z);
 }
 

@@ -1,3 +1,5 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/3l23Rh
 // Protean clouds by nimitz (twitter: @stormoid)
 // https://www.shadertoy.com/view/3l23Rh
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
@@ -20,7 +22,7 @@
     the fog is evaluated as the difference of the fog integral at each rendered step.
 
 */
-#include <../common/common_header.frag>
+
 mat2 rot(in float a) {
     float c = cos(a), s = sin(a);
     return mat2(c, s, -s, c);

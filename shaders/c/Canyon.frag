@@ -1,3 +1,5 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/MdBGzG
 // Copyright Inigo Quilez, 2014 - https://iquilezles.org/
 // I am the sole copyright owner of this Work.
 // You cannot host, display, distribute or share this Work neither
@@ -11,7 +13,7 @@
 // these conditions are too restrictive please contact me and we'll
 // definitely work it out.
 //-----------------------------------------------------------------------------------
-#include <../common/common_header.frag>
+
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
@@ -23,20 +25,23 @@ uniform sampler2D iChannel3;
 #endif
 //#define HIGH_QUALITY
 #define LOWDETAIL
-
+vec4 customTextureLod(sampler2D sam, vec2 uv, float lod) {
+    // 在Flutter中，我们只能使用texture函数，忽略lod参数
+    return texture(sam, uv);
+}
 float noise1(in vec3 x) {
     vec3 p = floor(x);
     vec3 f = fract(x);
     f = f * f * (3.0 - 2.0 * f);
 #ifndef HIGH_QUALITY
     vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z) + f.xy;
-    vec2 rg = textureLod(iChannel2, (uv + 0.5) / 256.0, 0.0).yx;
+    vec2 rg = customTextureLod(iChannel2, (uv + 0.5) / 256.0, 0.0).yx;
 #else
     vec2 uv = (p.xy + vec2(37.0, 17.0) * p.z);
-    vec2 rg1 = textureLod(iChannel2, (uv + vec2(0.5, 0.5)) / 256.0, 0.0).yx;
-    vec2 rg2 = textureLod(iChannel2, (uv + vec2(1.5, 0.5)) / 256.0, 0.0).yx;
-    vec2 rg3 = textureLod(iChannel2, (uv + vec2(0.5, 1.5)) / 256.0, 0.0).yx;
-    vec2 rg4 = textureLod(iChannel2, (uv + vec2(1.5, 1.5)) / 256.0, 0.0).yx;
+    vec2 rg1 = customTextureLod(iChannel2, (uv + vec2(0.5, 0.5)) / 256.0, 0.0).yx;
+    vec2 rg2 = customTextureLod(iChannel2, (uv + vec2(1.5, 0.5)) / 256.0, 0.0).yx;
+    vec2 rg3 = customTextureLod(iChannel2, (uv + vec2(0.5, 1.5)) / 256.0, 0.0).yx;
+    vec2 rg4 = customTextureLod(iChannel2, (uv + vec2(1.5, 1.5)) / 256.0, 0.0).yx;
     vec2 rg = mix(mix(rg1, rg2, f.x), mix(rg3, rg4, f.x), f.y);
 #endif	
     return mix(rg.x, rg.y, f.z);
@@ -67,9 +72,9 @@ vec4 texcube(sampler2D sam, in vec3 p, in vec3 n) {
 }
 
 vec4 texcubeGrad(sampler2D sam, in vec3 p, in vec3 n, in vec3 dpdx, in vec3 dpdy) {
-    vec4 x = textureGrad(sam, p.yz, dpdx.yz, dpdy.yz);
-    vec4 y = textureGrad(sam, p.zx, dpdx.zx, dpdy.zx);
-    vec4 z = textureGrad(sam, p.xy, dpdx.xy, dpdy.xy);
+    vec4 x = texture(sam, p.yz);
+    vec4 y = texture(sam, p.zx);
+    vec4 z = texture(sam, p.xy);
     return (x * abs(n.x) + y * abs(n.y) + z * abs(n.z)) / (abs(n.x) + abs(n.y) + abs(n.z));
 }
 
@@ -77,21 +82,21 @@ vec4 textureGood(sampler2D sam, vec2 uv, float lo) {
     uv = uv * 1024.0 - 0.5;
     vec2 iuv = floor(uv);
     vec2 f = fract(uv);
-    vec4 rg1 = textureLod(sam, (iuv + vec2(0.5, 0.5)) / 1024.0, lo);
-    vec4 rg2 = textureLod(sam, (iuv + vec2(1.5, 0.5)) / 1024.0, lo);
-    vec4 rg3 = textureLod(sam, (iuv + vec2(0.5, 1.5)) / 1024.0, lo);
-    vec4 rg4 = textureLod(sam, (iuv + vec2(1.5, 1.5)) / 1024.0, lo);
+    vec4 rg1 = customTextureLod(sam, (iuv + vec2(0.5, 0.5)) / 1024.0, lo);
+    vec4 rg2 = customTextureLod(sam, (iuv + vec2(1.5, 0.5)) / 1024.0, lo);
+    vec4 rg3 = customTextureLod(sam, (iuv + vec2(0.5, 1.5)) / 1024.0, lo);
+    vec4 rg4 = customTextureLod(sam, (iuv + vec2(1.5, 1.5)) / 1024.0, lo);
     return mix(mix(rg1, rg2, f.x), mix(rg3, rg4, f.x), f.y);
 }
 
 //-----------------------------------------------------------------------------------
 
 float terrain(in vec2 q) {
-    float th = smoothstep(0.0, 0.7, textureLod(iChannel0, 0.001 * q, 0.0).x);
-    float rr = smoothstep(0.1, 0.5, textureLod(iChannel1, 2.0 * 0.03 * q, 0.0).y);
+    float th = smoothstep(0.0, 0.7, customTextureLod(iChannel0, 0.001 * q, 0.0).x);
+    float rr = smoothstep(0.1, 0.5, customTextureLod(iChannel1, 2.0 * 0.03 * q, 0.0).y);
     float h = 1.9;
 	#ifndef LOWDETAIL
-    h += -0.15 + (1.0 - 0.6 * rr) * (1.5 - 1.0 * th) * 0.3 * (1.0 - textureLod(iChannel0, 0.04 * q * vec2(1.2, 0.5), 0.0).x);
+    h += -0.15 + (1.0 - 0.6 * rr) * (1.5 - 1.0 * th) * 0.3 * (1.0 - customTextureLod(iChannel0, 0.04 * q * vec2(1.2, 0.5), 0.0).x);
 	#endif
     h += th * 7.0;
     h += 0.3 * rr;

@@ -25,7 +25,6 @@
 //
 #include <../common/common_header.frag>
 #include <Portal - iOS AR Common.frag>
-uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
 uniform sampler2D iChannel2;
 uniform sampler2D iChannel3;
@@ -137,7 +136,7 @@ vec3 render(in vec3 ro, in vec3 rd, in vec2 uv, in sampler2D sam, bool inside) {
     vec3 portalColor = texture(sam, uv).rgb * 1.25;
     // Use mipmap level 9 to get an average environment color from the webcam texture
     // used for lighting.
-    vec3 lightColor = pow(.25 + .75 * texelFetch(sam, ivec2(0), 9).rgb, vec3(2.2)) * 3.;
+    vec3 lightColor = pow(.25 + .75 * texture(sam, vec2(0.0, 0.0)).rgb, vec3(2.2)) * 3.;
 
     // portal intersection
     float portalDist = iPlane(ro, rd, vec4(0, 0, 1, -dot(PORTAL_POS, vec3(0, 0, 1))));
@@ -233,10 +232,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(col, 1.0);
 }
 
-void mainVR(out vec4 fragColor, in vec2 fragCoord, in vec3 ro, in vec3 rd) {
-    ro += PORTAL_POS + START_OFFSET;
+// void mainVR(out vec4 fragColor, in vec2 fragCoord, in vec3 ro, in vec3 rd) {
+//     ro += PORTAL_POS + START_OFFSET;
 
-    vec3 col = render(ro, rd, fragCoord.xy / iResolution.xy, iChannel0, texelFetch(iChannel1, ivec2(0), 0).w > .5);
-    fragColor = vec4(col, 1.0);
-}
+//     vec3 col = render(ro, rd, fragCoord.xy / iResolution.xy, iChannel0, texelFetch(iChannel1, ivec2(0), 0).w > .5);
+//     fragColor = vec4(col, 1.0);
+// }
 #include <../common/main_shadertoy.frag>

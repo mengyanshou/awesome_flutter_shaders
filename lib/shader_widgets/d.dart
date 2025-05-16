@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 List<Widget> shadersWidget() {
   return [
-    if (enableImpller) shader('shaders/Dive to Cloud.frag'),
+    if (enableImpller) shader('shaders/d/Dive to Cloud.frag'),
     shader(ShaderAssets.deathStar),
+    shader(ShaderAssets.devilGlass),
   ];
 }

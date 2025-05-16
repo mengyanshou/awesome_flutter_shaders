@@ -1,3 +1,5 @@
+// https://www.shadertoy.com/view/lsBSDm
+#include <../common/common_header.frag>
 // The MIT License
 // Copyright © 2014 Inigo Quilez
 // https://www.youtube.com/c/InigoQuilez
@@ -15,7 +17,6 @@
 // given a point p and a quad defined by four points {a,b,c,d}, return the bilinear
 // coordinates of p in the quad. Will not be in the range [0..1]^2 if the point is
 // outside the quad.
-#include <../common/common_header.frag>
 uniform sampler2D iChannel0;
 float cross2d(in vec2 a, in vec2 b) {
     return a.x * b.y - a.y * b.x;

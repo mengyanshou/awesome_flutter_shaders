@@ -16,14 +16,15 @@ const float vol = 8.0;    //brightness of volume
 const float volDen = 0.7; //opacity of volume, between 0 and 1
 
 //Random function and hash from https://www.shadertoy.com/view/WttXWX
-uint lowbias32(uint x) {
-    x ^= x >> 16;
-    x *= 0x7feb352dU;
-    x ^= x >> 15;
-    x *= 0x846ca68bU;
-    x ^= x >> 16;
-    return x;
+float lowbias32(float x) {
+    float a = 12.9898;
+    float b = 78.233;
+    float c = 43758.5453;
+    float dt = dot(vec2(x, x+1.0), vec2(a, b));
+    float sn = mod(dt, 3.14);
+    return fract(sin(sn) * c);
 }
+
 
 float rand(vec3 position) {
     uvec3 V = uvec3(position);

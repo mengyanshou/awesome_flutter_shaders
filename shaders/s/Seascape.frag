@@ -1,9 +1,10 @@
+// https://www.shadertoy.com/view/Ms2SD1
+#include <../common/common_header.frag>
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
  * Contact: tdmaav@gmail.com
  */
-#include <../common/common_header.frag>
 const int NUM_STEPS = 8;
 const float PI = 3.141592;
 const float EPSILON = 1e-3;

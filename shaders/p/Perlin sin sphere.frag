@@ -1,3 +1,5 @@
+// https://www.shadertoy.com/view/M333RH
+#include <../common/common_header.frag>
 // Perlin sin sphere
 // By Paulo Falcao
 //
@@ -7,7 +9,6 @@
 //
 // Generated shader revised for shadertoy
 //
-#include <../common/common_header.frag>
 // simplifying 5567 chars "Perlin sin sphere" by PauloFalcao. https://shadertoy.com/view/M333RH
 
 // Perlin sin sphere   By Paulo Falcao

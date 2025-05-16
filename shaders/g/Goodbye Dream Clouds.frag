@@ -1,4 +1,5 @@
-
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/lfVSRK
 //
 // Clouds shader from Goodbye Dream, released at Outline 2024
 // by teadrinker 2024, License: CC BY-NC-SA
@@ -6,7 +7,7 @@
 //   https://youtu.be/ZXXnBtW2NcI
 //   https://demozoo.org/productions/345947/
 //
-#include <../common/common_header.frag>
+
 uniform sampler2D iChannel0;
 
 #define _BaseSize         0.18
@@ -46,30 +47,59 @@ uniform sampler2D iChannel0;
 
 #define Loop_Max 159
 
-float hashu(uvec2 q) {   // cc0 https://www.shadertoy.com/view/MdcfDj
-    q *= uvec2(1597334677U, 3812015801U);
-    uint n = (q.x ^ q.y) * 1597334677U;
-    return float(n) * (1.0 / float(0xffffffffU));
+float hashu(vec2 q) {
+    // 实现等效的哈希函数但不使用位操作
+    return fract(sin(dot(q, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 float hash(vec2 n) {
     return hashu(uvec2(n * 9e5));
 }
+// ...existing code...
 
-float noise(vec3 c) {
-    // This the shadertoy built-in "RGBA Noise Medium" / 3D noise by iq
-    //
-    // The actual demo uses a larger precalculated noise texture,
-    // based on the triple round hash function found here: 
-    // https://nullprogram.com/blog/2018/07/31/
-
-    vec3 p = floor(c);
-    vec3 f = fract(c);
-    f = f * f * (3.0 - 2.0 * f);
-    vec2 uv = (p.xy + vec2(37.0, 239.0) * p.z) + f.xy;
-    vec2 rg = textureLod(iChannel0, (uv + 0.5) / 256.0, 0.0).yx;
-    return mix(rg.x, rg.y, f.z) * 2.0 - 1.0;
+// 简单的哈希函数
+vec4 hash4(vec3 p) {
+    p = vec3(dot(p,vec3(127.1,311.7, 74.7)),
+             dot(p,vec3(269.5,183.3,246.1)),
+             dot(p,vec3(113.5,271.9,124.6)));
+    return -1.0 + 2.0 * fract(sin(p.xyzx + 20.0) * 43758.5453123);
 }
+
+float noise(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    
+    // 四次多项式平滑
+    f = f * f * (3.0 - 2.0 * f);
+    
+    // 8个顶点的贡献
+    return mix(
+        mix(mix(dot(hash4(i + vec3(0,0,0)).xyz, f - vec3(0,0,0)),
+                dot(hash4(i + vec3(1,0,0)).xyz, f - vec3(1,0,0)), f.x),
+            mix(dot(hash4(i + vec3(0,1,0)).xyz, f - vec3(0,1,0)),
+                dot(hash4(i + vec3(1,1,0)).xyz, f - vec3(1,1,0)), f.x), f.y),
+        mix(mix(dot(hash4(i + vec3(0,0,1)).xyz, f - vec3(0,0,1)),
+                dot(hash4(i + vec3(1,0,1)).xyz, f - vec3(1,0,1)), f.x),
+            mix(dot(hash4(i + vec3(0,1,1)).xyz, f - vec3(0,1,1)),
+                dot(hash4(i + vec3(1,1,1)).xyz, f - vec3(1,1,1)), f.x), f.y), f.z)
+        * 0.5 + 0.5;
+}
+
+// ...existing code...
+// float noise(vec3 c) {
+//     // This the shadertoy built-in "RGBA Noise Medium" / 3D noise by iq
+//     //
+//     // The actual demo uses a larger precalculated noise texture,
+//     // based on the triple round hash function found here: 
+//     // https://nullprogram.com/blog/2018/07/31/
+
+//     vec3 p = floor(c);
+//     vec3 f = fract(c);
+//     f = f * f * (3.0 - 2.0 * f);
+//     vec2 uv = (p.xy + vec2(37.0, 239.0) * p.z) + f.xy;
+//     vec2 rg = textureLod(iChannel0, (uv + 0.5) / 256.0, 0.0).yx;
+//     return mix(rg.x, rg.y, f.z) * 2.0 - 1.0;
+// }
 
 float cloudDensity(vec3 p, float len) {
     float linearField = (p.y * _BaseGradient + _BaseOffset) * _BaseWeight;

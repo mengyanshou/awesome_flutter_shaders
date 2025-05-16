@@ -1,3 +1,5 @@
+// https://www.shadertoy.com/view/lsl3RH
+#include <../common/common_header.frag>
 // Copyright Inigo Quilez, 2013 - https://iquilezles.org/
 // I am the sole copyright owner of this Work.
 // You cannot host, display, distribute or share this Work neither
@@ -16,12 +18,7 @@
 // https://iquilezles.org/articles/warp
 
 //====================================================================
-#include <flutter/runtime_effect.glsl>
 
-uniform vec2 uSize;
-uniform float iTime;
-vec2 iResolution;
-out vec4 fragColor;
 const mat2 m = mat2(0.80, 0.60, -0.60, 0.80);
 
 float noise(in vec2 p) {
@@ -82,9 +79,7 @@ float func(vec2 q, out vec4 ron) {
     return mix(f, f * f * f * 3.5, f * abs(n.x));
 }
 
-void main() {
-    iResolution = uSize;
-    vec2 fragCoord = FlutterFragCoord();
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 p = (2.0 * fragCoord - iResolution.xy) / iResolution.y;
     float e = 2.0 / iResolution.y;
 
@@ -116,3 +111,5 @@ void main() {
 
     fragColor = vec4(col, 1.0);
 }
+
+#include <../common/main_shadertoy.frag>

@@ -1,3 +1,5 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/Mld3Rn
 /*
 	Perspex Web Lattice
 	-------------------
@@ -34,7 +36,6 @@
     https://www.shadertoy.com/view/ltsXRM
 
 */
-#include <../common/common_header.frag>
 
 uniform sampler2D iChannel0;
 #define FAR 2.

@@ -1,3 +1,5 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/tt2XzG
 // Copyright Inigo Quilez, 2019 - https://iquilezles.org/
 // I am the sole copyright owner of this Work.
 // You cannot host, display, distribute or share this Work neither
@@ -26,7 +28,7 @@
 //
 // Video capture here: https://www.youtube.com/watch?v=ydTVmDBSGYQ
 //
-#include <../common/common_header.frag>
+
 uniform sampler2D iChannel0;
 
 #if HW_PERFORMANCE==0
@@ -183,7 +185,7 @@ vec4 map(in vec3 p, float time) {
     return d;
 }
 
-#define ZERO min(iFrame,0)
+#define ZERO int(min(iFrame,0))
 
 // https://iquilezles.org/articles/normalsSDF
 vec3 calcNormal(in vec3 pos, in float time) {

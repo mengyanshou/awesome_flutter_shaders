@@ -1,9 +1,11 @@
+// https://www.shadertoy.com/view/MslGRn
+#include <../common/common_header.frag>
 ////////////////////////////////////////////////////////////////////////////////////////
 // INFO:
 // - use the mouse to navigate (x is rotation, y is zoom)
 // - play with the defines below to change the visuals
 ////////////////////////////////////////////////////////////////////////////////////////
-#include <../common/common_header.frag>
+
 // the more slices the slower
 #define SLICES 			50.0
 // start amplitude for the noise
@@ -144,4 +146,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     fragColor = col;
 }
+
 #include <../common/main_shadertoy.frag>

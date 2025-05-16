@@ -1,9 +1,5 @@
 // https://www.shadertoy.com/view/3sySRK
-#include <flutter/runtime_effect.glsl>
-uniform vec2 uSize;
-uniform float iTime;
-vec2 iResolution;
-out vec4 fragColor;
+#include <../common/common_header.frag>
 float opSmoothUnion(float d1, float d2, float k) {
     float h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0);
     return mix(d2, d1, h) - k * h * (1.0 - h);
@@ -32,9 +28,7 @@ vec3 calcNormal(in vec3 p) {
         k.xxx * map(p + k.xxx * h));
 }
 
-void main(void) {
-    iResolution = uSize;
-    vec2 fragCoord = FlutterFragCoord();
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
 
     // screen size is 6m x 6m
@@ -70,3 +64,5 @@ void main(void) {
 	"model": "person"
 }
 */
+
+#include <../common/main_shadertoy.frag>

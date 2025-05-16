@@ -1,3 +1,4 @@
+// https://www.shadertoy.com/view/ftSSRR
 #include <../common/common_header.frag>
 float colormap_red(float x) {
     if(x < 0.0) {

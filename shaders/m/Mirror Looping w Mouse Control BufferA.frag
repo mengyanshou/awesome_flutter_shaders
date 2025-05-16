@@ -3,7 +3,8 @@ uniform sampler2D iChannel0;
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 click_pos = iMouse.zw;
     vec2 mouse_pos = iMouse.xy;
-    vec4 state = texelFetch(iChannel0, ivec2(0, 0), 0);
+    vec2 mouseUV = vec2(0.0, 0.0);  // 采样坐标点
+    vec4 state = texture(iChannel0, mouseUV);
 
     if(distance(click_pos, mouse_pos) > 5.) {
         //Update pitch and yaw based on last mouse

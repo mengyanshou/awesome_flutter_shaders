@@ -19,7 +19,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec3 col = texture(iChannel0, uv).rgb;
     if(doBloom == 1) {
-        vec3 bloom = textureLod(iChannel0, uv, 2.0).rgb;
+        // 用texture替换textureLod，使用高斯模糊来近似mipmap效果
+        float lod = 2.0;
+        float offset = 0.005 * lod;
+        vec3 bloom = vec3(0.0);
+        
+        // 9点采样实现简单模糊
+        bloom += texture(iChannel0, uv).rgb * 0.25;
+        bloom += texture(iChannel0, uv + vec2(offset, 0.0)).rgb * 0.125;
+        bloom += texture(iChannel0, uv + vec2(-offset, 0.0)).rgb * 0.125;
+        bloom += texture(iChannel0, uv + vec2(0.0, offset)).rgb * 0.125;
+        bloom += texture(iChannel0, uv + vec2(0.0, -offset)).rgb * 0.125;
+        bloom += texture(iChannel0, uv + vec2(offset, offset)).rgb * 0.0625;
+        bloom += texture(iChannel0, uv + vec2(-offset, offset)).rgb * 0.0625;
+        bloom += texture(iChannel0, uv + vec2(offset, -offset)).rgb * 0.0625;
+        bloom += texture(iChannel0, uv + vec2(-offset, -offset)).rgb * 0.0625;
+        
         bloom = pow(bloom, vec3(3.0));
         col += bloom;
     }

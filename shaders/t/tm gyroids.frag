@@ -1,5 +1,6 @@
-
 #include <../common/common_header.frag>
+// https://www.shadertoy.com/view/l3fSDr
+
 // based on https://iquilezles.org/articles/palettes/
 vec3 pal(float t) {
     vec3 b = vec3(.45);

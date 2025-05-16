@@ -1,6 +1,7 @@
+#include <../common/common_header.frag>
+// https://www.shadertoy.com/view/4fdSzf
 // https://www.shadertoy.com/view/XlXGzB - sky
 // https://www.shadertoy.com/view/MdXyzX - water
-#include <../common/common_header.frag>
 
 #if HW_PERFORMANCE == 0
 #define AA 1

@@ -21,27 +21,27 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(1);
 }
 
-void mainVR(out vec4 fragColor, in vec2 fragCoord, in vec3 ro, in vec3 rd) {
-    ro += PORTAL_POS + START_OFFSET;
+// void mainVR(out vec4 fragColor, in vec2 fragCoord, in vec3 ro, in vec3 rd) {
+//     ro += PORTAL_POS + START_OFFSET;
 
-    bool inside = false;
-    vec3 oldRo = ro;
+//     bool inside = false;
+//     vec3 oldRo = ro;
 
-    if(iFrame > 0) {
-        vec4 t = texelFetch(iChannel0, ivec2(0), 0);
-        oldRo = t.xyz;
-        inside = t.w > .5;
+//     if(iFrame > 0) {
+//         vec4 t = texelFetch(iChannel0, ivec2(0), 0);
+//         oldRo = t.xyz;
+//         inside = t.w > .5;
 
-        vec3 rd = normalize(ro - oldRo);
-        float portalDist = iPlane(oldRo, rd, vec4(0, 0, 1, -dot(PORTAL_POS, vec3(0, 0, 1))));
-        if(portalDist > 0. && portalDist <= length(ro - oldRo)) {
-            vec3 p = oldRo + rd * portalDist;
-            if(all(lessThan(abs(p.xy - PORTAL_POS.xy), PORTAL_SIZE.xy))) {
-                inside = !inside;
-            }
-        }
-    }
+//         vec3 rd = normalize(ro - oldRo);
+//         float portalDist = iPlane(oldRo, rd, vec4(0, 0, 1, -dot(PORTAL_POS, vec3(0, 0, 1))));
+//         if(portalDist > 0. && portalDist <= length(ro - oldRo)) {
+//             vec3 p = oldRo + rd * portalDist;
+//             if(all(lessThan(abs(p.xy - PORTAL_POS.xy), PORTAL_SIZE.xy))) {
+//                 inside = !inside;
+//             }
+//         }
+//     }
 
-    fragColor = vec4(ro, inside ? 1. : 0.);
-}
+//     fragColor = vec4(ro, inside ? 1. : 0.);
+// }
 #include <../common/main_shadertoy.frag>

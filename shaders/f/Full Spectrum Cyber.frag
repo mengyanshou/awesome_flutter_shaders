@@ -1,4 +1,5 @@
 #include <../common/common_header.frag>
+// https://www.shadertoy.com/view/XcXXzS
 int hexid;
 vec3 hpos, point, pt;
 float tcol, bcol, hitbol, hexpos, fparam = 0.;

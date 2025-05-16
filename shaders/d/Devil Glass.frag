@@ -1,13 +1,9 @@
-#include <flutter/runtime_effect.glsl>
-
-uniform vec2 uSize;
-uniform float iTime;
-vec2 iResolution;
-out vec4 fragColor;
+// https://www.shadertoy.com/view/lcV3Rz
+#include <../common/common_header.frag>
 // alternative version of my shader from Revision24 showdown final
 // original version:
 // https://livecode.demozoo.org/event/2024_03_29_shader_showdown_revision_2024.html
-// https://www.shadertoy.com/view/lcV3Rz
+
 mat2 rot(float a) {
     float c = cos(a), s = sin(a);
     return mat2(c, -s, s, c);
@@ -69,8 +65,8 @@ vec3 getResult(vec2 fragCoord) {
     return color;
 }
 
-void main() {
-    iResolution = uSize;
-    vec2 fragCoord = FlutterFragCoord();
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(getResult(fragCoord), 1.0);
 }
+
+#include <../common/main_shadertoy.frag>

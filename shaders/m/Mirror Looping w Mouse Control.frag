@@ -186,7 +186,12 @@ vec3 get_normal(in vec3 pos) {
 }
 
 vec3 background(vec3 dir) {
-    vec3 col = texture(iChannel0, dir).rgb;
+    // 将 3D 方向向量转换为球面映射坐标
+    vec2 uv = vec2(
+        0.5 + atan(dir.z, dir.x) / (2.0 * PI),
+        0.5 + asin(dir.y) / PI
+    );
+    vec3 col = texture(iChannel0, uv).rgb;
     col = pow(col, vec3(2.2));
     float origLuma = dot(col, vec3(0.2126, 0.7152, 0.0722)) * 0.7;
     return 2.5 * col / (1.0 - origLuma);
@@ -233,7 +238,8 @@ vec3 drawRay(vec3 pos, vec3 rd) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     init();
     vec2 uv = (fragCoord.xy - iResolution.xy * 0.5) / iResolution.y;
-    vec4 state = texelFetch(iChannel2, ivec2(0, 0), 0);
+    vec2 mouseUV = vec2(0.0, 0.0);  // 采样坐标点
+    vec4 state = texture(iChannel2, mouseUV);
     vec2 move = state.xy * .01; // vec2(.65, 0);
 
 #ifdef INSIDE_VIEW

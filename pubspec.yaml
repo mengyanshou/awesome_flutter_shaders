@@ -37,164 +37,73 @@ flutter:
 
   shaders:
     # a
-    #! compile error
-    # - shaders/Aqua in glass.frag
-    # - shaders/Aqua in glass BufferA.frag
+    - shaders/a/Angel.frag
+
     # b
     # - shaders/Butterfly Fractal.frag
     - shaders/b/Black Hole ODE Geodesic Solver.frag
     - shaders/b/black holes and crosses.frag
     - shaders/b/Blue.frag
-    #! compile error
-    # - shaders/Branches.frag
-    # - shaders/Branches BufferA.frag
-    # - shaders/Branches BufferB.frag
-    # - shaders/Branches BufferC.frag
-    # - shaders/Branches BufferD.frag
-    #! compile error
-    # - shaders/Ben Day Dots Camera.frag
-    # - shaders/Ben Day Dots Camera BufferA.frag
-    # - shaders/Ben Day Dots Camera BufferB.frag
-    # - shaders/Ben Day Dots Camera Common.frag
     - shaders/b/Broken_Time_Portal.frag
     - shaders/b/Broken.frag
-    # - shaders/Buoy.frag
     - shaders/b/Bubbles.frag
     - shaders/b/Byt3-daily-013.frag
     #! Only simple shader sampling is supported
-    # - shaders/Black Hole Raymarcher 3.frag
-    # - shaders/Black Hole Raymarcher 3 BufferA.frag
-    # - shaders/Black Hole Raymarcher 3 BufferB.frag
-    # - shaders/Black Hole Raymarcher 3 BufferC.frag
+    #! when fix grammar error, show black screen
+    - shaders/b/Black Hole Raymarcher 3.frag
+    - shaders/b/Black Hole Raymarcher 3 BufferA.frag
+    - shaders/b/Black Hole Raymarcher 3 BufferB.frag
+    - shaders/b/Black Hole Raymarcher 3 BufferC.frag
+
     # c
     - shaders/c/CineShader Lava.frag
     - shaders/c/Clouds-2D.frag
     - shaders/c/cubular.frag
-    - shaders/c/colorful Kaleidoscope 7.frag
-    # uvec3 not supported
-    # - shaders/Conways ancestors.frag
-    # - shaders/Conways ancestors BufferA.frag
+    - shaders/c/cobweb.frag
+    - shaders/c/colorful cosmos spiral.frag
+    - shaders/c/Cube lines.frag
     #! Only simple shader sampling is supported
-    # - shaders/colorful cosmos spiral.frag
-    #! syntax error
-    # - shaders/colorful vision.frag
-    #! syntax error
-    # - shaders/cube in cube2.frag
-    #! compile error: Only simple shader sampling is supported
-    # - shaders/Clouds.frag
-    #! runtime error
-    # - shaders/Cube lines.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Canyon.frag
-    # #! Only simple shader sampling is supported
-    # - shaders/Chrome Dino game.frag
-    # - shaders/Chrome Dino game BufferA.frag
+    - shaders/c/Canyon.frag
+
     # d
     - shaders/d/DeathStar.frag
     - shaders/d/Devil Glass.frag
-    - shaders/d/Discoteq 2.frag
     - shaders/d/Dive to Cloud.frag
-    # - shaders/d/Delaunay SDF To Mesh.frag
-    # - shaders/d/Delaunay SDF To Mesh BufferA.frag
-    # - shaders/d/Delaunay SDF To Mesh BufferB.frag
-    # - shaders/d/Delaunay SDF To Mesh BufferC.frag
-    # - shaders/d/dodecahedron͏ BufferA.frag
-    # - shaders/d/dodecahedron͏.frag
-    #! compile error
-    # - shaders/d/Dolphin.frag
-    #! runtime error
-    # - shaders/d/drifting.frag
+    - shaders/d/DULL SKULL.frag
+    - shaders/d/divergence-free flow curly noise.frag
+    - shaders/d/drifting.frag
+
     # e
     - shaders/e/electron.frag
     - shaders/e/ED-209.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Enscape Cube.frag
-    # - shaders/Enscape Cube BufferA.frag
-    # - shaders/Enscape Cube BufferB.frag
-    # - shaders/Enscape Cube BufferC.frag
-    # Only simple shader sampling is supported.
-    # - shaders/Elevated BufferA.frag
-    # - shaders/Elevated.frag
-    - shaders/e/expansive reaction-diffusion BufferA.frag
-    - shaders/e/expansive reaction-diffusion BufferB.frag
-    - shaders/e/expansive reaction-diffusion BufferC.frag
-    - shaders/e/expansive reaction-diffusion BufferD.frag
-    - shaders/e/expansive reaction-diffusion.frag
-      # f
+
+    # f
     - shaders/f/fire.frag
     - shaders/f/Flame.frag
-    - shaders/f/Fluid solver.frag
-    - shaders/f/Fluid solver BufferA.frag
     - shaders/f/fractal pyramid.frag
     - shaders/f/FWA logo.frag
-    #! compile bug: error: '=' :  cannot convert from ' const float' to ' temp 4-component vector of float'
-    # - shaders/Fire Fire Common.frag
-    # - shaders/Fire Fire.frag
-    # - shaders/Fire Fire BufferA.frag
-    # - shaders/Fire Fire BufferB.frag
-    # - shaders/Fire Fire BufferC.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Fork Fluidy flu vec2 725.frag
-    # - shaders/Fork Fluidy flu vec2 725 BufferA.frag
-    # - shaders/Fork Fluidy flu vec2 725 BufferB.frag
-    # - shaders/Fork Fluidy flu vec2 725 BufferC.frag
-    # - shaders/Fork Fluidy flu vec2 725 BufferD.frag
-    # - shaders/Fork Fluidy flu vec2 725 Common.frag
-    #!runtime error
-    # - shaders/Fork mandelbulb rogo1965 883.frag
-    #! compile error
-    # - shaders/Filmic mandelbulb animation.frag
-    # - shaders/Filmic mandelbulb animation BufferA.frag
-    # - shaders/Filmic mandelbulb animation BufferB.frag
-    # - shaders/Filmic mandelbulb animation BufferC.frag
-    #! other problem
-    # - shaders/fractal box in fractal world.frag
-    #! program is too large
-    # - shaders/Full Spectrum Cyber.frag
-    #! Only simple shader sampling is supported.
-    # - shaders/furball.frag
+    - shaders/f/Fire_3D.frag
+    - shaders/f/Full Spectrum Cyber.frag
+
     # g
     - shaders/g/Galaxy of Universes.frag
     - shaders/g/Galvanize.frag
     - shaders/g/GLSL ray tracing test.frag
-    - shaders/g/grayscale.frag
-    #! compile error
-    # - shaders/Great Red Spot - Faux Fluid Sim.frag
-    # - shaders/Great Red Spot - Faux Fluid Sim BufferA.frag
-    #! compile error
-    # - shaders/Goodbye Dream Clouds.frag
-    #! runtime error: for (float Pi = 6.283185482025146484375, d = 0.0; d < Pi; d += (Pi ons))
-    # - shaders/Gaussian Blur Simple and Fast.frag
+    - shaders/g/Ghosts.frag
+    - shaders/g/Gradient Flow.frag
+    - shaders/g/Goodbye Dream Clouds.frag
+
     # h
-    # - shaders/Hex Glitch.frag
-    # - shaders/Hex Glitch BufferA.frag
-    # - shaders/Hex Glitch BufferB.frag
-    # - shaders/Hex Glitch Common.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Hell.frag
+    - shaders/h/HOWTO.frag
+    - shaders/h/Hell.frag
+
     # i
     - shaders/i/Input Time.frag
     - shaders/i/Inverse Bilinear.frag
-    #! runtime error
-    # - shaders/Industrial Complex Crossview.frag
-    # - shaders/Interactive Ripples.frag
-    #! compile error
-    # - shaders/Interstellar video - Black hole.frag
-    #! uvec3 bug
-    # - shaders/inercia intended one.frag
-    # - shaders/Inside the mandelbulb II BufferA.frag
-    # - shaders/Inside the mandelbulb II.frag
-    # j
-    #! Only sampler and position arguments are supported in texture()
-    # - shaders/Jupiter and Io.frag
-    # - shaders/Jupiter and Io BufferA.frag
-    # - shaders/Jupiter and Io BufferB.frag
-    # l
-    #! compile error
-    # - shaders/Liquid Toy.frag
-    # - shaders/Liquid Toy BufferA.frag
-    #! compile error
-    # - shaders/Looping Polyhedron Mirrors.frag
+    # ! just black screen
+    # - shaders/i/Inside the mandelbulb II BufferA.frag
+    # - shaders/i/Inside the mandelbulb II.frag
+
     # m
     - shaders/m/Main Sequence Star.frag
     - shaders/m/mandelbulb.frag
@@ -204,102 +113,50 @@ flutter:
     - shaders/m/Mario World.frag
     - shaders/m/Menger Sponge.frag
     - shaders/m/MONSTER.frag
-    #! program is too large
-    # - shaders/M-O from Wall-E.frag
-    #! compile error
-    # - shaders/Mirror Looping w Mouse Control.frag
-    # - shaders/Mirror Looping w Mouse Control BufferA.frag
-    #! compile error
-    # - shaders/Multiscale MIP Fluid.frag
-    # - shaders/Multiscale MIP Fluid BufferA.frag
-    # - shaders/Multiscale MIP Fluid BufferB.frag
-    # - shaders/Multiscale MIP Fluid BufferC.frag
-    # - shaders/Multiscale MIP Fluid BufferD.frag
-    # - shaders/Multiscale MIP Fluid Common.frag
-    #! compile error
-    # - shaders/magic circle4.frag
-    # - shaders/Mystify Screensaver.frag
-    # - shaders/Mystify Screensaver Buffer A.frag
+    - shaders/m/M-O from Wall-E.frag
+    - shaders/m/Mirror Looping w Mouse Control.frag
+    - shaders/m/Mirror Looping w Mouse Control BufferA.frag
+
     # n
     - shaders/n/Noise Lab 3D.frag
     - shaders/n/NotSoGreeeen - Chromatic Hole.frag
     #! compile error
     # - shaders/Nebula Explained.frag
     # - shaders/Nebula Explained BufferA.frag
-    #! Only simple shader sampling is supported
-    # - shaders/notebook drawings.frag
+
     # o
     - shaders/o/Octagrams.frag
-    #! runtime error: for loop
-    # - shaders/Origami.frag
+    - shaders/o/Origami.frag
+
     # p
     - shaders/p/page_curl.frag
+    - shaders/p/Page Curl Effect on Ball.frag
     - shaders/p/Palace of Mind.frag
     - shaders/p/Phantom Star for CineShader.frag
     - shaders/p/Pinku.frag
     - shaders/p/Protoplanet.frag
     - shaders/p/Protoplanet BufferA.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Pacman Game.frag
-    # - shaders/Pacman Game BufferA.frag
-    # - shaders/Pacman Game BufferB.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Paroi Jaune Common.frag
-    # - shaders/Paroi Jaune.frag
-    # - shaders/Paroi Jaune BufferA.frag
-    # - shaders/Paroi Jaune BufferB.frag
-    # - shaders/Paroi Jaune BufferC.frag
-    #! compile error
-    # - shaders/Physically Based Shading.frag
-    # - shaders/Physically Based Shading BufferA.frag
-    #! compile error
-    # - shaders/Physics engine playground.frag
-    # - shaders/Physics engine playground BufferA.frag
-    # - shaders/Physics engine playground BufferB.frag
-    # - shaders/Physics engine playground BufferC.frag
-    # - shaders/Physics engine playground BufferD.frag
-    #! compile error: Only simple shader sampling is supported
-    # - shaders/Plasma Globe.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Portal - iOS AR.frag
-    # - shaders/Portal - iOS AR BufferA.frag
-    #!  Only simple shader sampling is supported
-    # - shaders/Pentagonal Conway's game.frag
-    # - shaders/Pentagonal Conway's game BufferA.frag
-    #! syntax error
-    # - shaders/Pentagrama.frag
-    #! runtime error
-    # - shaders/Perspex Web Lattice.frag
-    #! runtime error: too large
-    # - shaders/Perlin sin sphere.frag
-    #! runtime error
-    # - shaders/posterize antialiased.frag
-    #! runtime error: too large
-    # - shaders/Protean clouds.frag
-    # - shaders/Pudi.frag
-    # - shaders/Pudi Common.frag
+    - shaders/p/Perlin sin sphere.frag
+    - shaders/p/Protean clouds.frag
+    - shaders/p/Perspex Web Lattice.frag
+    - shaders/p/Plasma Globe.frag
+    - shaders/p/Portal - iOS AR.frag
+    - shaders/p/Portal - iOS AR BufferA.frag
+
     # q
     - shaders/q/Quadratic Tetrahedron.frag
-      # r
+
+    # r
     - shaders/r/Ray Marching.frag
-    - shaders/r/Ray Marching Part 2.frag
-    - shaders/r/Ray Marching Part 3.frag
-    - shaders/r/Ray Marching Part 4.frag
     - shaders/r/Raymarching Basic.frag
-    - shaders/r/Refraction post proc.frag
-    - shaders/r/Refraction post proc BufferA.frag
-    - shaders/r/Refraction post proc BufferB.frag
     - shaders/r/Rainier mood.frag
     - shaders/r/rotate and points circle.frag
-    #! compile error
-    # - shaders/Refractive Polyhedron.frag
-    # - shaders/Refractive Polyhedron BufferA.frag
-    #! runtime error: program is too large
-    # - shaders/Ray Marching Part 6.frag
+    - shaders/r/Rainforest.frag
+    - shaders/r/Rainforest BufferA.frag
+
     # s
     - shaders/s/Shock_Wave_with_Saturation.frag
     - shaders/s/Seascape.frag
-    - shaders/s/sincos_3d.frag
     - shaders/s/Shader Art Coding Introduction.frag
     - shaders/s/Simple super spherical shading.frag
     - shaders/s/SoundEclipse rpm.frag
@@ -308,61 +165,32 @@ flutter:
     - shaders/s/Starry planes.frag
     - shaders/s/Starleidoscope.frag
     - shaders/s/Studiogusto.com Gooey Cover.frag
-    # - shaders/Simple Water Ripple Effect BufferA.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Streamlines Youtube Tutorial.frag
-    # - shaders/Streamlines Youtube Tutorial BufferA.frag
-    # - shaders/Streamlines Youtube Tutorial BufferB.frag
-    #! runtime error
-    # - shaders/Something I Saw at a Rave.frag
-    # - shaders/Something I Saw at a Rave BufferA.frag
-    #! Only sampler and position arguments are supported in texture() calls
-    # - shaders/Space Curvature.frag
-    # ! runtime error
-    # - shaders/Space Orb BufferA.frag
-    # - shaders/Space Orb.frag
-    #! runtime error
-    # - shaders/Sphere Gears.frag
-    #! for loop not supported
-    # - shaders/sincos_3d.frag
+    - shaders/s/Singularity.frag
+    - shaders/s/Sphere Gears.frag
+
     # t
-    #! compile error
-    # - shaders/TIE Fighters.frag
-    # Only simple shader sampling is supported
-    # - shaders/The Universe Within.frag
-    #! syntax error
-    #! runtime error
-    # - shaders/The Drive Home.frag
-    #! Only simple shader sampling is supported
-    # - shaders/The sun, the sky and the clouds.frag
-    #! compile error: syntax error, unexpected IDENTIFIER
-    # - shaders/Tiny Planet Clouds.frag
-    #! runtime error for loop bug
-    # - shaders/teramorfing eye.frag
-    #! loop bug
-    # - shaders/tm gyroids.frag
+    - shaders/t/Traced Minkowski Tube.frag
+    - shaders/t/Tunnel Cable.frag
+    - shaders/t/Tunnel Cylinders.frag
+    - shaders/t/TIE Fighters.frag
+    - shaders/t/tm gyroids.frag
+
     # u
     - shaders/u/UI noise halo.frag
-      # v
-    #! runtime error: for loop mabye can try to fix
-    # - shaders/Very fast procedural ocean.frag
-    #! runtime error
-    # - shaders/Varying metric voronoi POC 2.frag
-    #! compile error: Only simple shader sampling is supported
-    # - shaders/Volumetric explosion.frag
+    - shaders/u/Undular Substratum.frag
+
+    # v
+    - shaders/v/Very fast procedural ocean.frag
     #! Only simple shader sampling is supported
     # - shaders/Voronoi.frag
-    #! runtime error: for loop
-    # - shaders/Volumetric Mandelbulb.frag
     #! compile error
     # - shaders/Vortex.frag
 
     # w
-    - shaders/w/warp.frag
     - shaders/w/wavyfire.frag
     - shaders/w/Warping procedural 2.frag
-    - shaders/w/Warp Speed 2.frag
-    #! runtime error
-    # - shaders/Where the River Goes.frag
-    #! runtime bug
-    # - shaders/Warped Extruded Skewed Grid.frag
+    - shaders/w/Where the River Goes.frag
+    - shaders/w/Warped Extruded Skewed Grid.frag
+
+    # z
+    - shaders/z/Zippy Zaps.frag

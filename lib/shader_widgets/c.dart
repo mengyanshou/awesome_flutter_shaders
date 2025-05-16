@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 List<Widget> shadersWidget() {
   return [
     shader(ShaderAssets.cubular),
-    shader(ShaderAssets.colorfulKaleidoscope7),
     shader(ShaderAssets.clouds2D),
   ];
 }

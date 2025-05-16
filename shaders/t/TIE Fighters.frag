@@ -234,7 +234,7 @@ Hit map(vec3 p) {
 vec3 calcN(vec3 p, float t) {
     float h = t * .2;
     vec3 n = vec3(0);
-    for(int i = min(iFrame, 0); i < 4; i++) {
+    for(int i = int(min(iFrame, 0)); i < 4; i++) {
         vec3 e = .005773 * (2. * vec3((((i + 3) >> 1) & 1), (i >> 1) & 1, i & 1) - 1.);
         n += e * sdTies(p + e * h).d;
     }
@@ -247,7 +247,7 @@ vec3 calcN(vec3 p, float t) {
 vec3 calcTN(vec3 p, float t) {
     float h = t * 2.;
     vec3 n = vec3(0);
-    for(int i = min(iFrame, 0); i < 4; i++) {
+    for(int i = int(min(iFrame, 0)); i < 4; i++) {
         vec3 e = .005773 * (2. * vec3((((i + 3) >> 1) & 1), (i >> 1) & 1, i & 1) - 1.);
         n += e * sdTerrain(p + e * h).d;
     }
