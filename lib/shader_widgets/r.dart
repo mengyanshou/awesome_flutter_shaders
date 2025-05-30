@@ -5,7 +5,7 @@ import 'package:shader_buffers/shader_buffers.dart';
 
 List<Widget> shadersWidget() {
   return [
-    shader(ShaderAssets.rainierMood, channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.rainierMood, channels: [ShaderAssets.wall], upSideDown: false),
     shader(ShaderAssets.raymarchingBasic),
     shader(ShaderAssets.rotateAndPointsCircle),
   ];

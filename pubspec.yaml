@@ -5,7 +5,8 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
@@ -15,7 +16,9 @@ dependencies:
   image: ^3.0.1
   cupertino_icons: ^1.0.6
   flutter_shaders: ^0.1.2
-
+  get: ^4.7.2
+  flutter_web_plugins:
+    sdk: flutter
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -40,9 +43,8 @@ flutter:
     - shaders/a/Angel.frag
 
     # b
-    # - shaders/Butterfly Fractal.frag
-    - shaders/b/Black Hole ODE Geodesic Solver.frag
-    - shaders/b/black holes and crosses.frag
+    - shaders/b/Black_Hole_ODE_Geodesic_Solver.frag
+    - shaders/b/black_holes_and_crosses.frag
     - shaders/b/Blue.frag
     - shaders/b/Broken_Time_Portal.frag
     - shaders/b/Broken.frag
@@ -50,79 +52,104 @@ flutter:
     - shaders/b/Byt3-daily-013.frag
     #! Only simple shader sampling is supported
     #! when fix grammar error, show black screen
-    - shaders/b/Black Hole Raymarcher 3.frag
-    - shaders/b/Black Hole Raymarcher 3 BufferA.frag
-    - shaders/b/Black Hole Raymarcher 3 BufferB.frag
-    - shaders/b/Black Hole Raymarcher 3 BufferC.frag
+    - shaders/b/Black_Hole_Raymarcher_3.frag
+    - shaders/b/Black_Hole_Raymarcher_3_BufferA.frag
+    - shaders/b/Black_Hole_Raymarcher_3_BufferB.frag
+    - shaders/b/Black_Hole_Raymarcher_3_BufferC.frag
+    - shaders/b/balls_are_rubbing.frag
 
     # c
-    - shaders/c/CineShader Lava.frag
+    - shaders/c/CineShader_Lava.frag
     - shaders/c/Clouds-2D.frag
     - shaders/c/cubular.frag
     - shaders/c/cobweb.frag
-    - shaders/c/colorful cosmos spiral.frag
-    - shaders/c/Cube lines.frag
-    #! Only simple shader sampling is supported
-    - shaders/c/Canyon.frag
+    - shaders/c/colorful_cosmos_spiral.frag
+    - shaders/c/Cube_lines.frag
+    # #! Only simple shader sampling is supported
+    # - shaders/c/Canyon.frag
+    - shaders/c/Colorful_underwater_bubbles_II.frag
+    - shaders/c/color_star_tunnel.frag
+    - shaders/p/Portal_iOS_AR.frag
+    - shaders/c/Checked_Out.frag
+    # Crosswarp transition
+    - shaders/c/Crosswarp_transition.frag
 
     # d
     - shaders/d/DeathStar.frag
-    - shaders/d/Devil Glass.frag
-    - shaders/d/Dive to Cloud.frag
-    - shaders/d/DULL SKULL.frag
-    - shaders/d/divergence-free flow curly noise.frag
+    - shaders/d/Devil_Glass.frag
+    - shaders/d/Dive_to_Cloud.frag
+    - shaders/d/DULL_SKULL.frag
+    - shaders/d/divergence-free_flow_curly_noise.frag
     - shaders/d/drifting.frag
+    - shaders/d/Digital_Brain.frag
 
     # e
     - shaders/e/electron.frag
     - shaders/e/ED-209.frag
+    # Effects playground
+    - shaders/e/Effects_playground.frag
+    # Elevated.frag
+    - shaders/e/Elevated.frag
+    - shaders/e/Elevated_buffera.frag
 
     # f
     - shaders/f/fire.frag
     - shaders/f/Flame.frag
-    - shaders/f/fractal pyramid.frag
-    - shaders/f/FWA logo.frag
+    - shaders/f/fractal_pyramid.frag
+    - shaders/f/FWA_logo.frag
     - shaders/f/Fire_3D.frag
-    - shaders/f/Full Spectrum Cyber.frag
+    - shaders/f/Full_Spectrum_Cyber.frag
+    # Freeze
+    - shaders/f/Freeze.frag
 
     # g
-    - shaders/g/Galaxy of Universes.frag
+    - shaders/g/Galaxy_of_Universes.frag
     - shaders/g/Galvanize.frag
-    - shaders/g/GLSL ray tracing test.frag
+    - shaders/g/GLSL_ray_tracing_test.frag
     - shaders/g/Ghosts.frag
-    - shaders/g/Gradient Flow.frag
-    - shaders/g/Goodbye Dream Clouds.frag
+    - shaders/g/Gradient_Flow.frag
+    - shaders/g/Goodbye_Dream_Clouds.frag
+    - shaders/g/genie.frag
 
     # h
     - shaders/h/HOWTO.frag
     - shaders/h/Hell.frag
+    # Hall of Mirrors
+    - shaders/h/Hall_of_Mirrors.frag
 
     # i
-    - shaders/i/Input Time.frag
-    - shaders/i/Inverse Bilinear.frag
+    - shaders/i/Input_Time.frag
+    - shaders/i/Inverse_Bilinear.frag
     # ! just black screen
-    # - shaders/i/Inside the mandelbulb II BufferA.frag
-    # - shaders/i/Inside the mandelbulb II.frag
+    # - shaders/i/Inside_the_mandelbulb_II_BufferA.frag
+    # - shaders/i/Inside_the_mandelbulb_II.frag
+
+    # l
 
     # m
-    - shaders/m/Main Sequence Star.frag
+    - shaders/m/Main_Sequence_Star.frag
     - shaders/m/mandelbulb.frag
-    - shaders/m/Mandelbulb - derivative.frag
+    - shaders/m/Mandelbulb_derivative.frag
     - shaders/m/Mandelbulb Deconstructed.frag
-    - shaders/m/Mandelbulb 3D Fractal.frag
-    - shaders/m/Mario World.frag
-    - shaders/m/Menger Sponge.frag
+    - shaders/m/Mandelbulb_3D_Fractal.frag
+    - shaders/m/Mario_World.frag
+    - shaders/m/Menger_Sponge.frag
     - shaders/m/MONSTER.frag
-    - shaders/m/M-O from Wall-E.frag
-    - shaders/m/Mirror Looping w Mouse Control.frag
-    - shaders/m/Mirror Looping w Mouse Control BufferA.frag
+    - shaders/m/M-O_from_Wall-E.frag
+    - shaders/m/Mirror_Looping_w_Mouse_Control.frag
+    - shaders/m/Mirror_Looping_w_Mouse_Control_BufferA.frag
+    # MacOS Monterey wallpaper
+    - shaders/m/MacOS_Monterey_wallpaper.frag
+    - shaders/m/MacOS_Monterey_wallpaper_BufferA.frag
+    # macOS Monterey 2
+    - shaders/m/macOS_Monterey_2.frag
+    - shaders/m/MacOS_Monterey_2_BufferA.frag
+    # Monterey wannabe
+    - shaders/m/Monterey_wannabe.frag
 
     # n
-    - shaders/n/Noise Lab 3D.frag
-    - shaders/n/NotSoGreeeen - Chromatic Hole.frag
-    #! compile error
-    # - shaders/Nebula Explained.frag
-    # - shaders/Nebula Explained BufferA.frag
+    - shaders/n/Noise_Lab_3D.frag
+    - shaders/n/NotSoGreeeen_Chromatic Hole.frag
 
     # o
     - shaders/o/Octagrams.frag
@@ -130,67 +157,95 @@ flutter:
 
     # p
     - shaders/p/page_curl.frag
-    - shaders/p/Page Curl Effect on Ball.frag
-    - shaders/p/Palace of Mind.frag
-    - shaders/p/Phantom Star for CineShader.frag
+    - shaders/p/Page_Curl_Effect_on_Ball.frag
+    - shaders/p/Palace_of_Mind.frag
+    - shaders/p/Phantom_Star_for_CineShader.frag
     - shaders/p/Pinku.frag
     - shaders/p/Protoplanet.frag
-    - shaders/p/Protoplanet BufferA.frag
-    - shaders/p/Perlin sin sphere.frag
-    - shaders/p/Protean clouds.frag
-    - shaders/p/Perspex Web Lattice.frag
-    - shaders/p/Plasma Globe.frag
-    - shaders/p/Portal - iOS AR.frag
-    - shaders/p/Portal - iOS AR BufferA.frag
+    - shaders/p/Protoplanet_BufferA.frag
+    - shaders/p/Perlin_sin_sphere.frag
+    - shaders/p/Protean_clouds.frag
+    - shaders/p/Perspex_Web_Lattice.frag
+    - shaders/p/Plasma_Globe.frag
+    - shaders/p/Portal_iOS_AR.frag
+    - shaders/p/Portal_iOS_AR_BufferA.frag
+    # Pulsar Explained
+    - shaders/p/Pulsar_Explained.frag
+    - shaders/p/Plasma.frag
+    # Portal_2_Box_Flip_Rotation
+    - shaders/p/Portal_2_Box_Flip_Rotation.frag
 
     # q
-    - shaders/q/Quadratic Tetrahedron.frag
+    - shaders/q/Quadratic_Tetrahedron.frag
 
     # r
-    - shaders/r/Ray Marching.frag
-    - shaders/r/Raymarching Basic.frag
-    - shaders/r/Rainier mood.frag
-    - shaders/r/rotate and points circle.frag
+    - shaders/r/Ray_Marching.frag
+    - shaders/r/Raymarching_Basic.frag
+    - shaders/r/Rainier_mood.frag
+    - shaders/r/rotate_and_points_circle.frag
     - shaders/r/Rainforest.frag
-    - shaders/r/Rainforest BufferA.frag
+    - shaders/r/Rainforest_BufferA.frag
+    # Red-Blue_Swirl.frag
+    - shaders/r/Red-Blue_Swirl.frag
+    # Reclaim the streets
+    - shaders/r/Reclaim_the_streets.frag
 
     # s
     - shaders/s/Shock_Wave_with_Saturation.frag
     - shaders/s/Seascape.frag
-    - shaders/s/Shader Art Coding Introduction.frag
-    - shaders/s/Simple super spherical shading.frag
-    - shaders/s/SoundEclipse rpm.frag
-    - shaders/s/stars and cosmos 8.frag
-    - shaders/s/star and black hole.frag
-    - shaders/s/Starry planes.frag
+    - shaders/s/Shader_Art_Coding_Introduction.frag
+    - shaders/s/Simple_super_spherical_shading.frag
+    - shaders/s/SoundEclipse_rpm.frag
+    - shaders/s/stars_and_cosmos_8.frag
+    - shaders/s/star_and_black_hole.frag
+    - shaders/s/Starry_planes.frag
     - shaders/s/Starleidoscope.frag
     - shaders/s/Studiogusto.com Gooey Cover.frag
     - shaders/s/Singularity.frag
-    - shaders/s/Sphere Gears.frag
+    - shaders/s/Sphere_Gears.frag
+    - shaders/s/Server_Room.frag
+    # Spreading Frost
+    - shaders/s/Spreading_Frost.frag
+    # Split Prism
+    - shaders/s/Split_Prism.frag
+    # - shaders/s/superResolution.frag
+    # - shaders/s/superResolution buffera.frag
+    # - shaders/s/superResolution bufferb.frag
+    # - shaders/s/superResolution bufferc.frag
+    # - shaders/s/superResolution bufferd.frag
 
     # t
-    - shaders/t/Traced Minkowski Tube.frag
-    - shaders/t/Tunnel Cable.frag
+    - shaders/t/Traced_Minkowski_Tube.frag
+    - shaders/t/Tunnel_Cable.frag
     - shaders/t/Tunnel Cylinders.frag
-    - shaders/t/TIE Fighters.frag
-    - shaders/t/tm gyroids.frag
+    - shaders/t/TIE_Fighters.frag
+    - shaders/t/tm_gyroids.frag
+    # Tissue.frag
+    - shaders/t/Tissue.frag
+    # Transition with image
+    - shaders/t/Transition_with_image.frag
+    # Transition_Burning.frag
+    - shaders/t/Transition_Burning.frag
 
     # u
-    - shaders/u/UI noise halo.frag
-    - shaders/u/Undular Substratum.frag
+    - shaders/u/UI_noise_halo.frag
+    - shaders/u/Undular_Substratum.frag
 
     # v
-    - shaders/v/Very fast procedural ocean.frag
-    #! Only simple shader sampling is supported
-    # - shaders/Voronoi.frag
+    - shaders/v/Very_fast_procedural_ocean.frag
     #! compile error
-    # - shaders/Vortex.frag
+    - shaders/v/Vortex.frag
 
     # w
     - shaders/w/wavyfire.frag
-    - shaders/w/Warping procedural 2.frag
-    - shaders/w/Where the River Goes.frag
-    - shaders/w/Warped Extruded Skewed Grid.frag
+    - shaders/w/Warping_procedural_2.frag
+    - shaders/w/Where_the_River_Goes.frag
+    - shaders/w/Warped_Extruded_Skewed_Grid.frag
+    - shaders/w/Whirl_Explained.frag
+    # Water2D
+    - shaders/w/Water2D.frag
 
     # z
-    - shaders/z/Zippy Zaps.frag
+    - shaders/z/Zippy_Zaps.frag
+    # Zoom_blur_transition
+    - shaders/z/Zoom_blur_transition.frag

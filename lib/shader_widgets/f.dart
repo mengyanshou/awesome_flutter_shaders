@@ -7,5 +7,6 @@ List<Widget> shadersWidget() {
   return [
     shader(ShaderAssets.fractalPyramid),
     shader(ShaderAssets.fwaLogo),
+    shader(ShaderAssets.flame),
   ];
 }

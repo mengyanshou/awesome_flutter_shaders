@@ -1,7 +1,6 @@
 #include <../common/common_header.frag>
-#define NUM_LAYERS 10.
-
 uniform sampler2D iChannel0;
+#define NUM_LAYERS 10.
 mat2 Rot(float a) {
     float c = cos(a), s = sin(a);
     return mat2(c, -s, s, c);

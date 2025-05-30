@@ -34,8 +34,9 @@ List<Widget> shadersWidget() {
     shader(ShaderAssets.studiogustoComGooeyCover),
     shader(ShaderAssets.soundEclipseRpm, channels: [ShaderAssets.blackHoleOdeGeodesicSolver]),
     shader(ShaderAssets.simpleSuperSphericalShading),
-    shader(ShaderAssets.starsAndCosmos8),
-    shader(ShaderAssets.seascape),
+    if (!isAndroid) shader(ShaderAssets.starsAndCosmos8),
+    if (!isAndroid) shader(ShaderAssets.seascape),
     shader(ShaderAssets.shaderArtCodingIntroduction),
+    //
   ];
 }

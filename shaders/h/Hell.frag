@@ -15,7 +15,7 @@
 // definitely work it out.
 
 
-uniform sampler2D iChannel0;
+
 // 伪随机数生成
 float hash(vec3 p) {
     p  = fract(p * .1031);

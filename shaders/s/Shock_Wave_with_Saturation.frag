@@ -1,9 +1,8 @@
 #include <../common/common_header.frag>
+uniform sampler2D iChannel0;
 // https://www.shadertoy.com/view/llj3Dz
 //Use as you will.
 
-
-uniform sampler2D iChannel0;
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {

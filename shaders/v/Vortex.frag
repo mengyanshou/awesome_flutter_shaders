@@ -1,37 +1,71 @@
-/* "Vortex" by @kishimisu (2024) - https://www.shadertoy.com/view/MX33Dr
-      
-   It eventually leads somewhere...
-   
-   [388 → 378 chars by @Xor]
-*/
 #include <../common/common_header.frag>
-#define R mat2(cos(vec4(0,11,33,0)
+// "Vortex Street" by dr2 - 2015
+// License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 
-void mainImage(out vec4 O, vec2 F) {
-    
-    vec3    V             = iResolution, 
-              o           ;
-    float       r         = iTime,
-                  t       = .1, 
-                    e     , 
-                      x   ;
+// Motivated by implementation of van Wijk's IBFV by eiffie (lllGDl) and andregc (4llGWl) 
 
-    for (O *= e; e++ < 40.;
-        
-        o.y += t*t*.09,
-        o.z = mod(o.z + r, .2) - .1,
-        x = t*.06 - r*.2,
-        
-        o.x = fract(
-            o.xy *= R+round((atan(o.y, o.x) - x) / .314) * .314 + x))
-        ).x - .8,
-        
-        t += x = length(o)*.5 - .014,
-        
-        O += (1. + cos(t*.5 + r + vec4(0,1,2,0)))
-           * (.3 + sin(3.*t + r*5.)/4.)
-           / (8. + x*4e2)
-    )
-        o = t * normalize(vec3((F+F-V.xy)*R+r*.15)),V.y));
+const vec4 cHashA4 = vec4 (0., 1., 57., 58.);
+const vec3 cHashA3 = vec3 (1., 57., 113.);
+const float cHashM = 43758.54;
+
+vec4 Hashv4f (float p)
+{
+  return fract (sin (p + cHashA4) * cHashM);
 }
+
+float Noisefv2 (vec2 p)
+{
+  vec2 i = floor (p);
+  vec2 f = fract (p);
+  f = f * f * (3. - 2. * f);
+  vec4 t = Hashv4f (dot (i, cHashA3.xy));
+  return mix (mix (t.x, t.y, f.x), mix (t.z, t.w, f.x), f.y);
+}
+
+float Fbm2 (vec2 p)
+{
+  float s = 0.;
+  float a = 1.;
+  for (int i = 0; i < 6; i ++) {
+    s += a * Noisefv2 (p);
+    a *= 0.5;
+    p *= 2.;
+  }
+  return s;
+}
+
+float tCur;
+
+vec2 VortF (vec2 q, vec2 c)
+{
+  vec2 d = q - c;
+  return 0.25 * vec2 (d.y, - d.x) / (dot (d, d) + 0.05);
+}
+
+vec2 FlowField (vec2 q)
+{
+  vec2 vr, c;
+  float dir = 1.;
+  c = vec2 (mod (tCur, 10.) - 20., 0.6 * dir);
+  vr = vec2 (0.);
+  for (int k = 0; k < 30; k ++) {
+    vr += dir * VortF (4. * q, c);
+    c = vec2 (c.x + 1., - c.y);
+    dir = - dir;
+  }
+  return vr;
+}
+
+void mainImage (out vec4 fragColor, in vec2 fragCoord)
+{
+  vec2 uv = gl_FragCoord.xy / iResolution.xy - 0.5;
+  uv.x *= iResolution.x / iResolution.y;
+  tCur = iTime;
+  vec2 p = uv;
+  for (int i = 0; i < 10; i ++) p -= FlowField (p) * 0.03;
+  vec3 col = Fbm2 (5. * p + vec2 (-0.1 * tCur, 0.)) *
+     vec3 (0.5, 0.5, 1.);
+  fragColor = vec4 (col, 1.);
+}
+
 #include <../common/main_shadertoy.frag>

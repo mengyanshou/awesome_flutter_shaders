@@ -1,4 +1,7 @@
 #include <../common/common_header.frag>
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel2;
 // https://www.shadertoy.com/view/MdBGzG
 // Copyright Inigo Quilez, 2014 - https://iquilezles.org/
 // I am the sole copyright owner of this Work.
@@ -14,10 +17,6 @@
 // definitely work it out.
 //-----------------------------------------------------------------------------------
 
-uniform sampler2D iChannel0;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
 #if HW_PERFORMANCE==0
 #define AA 1
 #else

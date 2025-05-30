@@ -7,7 +7,7 @@
 //
 //***************************************************************************************************
 #include <../common/common_header.frag>
-uniform sampler2D iChannel0;
+
 int efx = 0;
 int refleco = 0;
 int snowo = 0;

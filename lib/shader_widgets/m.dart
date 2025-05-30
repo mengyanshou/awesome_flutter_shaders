@@ -6,17 +6,18 @@ List<Widget> shadersWidget() {
   return [
     shader(ShaderAssets.mengerSponge),
     shader(ShaderAssets.mandelbulbDeconstructed),
-    shader(ShaderAssets.mandelbulbDerivative),
+    if (!isAndroid) shader(ShaderAssets.mandelbulbDerivative),
     // shader(ShaderAssets.monster),
     shader(ShaderAssets.mandelbulb),
-    shader(
-      ShaderAssets.mainSequenceStar,
-      channels: [
-        ShaderAssets.mainSequenceStarPng,
-        ShaderAssets.wall,
-      ],
-    ),
-    if (enableImpller) shader('shaders/m/Mandelbulb 3D Fractal.frag'),
+    if (!isAndroid)
+      shader(
+        ShaderAssets.mainSequenceStar,
+        channels: [
+          ShaderAssets.mainSequenceStarPng,
+          ShaderAssets.wall,
+        ],
+      ),
+    if (enableImpller) shader('shaders/m/Mandelbulb_3D_Fractal.frag'),
     shader(ShaderAssets.marioWorld, upSideDown: true),
   ];
 }

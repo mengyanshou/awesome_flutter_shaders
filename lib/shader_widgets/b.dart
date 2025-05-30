@@ -6,7 +6,7 @@ import 'package:shader_buffers/shader_buffers.dart';
 List<Widget> shadersWidget() {
   return [
     if (enableImpller) shader(ShaderAssets.bytdaily013),
-    shader(ShaderAssets.brokenTimePortal),
+    if (!isAndroid) shader(ShaderAssets.brokenTimePortal),
     // Builder(builder: (context) {
     //   LayerBuffer layerBuffer = LayerBuffer(shaderAssetsName: ShaderAssets.brokenTimePortal);
     //   layerBuffer.setChannels([

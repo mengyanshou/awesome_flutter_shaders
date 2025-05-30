@@ -1,7 +1,6 @@
-// https://www.shadertoy.com/view/XllGW4
 #include <../common/common_header.frag>
-
 uniform sampler2D iChannel0;
+// https://www.shadertoy.com/view/XllGW4
 /*
 HOWTO Get Started With Ray Marching
 by Michael Pohoreski aka MysticReddit

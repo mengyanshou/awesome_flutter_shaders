@@ -1,9 +1,10 @@
 #include <../common/common_header.frag>
+
+uniform sampler2D iChannel0;
+
 #ifdef GL_ES
 precision mediump float;
 #endif
-
-uniform sampler2D iChannel0;
 
 mat2 makem2(float theta) {
     float c = cos(theta);

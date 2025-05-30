@@ -20,8 +20,6 @@
 
 // Sorry to those I've missed out!!
 #include <../common/common_header.frag>
-uniform sampler2D iChannel0;
-
 #define ORIG_CLOUD 0
 #define ENABLE_RAIN 0 //enable rain drops on screen
 #define SIMPLE_SUN 0

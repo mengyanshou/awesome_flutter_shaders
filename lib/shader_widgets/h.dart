@@ -5,6 +5,6 @@ import 'package:shader_buffers/shader_buffers.dart';
 
 List<Widget> shadersWidget() {
   return [
-    shader('shaders/h/HOWTO.frag', channels: [ShaderAssets.wall]),
+    if (!isAndroid) shader('shaders/h/HOWTO.frag', channels: [ShaderAssets.wall]),
   ];
 }

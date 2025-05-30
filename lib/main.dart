@@ -1,9 +1,9 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
+import 'package:get/get.dart';
 import 'package:shader_buffers/shader_buffers.dart';
 import 'shaders.dart';
 import 'time_wrapper.dart';
@@ -43,7 +43,7 @@ class ShaderCustomPainter extends CustomPainter {
 
 void main() {
   runApp(const MyApp());
-  if (Platform.isMacOS) {
+  if (GetPlatform.isMacOS) {
     enableImpller = true;
   }
   SystemChrome.setSystemUIOverlayStyle(
@@ -71,10 +71,16 @@ Widget shader(
     message: asset,
     child: Transform.flip(
       flipY: upSideDown,
-      child: ShaderBuffers(
-        key: UniqueKey(),
-        controller: controllers[asset] ??= ShaderController(),
-        mainImage: layerBuffer,
+      child: LayoutBuilder(
+        builder: (context, con) {
+          return ShaderBuffers(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            key: UniqueKey(),
+            controller: ShaderController(),
+            mainImage: layerBuffer,
+          );
+        },
       ),
     ),
   );
@@ -83,15 +89,198 @@ Widget shader(
 bool enableImpller = false;
 
 ui.Image? noise;
+bool get isAndroid => GetPlatform.isAndroid;
 
-List<Widget> shadersWidget(BuildContext context) {
+List<Widget> shadersWidget() {
   List<Widget> children = [
+    Builder(
+      builder: (context) {
+        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.pageCurl);
+        mainLayer.setChannels([
+          IChannel(assetsTexturePath: ShaderAssets.wall),
+          IChannel(assetsTexturePath: ShaderAssets.bricks),
+        ]);
+        return ShaderBuffers(
+          key: UniqueKey(),
+          controller: controller,
+          mainImage: mainLayer,
+        );
+      },
+    ),
+    shader(
+      ShaderAssets.portal2BoxFlipRotation,
+      channels: [
+        ShaderAssets.texture1,
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    shader(
+      ShaderAssets.zoomBlurTransition,
+      channels: [
+        ShaderAssets.texture1,
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    shader(ShaderAssets.transitionBurning, channels: [
+      ShaderAssets.texture1,
+      ShaderAssets.wall,
+    ]),
+    shader(
+      ShaderAssets.reclaimTheStreets,
+    ),
+    shader(
+      ShaderAssets.montereyWannabe,
+    ),
+    shader(
+      ShaderAssets.transitionWithImage,
+      channels: [
+        ShaderAssets.texture2,
+        ShaderAssets.wall,
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    shader(
+      ShaderAssets.crosswarpTransition,
+      channels: [
+        ShaderAssets.wall,
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    Builder(
+      builder: (context) {
+        // shaders/e/Elevated.frag
+        final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/m/macOS_Monterey_2.frag.frag');
+        final bufferA = LayerBuffer(shaderAssetsName: 'shaders/m/macOS_Monterey_2.frag_BufferA.frag');
+        bufferA.setChannels([
+          IChannel(buffer: bufferA),
+        ]);
+        mainLayer.setChannels([
+          IChannel(buffer: bufferA),
+        ]);
+        return ShaderBuffers(
+          key: UniqueKey(),
+          controller: controller,
+          mainImage: mainLayer,
+        );
+      },
+    ),
+
+    // shaders/m/MacOS_Monterey_wallpaper.frag
+    Builder(
+      builder: (context) {
+        // shaders/e/Elevated.frag
+        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.macOSMontereyWallpaper);
+        final bufferA = LayerBuffer(shaderAssetsName: ShaderAssets.macOSMontereyWallpaperBufferA);
+        bufferA.setChannels([
+          IChannel(buffer: bufferA),
+        ]);
+        mainLayer.setChannels([
+          IChannel(buffer: bufferA),
+        ]);
+        return ShaderBuffers(
+          key: UniqueKey(),
+          controller: controller,
+          mainImage: mainLayer,
+        );
+      },
+    ),
+    Builder(
+      builder: (context) {
+        // shaders/e/Elevated.frag
+        final mainLayer = LayerBuffer(shaderAssetsName: ShaderAssets.freeze);
+        mainLayer.setChannels([
+          IChannel(assetsTexturePath: ShaderAssets.wall),
+          IChannel(assetsTexturePath: ShaderAssets.wall),
+        ]);
+        return ShaderBuffers(
+          key: UniqueKey(),
+          controller: controller,
+          mainImage: mainLayer,
+        );
+      },
+    ),
+    // shaders/h/Hall_of_Mirrors.frag
+    shader(
+      ShaderAssets.hallOfMirrors,
+      channels: [
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    // shaders/g/genie.frag
+    shader(
+      ShaderAssets.genie,
+      channels: [
+        ShaderAssets.wall,
+      ],
+      upSideDown: false,
+    ),
+    if (!isAndroid)
+      shader(
+        ShaderAssets.redBlueSwirl,
+      ),
+    //   builder: (context) {
+    //     // shaders/e/Elevated.frag
+    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated.frag');
+    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated_buffera.frag');
+    //     bufferA.setChannels([
+    //       IChannel(assetsTexturePath: 'assets/noise2.png'),
+    //     ]);
+    //     mainLayer.setChannels([
+    //       IChannel(buffer: bufferA),
+    //     ]);
+    //     return ShaderBuffers(
+    //       key: UniqueKey(),
+    //       controller: controller,
+    //       mainImage: mainLayer,
+    //     );
+    //   },
+    // ),
     // Builder(
     //   builder: (context) {
-    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/b/Black Hole Raymarcher 3.frag');
-    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/b/Black Hole Raymarcher 3 BufferA.frag');
-    //     final bufferB = LayerBuffer(shaderAssetsName: 'shaders/b/Black Hole Raymarcher 3 BufferB.frag');
-    //     final bufferC = LayerBuffer(shaderAssetsName: 'shaders/b/Black Hole Raymarcher 3 BufferC.frag');
+    //     // shaders/s/superResolution.frag
+    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/s/superResolution.frag');
+    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/s/superResolution buffera.frag');
+    //     final bufferB = LayerBuffer(shaderAssetsName: 'shaders/s/superResolution bufferb.frag');
+    //     final bufferC = LayerBuffer(shaderAssetsName: 'shaders/s/superResolution bufferc.frag');
+    //     final bufferD = LayerBuffer(shaderAssetsName: 'shaders/s/superResolution bufferd.frag');
+    //     bufferA.setChannels([
+    //       IChannel(assetsTexturePath: ShaderAssets.wall),
+    //       IChannel(buffer: bufferA),
+    //     ]);
+    //     bufferB.setChannels([
+    //       IChannel(buffer: bufferA),
+    //     ]);
+    //     bufferC.setChannels([
+    //       IChannel(buffer: bufferB),
+    //     ]);
+    //     bufferD.setChannels([
+    //       IChannel(buffer: bufferA),
+    //       IChannel(buffer: bufferC),
+    //     ]);
+    //     mainLayer.setChannels([
+    //       IChannel(buffer: bufferC),
+    //       IChannel(assetsTexturePath: ShaderAssets.wall),
+    //       IChannel(buffer: bufferD),
+    //       IChannel(buffer: bufferA),
+    //     ]);
+    //     return ShaderBuffers(
+    //       key: UniqueKey(),
+    //       controller: controller,
+    //       mainImage: bufferD,
+    //     );
+    //   },
+    // ),
+    // Builder(
+    //   builder: (context) {
+    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/b/Black_Hole_Raymarcher_3.frag');
+    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/b/Black_Hole_Raymarcher_3_BufferA.frag');
+    //     final bufferB = LayerBuffer(shaderAssetsName: 'shaders/b/Black_Hole_Raymarcher_3_BufferB.frag');
+    //     final bufferC = LayerBuffer(shaderAssetsName: 'shaders/b/Black_Hole_Raymarcher_3_BufferC.frag');
     //     bufferB.setChannels([
     //       IChannel(buffer: bufferA),
     //     ]);
@@ -132,72 +321,16 @@ List<Widget> shadersWidget(BuildContext context) {
     //     );
     //   },
     // ),
+    // Plasma
 
-    shader('shaders/v/Very fast procedural ocean.frag'),
-    shader('shaders/t/tm gyroids.frag'),
-    shader('shaders/t/TIE Fighters.frag'),
-    Builder(
-      builder: (context) {
-        final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/p/Pentagonal Conway\'s game.frag');
-        final bufferA = LayerBuffer(shaderAssetsName: 'shaders/p/Pentagonal Conway\'s game BufferA.frag');
-        bufferA.setChannels([
-          IChannel(buffer: bufferA),
-        ]);
-        mainLayer.setChannels([
-          IChannel(buffer: bufferA),
-        ]);
-        return ShaderBuffers(
-          key: UniqueKey(),
-          controller: controller,
-          mainImage: mainLayer,
-        );
-      },
-    ),
-    Builder(
-      builder: (context) {
-        final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/p/Portal - iOS AR.frag');
-        final bufferA = LayerBuffer(shaderAssetsName: 'shaders/p/Portal - iOS AR BufferA.frag');
-        // bufferA.setChannels([
-        //   IChannel(buffer: bufferA),
-        // ]);
-        mainLayer.setChannels([
-          IChannel(buffer: bufferA),
-          IChannel(assetsTexturePath: 'assets/Wall.jpg'),
-          // IChannel(assetsTexturePath: 'assets/texture2.png'),
-        ]);
-        return ShaderBuffers(
-          key: UniqueKey(),
-          controller: controller,
-          mainImage: mainLayer,
-        );
-      },
-    ),
-    shader('shaders/p/Plasma Globe.frag', channels: [
-      'assets/noise.png',
-    ]),
-    Builder(
-      builder: (context) {
-        final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/m/Mirror Looping w Mouse Control.frag');
-        final bufferA = LayerBuffer(shaderAssetsName: 'shaders/m/Mirror Looping w Mouse Control BufferA.frag');
-        bufferA.setChannels([
-          IChannel(buffer: bufferA),
-        ]);
-        mainLayer.setChannels([
-          IChannel(assetsTexturePath: 'assets/texture1.png'),
-          IChannel(assetsTexturePath: 'assets/texture2.png'),
-          IChannel(buffer: bufferA),
-        ]);
-        return ShaderBuffers(
-          key: UniqueKey(),
-          controller: controller,
-          mainImage: mainLayer,
-        );
-      },
-    ),
+    // shader('shaders/h/Hell.frag', channels: [
+    //   'assets/Wall.jpg',
+    // ]),
+    // shader('shaders/c/Cold.frag'),
     // Builder(
     //   builder: (context) {
-    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/i/Inside the mandelbulb II.frag');
-    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/i/Inside the mandelbulb II BufferA.frag');
+    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/i/Inside_the_mandelbulb_II.frag');
+    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/i/Inside_the_mandelbulb_II_BufferA.frag');
     //     mainLayer.setChannels([
     //       IChannel(buffer: bufferA),
     //     ]);
@@ -208,50 +341,149 @@ List<Widget> shadersWidget(BuildContext context) {
     //     );
     //   },
     // ),
-    // TIE Fighters
-    shader('shaders/h/Hell.frag'),
+    // shader('shaders/p/Plasma.frag'),
+    // shader('shaders/p/Pulsar_Explained.frag'),
+    // s/Split Prism
     shader(
-      'shaders/w/Warped Extruded Skewed Grid.frag',
-      channels: ['assets/texture1.png'],
-    ),
-    // w/Where the River Goes
-    shader(
-      'shaders/w/Where the River Goes.frag',
-      channels: ['assets/texture1.png'],
-    ),
-    // shaders/g/Goodbye Dream Clouds
-    shader('shaders/g/Goodbye Dream Clouds.frag'),
-    shader('shaders/m/M-O from Wall-E.frag'),
-    // s/Sphere Gears
-    shader('shaders/s/Sphere Gears.frag', channels: ['assets/Wall.jpg'], upSideDown: true),
-    shader('shaders/o/Origami.frag'),
-    shader('shaders/f/Full Spectrum Cyber.frag'),
-    shader('shaders/d/drifting.frag'),
-    shader('shaders/c/colorful cosmos spiral.frag', channels: ['assets/Wall.jpg']),
-    shader('shaders/p/Perspex Web Lattice.frag', channels: ['assets/Wall.jpg']),
-    shader('shaders/p/Perlin sin sphere.frag'),
-    shader('shaders/p/Protean clouds.frag'),
-    shader('shaders/d/divergence-free flow curly noise.frag'),
-    shader('shaders/c/cobweb.frag'),
-    shader('shaders/g/Gradient Flow.frag'),
-    shader('shaders/t/Tunnel Cylinders.frag'),
-    shader('shaders/t/Tunnel Cable.frag'),
-    shader('shaders/u/Undular Substratum.frag'),
-    shader('shaders/t/Traced Minkowski Tube.frag'),
-    shader('shaders/c/CineShader Lava.frag'),
-    shader('shaders/d/DULL SKULL.frag', channels: ['assets/Wall.jpg'], upSideDown: true),
-    shader('shaders/c/Cube lines.frag', upSideDown: true),
-    shader('shaders/z/Zippy Zaps.frag'),
-    shader('shaders/g/Ghosts.frag'),
-    shader('shaders/s/Singularity.frag'),
-    shader(
-      'shaders/p/Page Curl Effect on Ball.frag',
+      ShaderAssets.splitPrism,
       channels: [
-        'assets/Wall.jpg',
-        'assets/Industrial Complex Crossview.png',
-        'assets/Main Sequence Star.png',
+        ShaderAssets.wall,
       ],
     ),
+
+    shader(
+      ShaderAssets.spreadingFrost,
+      channels: [
+        ShaderAssets.wall,
+        ShaderAssets.texture1,
+        ShaderAssets.texture2,
+      ],
+      upSideDown: false,
+    ),
+
+    shader(ShaderAssets.uiNoiseHalo),
+    if (!isAndroid) shader(ShaderAssets.littleFractalFlight3),
+    shader(ShaderAssets.colorStarTunnel),
+    shader(ShaderAssets.whirlExplained),
+    if (!isAndroid) shader(ShaderAssets.serverRoom),
+    shader(ShaderAssets.ballsAreRubbing),
+    if (!isAndroid) shader(ShaderAssets.colorfulUnderwaterBubblesII),
+    if (!isAndroid) shader(ShaderAssets.vortex),
+    if (!isAndroid) shader(ShaderAssets.veryFastProceduralOcean),
+    shader(ShaderAssets.tmGyroids),
+    if (!isAndroid)
+      Builder(
+        builder: (context) {
+          final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/p/Pentagonal Conway\'s game.frag');
+          final bufferA = LayerBuffer(shaderAssetsName: 'shaders/p/Pentagonal Conway\'s game BufferA.frag');
+          bufferA.setChannels([
+            IChannel(buffer: bufferA),
+          ]);
+          mainLayer.setChannels([
+            IChannel(buffer: bufferA),
+          ]);
+          return ShaderBuffers(
+            key: UniqueKey(),
+            controller: controller,
+            mainImage: mainLayer,
+          );
+        },
+      ),
+    if (!isAndroid)
+      Builder(
+        builder: (context) {
+          final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/p/Portal_iOS_AR.frag');
+          final bufferA = LayerBuffer(shaderAssetsName: 'shaders/p/Portal_iOS_AR_BufferA.frag');
+          // bufferA.setChannels([
+          //   IChannel(buffer: bufferA),
+          // ]);
+          mainLayer.setChannels([
+            IChannel(buffer: bufferA),
+            IChannel(assetsTexturePath: 'assets/Wall.jpg'),
+            // IChannel(assetsTexturePath: 'assets/texture2.png'),
+          ]);
+          return ShaderBuffers(
+            key: UniqueKey(),
+            controller: controller,
+            mainImage: mainLayer,
+          );
+        },
+      ),
+    if (!isAndroid)
+      shader(ShaderAssets.plasmaGlobe, channels: [
+        ShaderAssets.noise,
+      ]),
+    if (!isAndroid)
+      Builder(
+        builder: (context) {
+          final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/m/Mirror_Looping_w_Mouse_Control.frag');
+          final bufferA = LayerBuffer(shaderAssetsName: 'shaders/m/Mirror_Looping_w_Mouse_Control_BufferA.frag');
+          bufferA.setChannels([
+            IChannel(buffer: bufferA),
+          ]);
+          mainLayer.setChannels([
+            IChannel(assetsTexturePath: 'assets/texture1.png'),
+            IChannel(assetsTexturePath: 'assets/texture2.png'),
+            IChannel(buffer: bufferA),
+          ]);
+          return ShaderBuffers(
+            key: UniqueKey(),
+            controller: controller,
+            mainImage: mainLayer,
+          );
+        },
+      ),
+    shader(
+      ShaderAssets.warpedExtrudedSkewedGrid,
+      channels: [ShaderAssets.texture1],
+    ),
+    // w/Where the River Goes
+    if (!isAndroid)
+      shader(
+        ShaderAssets.whereTheRiverGoes,
+        channels: [ShaderAssets.texture1],
+      ),
+    if (!isAndroid) shader(ShaderAssets.goodbyeDreamClouds),
+    shader(ShaderAssets.wallE),
+    // s/Sphere Gears
+    shader(ShaderAssets.sphereGears, channels: [ShaderAssets.wall]),
+    shader(ShaderAssets.origami),
+    shader(ShaderAssets.fullSpectrumCyber),
+    if (!isAndroid) shader(ShaderAssets.drifting),
+    shader(ShaderAssets.colorfulCosmosSpiral, channels: [
+      ShaderAssets.wall,
+    ]),
+    if (!isAndroid)
+      shader(ShaderAssets.perspexWebLattice, channels: [
+        ShaderAssets.wall,
+      ]),
+    if (!isAndroid) shader(ShaderAssets.perlinSinSphere),
+    shader(ShaderAssets.proteanClouds),
+    if (!isAndroid) shader(ShaderAssets.divergenceFreeFlowCurlyNoise),
+    shader(ShaderAssets.cobweb),
+    shader(ShaderAssets.gradientFlow),
+    shader(ShaderAssets.tunnelCylinders),
+    shader(ShaderAssets.tunnelCable),
+    shader(ShaderAssets.undularSubstratum),
+    if (!isAndroid) shader(ShaderAssets.tracedMinkowskiTube),
+    if (!isAndroid) shader(ShaderAssets.cineShaderLava),
+    if (!isAndroid)
+      shader(ShaderAssets.dullSkull, channels: [
+        ShaderAssets.wall,
+      ]),
+    shader(ShaderAssets.cubeLines, upSideDown: true),
+    if (!isAndroid) shader(ShaderAssets.zippyZaps),
+    if (!isAndroid) shader(ShaderAssets.ghosts),
+    shader(ShaderAssets.singularity),
+    if (!isAndroid)
+      shader(
+        'shaders/p/Page_Curl_Effect_on_Ball.frag',
+        channels: [
+          'assets/Wall.jpg',
+          'assets/Industrial Complex Crossview.png',
+          'assets/Main Sequence Star.png',
+        ],
+      ),
     ...b.shadersWidget(),
     ...c.shadersWidget(),
     ...d.shadersWidget(),
@@ -315,7 +547,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = shadersWidget(context);
+    List<Widget> children = shadersWidget();
     return MaterialApp(
       title: 'Shaders Gallery',
       theme: ThemeData(
@@ -327,7 +559,7 @@ class MyApp extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             mainAxisSpacing: 0,
             crossAxisSpacing: 0,
             childAspectRatio: 16 / 9,

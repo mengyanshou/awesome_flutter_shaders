@@ -1,5 +1,5 @@
 #include <../common/common_header.frag>
-#include <Protoplanet Common.frag>
+#include <Protoplanet_Common.frag>
 uniform sampler2D iChannel0;
 #define SCALE 0.95
 

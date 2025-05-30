@@ -9,7 +9,6 @@
 // #include <../common/noise_flow.frag>
 #include <../common/noise_white.frag>
 
-uniform sampler2D iChannel0;
 
 // Credit to nimitz (stormoid.com) (twitter: @stormoid)
 // For the original shader here: https://www.shadertoy.com/view/ldlXRS
