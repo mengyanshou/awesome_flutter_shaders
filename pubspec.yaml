@@ -1,0 +1,232 @@
+name: awesome_flutter_shaders
+description: awesome flutter shaders, manual migration from https://www.shadertoy.com shaders one by one
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shader_buffers: 1.1.1
+
+  image: ^3.0.1
+  cupertino_icons: ^1.0.6
+  flutter_shaders: ^0.1.2
+  get: ^4.7.2
+  flutter_web_plugins:
+    sdk: flutter
+  path: ^1.9.1
+  shader_graph:
+    path: /Users/laurie/Desktop/nightmare-space/shader_graph
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+dependency_overrides:
+  shader_buffers:
+    path: /Users/laurie/Desktop/nightmare-git-repo/shader_buffers
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/texture/
+    - assets/cubemaps/
+
+  shaders:
+    # a
+    - shaders/a/a study of glass.frag
+    - shaders/a/Alien ocean BufferA.frag
+    - shaders/a/Alien ocean.frag
+    - shaders/a/Alien Space Jockey.frag
+    - shaders/a/Artifact at Sea.frag
+    #
+    # b
+    - shaders/b/balls are rubbing.frag
+    - shaders/b/Base warp fBM.frag
+    - shaders/b/Broken Time Gate.frag
+    - shaders/b/Bubbles.frag
+    - shaders/b/Byt3-daily-013.frag
+    #
+    # c
+    - shaders/c/CineShader Lava.frag
+    - shaders/c/Clouds-2D.frag
+    - shaders/c/cobweb test.frag
+    - shaders/c/Cold.frag
+    - shaders/c/Colorful underwater bubbles II.frag
+    - shaders/c/Cube lines.frag
+    - shaders/c/cubular.frag
+    - shaders/c/Curl noise Image transition.frag
+    #
+    # d
+    - shaders/d/Devil Glass.frag
+    - shaders/d/Digital Brain.frag
+    - shaders/d/Dive to Cloud.frag
+    - shaders/d/divergence-free flow curly noise.frag
+    - shaders/d/drifting.frag
+    - shaders/d/DULL SKULL - Prometheus.frag
+    #
+    # e
+    - shaders/e/ED-209.frag
+    #
+    # f
+    - shaders/f/Fire.frag
+    - shaders/f/Flame.frag
+    - shaders/f/fractal pyramid.frag
+    - shaders/f/Full Spectrum Cyber.frag
+    #
+    # g
+    - shaders/g/Galaxy of Universes.frag
+    - shaders/g/Galvanize.frag
+    - shaders/g/Ghosts.frag
+    - shaders/g/Goodbye Dream Clouds.frag
+    - shaders/g/Gradient Flow.frag
+    #
+    # h
+    # TODO Need input noise texture
+    - shaders/h/Hell.frag
+    # i
+    - shaders/i/inercia intended one.frag
+    - shaders/i/Input - Time.frag
+    - shaders/i/Inverse Bilinear.frag
+    - shaders/i/Inside the mandelbulb II BufferA.frag
+    - shaders/i/Inside the mandelbulb II.frag
+    # Ink Blot Spread
+    - shaders/i/Ink Blot Spread.frag
+    #
+    # l
+    - shaders/l/Let's self reflect.frag
+    # Landmass z-morph
+    - shaders/l/Landmass z-morph.frag
+    #
+    # m
+    - shaders/m/M-O (from Wall-E).frag
+    - shaders/m/MacOS Monterey 2 BufferA.frag
+    - shaders/m/MacOS Monterey 2.frag
+    - shaders/m/MacOS Monterey wallpaper BufferA.frag
+    - shaders/m/MacOS Monterey wallpaper.frag
+    - shaders/m/Mandelbulb 3D Fractal.frag
+    - shaders/m/Mandelbulb Deconstructed.frag
+    - shaders/m/mandelbulb.frag
+    # Metal Vortex
+    - shaders/m/Metal Vortex.frag
+    - shaders/m/Mario World 1-1.frag
+    - shaders/m/MONSTER.frag
+    - shaders/m/Monterey wannabe.frag
+    #
+    # n
+    - shaders/n/Noise Lab (3D).frag
+    #
+    # o
+    - shaders/o/Octagrams.frag
+    # Origami
+    - shaders/o/Origami.frag
+    # - shaders/o/Orbital Megastructure.frag
+    #
+    # p
+    - shaders/p/Page Curl Effect on Ball.frag
+    - shaders/p/Palace of Mind.frag
+    - shaders/p/Parallax transition with mouse.frag
+    - shaders/p/Perlin sin sphere.frag
+    - shaders/p/Perspex Web Lattice.frag
+    # Phantom Star for CineShader
+    - shaders/p/Phantom Star for CineShader.frag
+    - shaders/p/Pig Squad 9 Year Anniversary.frag
+    - shaders/p/Pistons with Motion Blur.frag
+    - shaders/p/Plasma Globe.frag
+    # Portal - iOS AR
+    - shaders/p/Portal - iOS AR.frag
+    - shaders/p/Portal - iOS AR BufferA.frag
+
+    - shaders/p/Portal 2 Box Flip Rotation.frag
+    - shaders/p/Protean clouds.frag
+    - shaders/p/Pulsar Explained.frag
+    - shaders/p/simple page curl effect.frag
+    #
+    # u
+    - shaders/u/Underground Passageway.frag
+    - shaders/u/Underground Passageway BufferA.frag
+    #
+    # r
+    - shaders/r/Rainforest BufferA.frag
+    - shaders/r/Rainforest.frag
+    - shaders/r/Rainier mood.frag
+    - shaders/r/Raymarching Basic.frag
+    - shaders/r/Reclaim the streets.frag
+    - shaders/r/Red-Blue Swirl.frag
+    - shaders/r/Rotate And Points Circle.frag
+
+    # s
+    - shaders/s/Seascape.frag
+    - shaders/s/Server Room.frag
+    - shaders/s/Shader Art Coding Introduction.frag
+    # Shock Wave with Saturation
+    - shaders/s/Shock Wave with Saturation.frag
+    - shaders/s/simple refraction test.frag
+    - shaders/s/Simple ripple shader.frag
+    - shaders/s/Singularity.frag
+    - shaders/s/Space Curvature.frag
+    - shaders/s/Sphere Gears.frag
+    - shaders/s/Split Prism.frag
+    - shaders/s/Spreading Frost.frag
+    - shaders/s/starfield new.frag
+    # - shaders/s/superResolution BufferA.frag
+    # - shaders/s/superResolution BufferB.frag
+    # - shaders/s/superResolution BufferC.frag
+    # - shaders/s/superResolution BufferD.frag
+    # - shaders/s/superResolution.frag
+    #
+    # t
+    # The sun, the sky and the clouds
+    - shaders/t/The sun, the sky and the clouds.frag
+    # TIE Fighters
+    - shaders/t/TIE Fighters.frag
+    # Tissue
+    - shaders/t/Tissue.frag
+    # tm gyroids
+    - shaders/t/tm gyroids.frag
+    # Tunnel Cable
+    # Transition with image
+    - shaders/t/Transition with image.frag
+    # Transition Burning
+    - shaders/t/Transition Burning.frag
+    # Transition(SST).frag
+    - shaders/t/Transition SST.frag
+    - shaders/t/Tunnel Cable.frag
+
+    # u
+    # UI noise halo
+    - shaders/u/UI noise halo.frag
+    - shaders/u/Undular Substratum.frag
+    #
+    # v
+    # Very fast procedural ocean
+    - shaders/v/Very fast procedural ocean.frag
+    - shaders/m/Metal Vortex.frag
+    #
+    # w
+    - shaders/w/Warped Extruded Skewed Grid.frag
+    - shaders/w/Warping - procedural 2.frag
+    - shaders/w/Water2D.frag
+    - shaders/w/wavyfire.frag
+    - shaders/w/Where the River Goes.frag
+    #
+    # z
+    - shaders/z/Zippy Zaps.frag
+
+    #
+    #
+    #
+    #
+
+    # c
+
+    # g
+    - shaders_pre/g/genie.frag

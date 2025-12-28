@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true,
+  "dart.lineLength": 120,
+  "cmake.ignoreCMakeListsMissing": true,
+  "dart.flutterSdkPath": ".fvm/versions/3.38.5"
+}
