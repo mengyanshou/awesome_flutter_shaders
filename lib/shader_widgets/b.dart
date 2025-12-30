@@ -6,42 +6,38 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // TODO: Need input keyboard
-    // Column(
-    //   children: [
-    //     Builder(
-    //       builder: (context) {
-    //         // shaders/e/Elevated.frag
-    //         final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/b/Bricks Game.frag');
-    //         final bufferA = LayerBuffer(shaderAssetsName: 'shaders/b/Bricks Game BufferA.frag');
-    //         mainLayer.setChannels([IChannel(buffer: bufferA)]);
-    //         return LayoutBuilder(
-    //           builder: (context, con) {
-    //             return ShaderBuffers(
-    //               key: UniqueKey(),
-    //               height: con.maxWidth * 9 / 16,
-    //               controller: controller,
-    //               mainImage: mainLayer,
-    //               buffers: [bufferA],
-    //             );
-    //           },
-    //         );
-    //       },
-    //     ),
-    //     Text('Bricks Game', style: shaderTitleStyle),
-    //   ],
+    AwesomeShader(SA.balaroBackgroundShaders),
+    AwesomeShader(SA.ballsAreRubbing),
+    AwesomeShader(SA.baseWarpFbm),
+    AwesomeShader(
+      SA.blackHoleOdeGeodesicSolver.feed(
+        SA.textureStars,
+        wrap: .repeat,
+      ),
+    ),
+    // TODO: fix
+    // Builder(
+    //   builder: (_) {
+    //     final bufferA = 'shaders/b/Black Hole Raymarcher 3 BufferA.frag'.shaderBuffer;
+    //     final bufferB = 'shaders/b/Black Hole Raymarcher 3 BufferB.frag'.shaderBuffer;
+    //     final bufferC = 'shaders/b/Black Hole Raymarcher 3 BufferC.frag'.shaderBuffer;
+    //     final mainBuffer = 'shaders/b/Black Hole Raymarcher 3.frag'.shaderBuffer;
+    //     bufferB.feed(bufferA);
+    //     bufferC.feed(bufferB);
+    //     mainBuffer.feed(bufferC);
+    //     return AwesomeShader([bufferA, bufferB, bufferC, mainBuffer]);
+    //   },
     // ),
-    // ShaderSurfaceWrapper.builder(() {
-    //   final mainBuffer = 'shaders/b/Bricks Game.frag'.shaderBuffer;
-    //   final bufferA = 'shaders/b/Bricks Game BufferA.frag'.shaderBuffer;
-    //   bufferA.feedback().addKeyboardInput();
-    //   mainBuffer.addShaderBuffer(bufferA);
-    //   return [mainBuffer, bufferA];
-    // }),
-    AwesomeShader(SA.v2bBallsAreRubbing),
-    AwesomeShader(SA.v2bBaseWarpFbm),
-    AwesomeShader('shaders/b/Broken Time Gate.frag'.feed(SA.textureGreyNoiseMedium, wrap: .repeat)),
-    AwesomeShader(SA.v2bBubbles),
-    AwesomeShader(SA.v2bByt3Daily013),
+    AwesomeShader(
+      SA.brokenTimeGate.feed(
+        SA.textureGreyNoiseMedium,
+        wrap: .repeat,
+        filter: .linear,
+      ),
+    ),
+    AwesomeShader(SA.bubbles),
+    AwesomeShader(SA.bumpedSinusoidalWarp.feed(SA.textureRustyMetal)),
+    AwesomeShader(SA.buoy.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),
+    AwesomeShader(SA.byt3Daily013),
   ];
 }

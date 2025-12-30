@@ -5,44 +5,31 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    AwesomeShader(SA.v2eEd209),
+    AwesomeShader(SA.ed209),
+    const AwesomeShader('shaders/e/electron.frag', upSideDown: false),
+    // TODO: Fix: Effect not match
     // Builder(
     //   builder: (context) {
-    //     // shaders/e/Elevated.frag
-    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated.frag');
-    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated bufferA.frag');
-    //     bufferA.setChannels([
-    //       IChannel(assetsTexturePath: 'assets/Noise Image Generator.png'),
-    //     ]);
-    //     mainLayer.setChannels([
-    //       IChannel(buffer: bufferA),
-    //     ]);
-    //     return ShaderBuffers(
-    //       key: UniqueKey(),
-    //       controller: controller,
-    //       mainImage: mainLayer,
-    //       buffers: [bufferA],
+    //     final main = 'shaders/e/Elevated.frag'.shaderBuffer;
+    //     final bufferA = 'shaders/e/Elevated BufferA.frag'.shaderBuffer;
+    //     bufferA.feed(
+    //       SA.textureGreyNoiseMedium,
+    //       wrap: .repeat,
+    //       filter: .linear,
+    //     );
+    //     main.feedShader(bufferA);
+    //     return AwesomeShader(
+    //       [bufferA, main],
     //     );
     //   },
     // ),
-    // Builder(
-    //   builder: (context) {
-    //     // shaders/e/Elevated.frag
-    //     final mainLayer = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated.frag');
-    //     final bufferA = LayerBuffer(shaderAssetsName: 'shaders/e/Elevated_buffera.frag');
-    //     bufferA.setChannels([
-    //       IChannel(assetsTexturePath: 'assets/Noise Image Generator.png'),
-    //     ]);
-    //     mainLayer.setChannels([
-    //       IChannel(buffer: bufferA),
-    //     ]);
-    //     return ShaderBuffers(
-    //       key: UniqueKey(),
-    //       controller: controller,
-    //       mainImage: mainLayer,
-    //       buffers: [bufferA],
-    //     );
-    //   },
-    // ),
+    AwesomeShader(
+      SA.entryLevel
+          .feed(
+            SA.textureAbstract1,
+            wrap: .repeat,
+          )
+          .feed(SA.cubemapUffiziGallery),
+    ),
   ];
 }

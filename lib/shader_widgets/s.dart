@@ -6,30 +6,31 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // Shock Wave with Saturation
-    AwesomeShader('shaders/s/Shock Wave with Saturation.frag'.feed(SA.textureStars)),
-    AwesomeShader('shaders/s/Simple ripple shader.frag'.feed(SA.textureStars)),
-    AwesomeShader('shaders/s/Singularity.frag'),
-    // TODO: 效果不一样
-    AwesomeShader('shaders/s/Space Curvature.frag'.feed(SA.textureStars).feed(SA.textureOrganic2)),
-    AwesomeShader('shaders/s/Sphere Gears.frag'.feed(SA.textureRustyMetal)),
-    const AwesomeShader('shaders/s/Seascape.frag'),
-    const AwesomeShader('shaders/s/Server Room.frag'),
-    const AwesomeShader('shaders/s/Shader Art Coding Introduction.frag'),
-    AwesomeShader('shaders/s/simple refraction test.frag'.feed(SA.cubemapUffiziGallery)),
-    AwesomeShader('shaders/s/Split Prism.frag'.feed(SA.textureLondon)),
-    // // TODO: 效果不一样
-    Builder(builder: (context) {
-      final shader = 'shaders/s/Spreading Frost.frag'.shaderBuffer;
-      shader.feedImageFromAsset(SA.textureLondon);
-      shader.feedImageFromAsset(SA.textureOrganic2);
-      shader.feedImageFromAsset(SA.textureLichen);
-      return AwesomeShader(
-        shader,
-        upSideDown: false,
-      );
-    }),
-    AwesomeShader('shaders/s/starfield new.frag'.feed(SA.textureRgbaNoiseMedium)),
+    AwesomeShader(SA.seascape),
+    AwesomeShader(SA.serverRoom),
+    AwesomeShader(SA.shaderArtCodingIntroduction),
+    AwesomeShader(SA.shockWaveWithSaturation.feed(SA.textureStars)),
+    AwesomeShader(SA.simpleRefractionTest.feed(SA.cubemapUffiziGallery)),
+    AwesomeShader(SA.simpleRippleShader.feed(SA.textureStars)),
+    AwesomeShader(SA.singularity),
+    AwesomeShader(
+      SA.spaceCurvature.feed(SA.textureStars, wrap: .repeat).feed(SA.textureOrganic2, wrap: .repeat),
+    ),
+    AwesomeShader(SA.sphereGears.feed(SA.textureRustyMetal)),
+    AwesomeShader(SA.splitPrism.feed(SA.textureLondon)),
+    Builder(
+      builder: (context) {
+        final shader = SA.spreadingFrost.shaderBuffer;
+        shader.feedImageFromAsset(SA.textureLondon);
+        shader.feedImageFromAsset(SA.textureLichen);
+        shader.feedImageFromAsset(SA.textureOrganic2);
+        return AwesomeShader(
+          shader,
+          upSideDown: false,
+        );
+      },
+    ),
+    AwesomeShader(SA.starfieldNew.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),
 
     // TODO
     // Builder(builder: (_) {

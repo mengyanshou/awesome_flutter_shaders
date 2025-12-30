@@ -6,6 +6,6 @@ import 'package:shader_graph/shader_graph.dart';
 List<Widget> shadersWidget() {
   return [
     // shaders/z/Zippy Zaps.frag
-    AwesomeShader('shaders/z/Zippy Zaps.frag'),
+    AwesomeShader(SA.zippyZaps),
   ];
 }

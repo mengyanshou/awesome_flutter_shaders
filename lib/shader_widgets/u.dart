@@ -5,18 +5,20 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
+    AwesomeShader(SA.uiNoiseHalo),
     // TODO: Effect not match
-    Builder(builder: (context) {
-      final main = 'shaders/u/Underground Passageway.frag'.shaderBuffer;
-      final bufferA = 'shaders/u/Underground Passageway BufferA.frag'.shaderBuffer;
-      bufferA.feedback();
-      main.feedShader(bufferA);
-      main.feed(SA.textureOrganic3);
-      return AwesomeShader([bufferA, main]);
-    }),
+    Builder(
+      builder: (context) {
+        final main = SA.undergroundPassageway.shaderBuffer;
+        final bufferA = SA.undergroundPassagewayBufferA.shaderBuffer;
+        bufferA.feedback();
+        main.feedShader(bufferA);
+        main.feed(SA.textureOrganic3);
+        return AwesomeShader([bufferA, main]);
+      },
+    ),
     // TODO: Noise input
-    AwesomeShader('shaders/u/Undular Substratum.frag'.feed(SA.textureRgbaNoiseSmall)),
+    AwesomeShader(SA.undularSubstratum.feed(SA.textureRgbaNoiseSmall)),
     // UI noise halo
-    const AwesomeShader('shaders/u/UI noise halo.frag'),
   ];
 }

@@ -5,24 +5,30 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    Builder(builder: (context) {
-      final bufferA = ShaderBuffer(SA.v2iInsideTheMandelbulbIiBufferA);
-      final mainBuffer = ShaderBuffer(SA.v2iInsideTheMandelbulbIi);
-      mainBuffer.feedShader(bufferA);
-      return AwesomeShader([bufferA, mainBuffer]);
-    }),
-    AwesomeShader(SA.v2iInsideTheMandelbulbIiBufferA),
-    AwesomeShader(SA.v2iInputTime),
-    AwesomeShader(SA.v2iInverseBilinear.feed(SA.textureLondon)),
-    // inercia intended one
-    AwesomeShader(SA.v2iInerciaIntendedOne),
-
-    // TODO 效果不一样
-    Builder(builder: (context) {
-      final buffer = 'shaders/i/Ink Blot Spread.frag'.shaderBuffer;
-      buffer.feed(SA.textureRgbaNoiseSmall);
-      buffer.feed(SA.textureLondon);
-      return AwesomeShader(buffer);
-    })
+    AwesomeShader(SA.inerciaIntendedOne),
+    // TODO: The effect is a bit different, the reson mabey is the linear filter
+    Builder(
+      builder: (context) {
+        final buffer = SA.inkBlotSpread.shaderBuffer;
+        buffer.feed(SA.textureRgbaNoiseMedium, wrap: WrapMode.repeat, filter: FilterMode.linear);
+        buffer.feed(SA.textureLondon);
+        return AwesomeShader(
+          buffer,
+          upSideDown: false,
+        );
+      },
+    ),
+    AwesomeShader(SA.inputTime),
+    Builder(
+      builder: (context) {
+        final bufferA = ShaderBuffer(SA.insideTheMandelbulbIiBufferA);
+        final mainBuffer = ShaderBuffer(SA.insideTheMandelbulbIi);
+        mainBuffer.feedShader(bufferA);
+        return AwesomeShader([bufferA, mainBuffer]);
+      },
+    ),
+    AwesomeShader(SA.insideTheMandelbulbIiBufferA),
+    AwesomeShader(SA.inverseBilinear.feed(SA.textureLondon)),
+    AwesomeShader(SA.ionize, upSideDown: false),
   ];
 }

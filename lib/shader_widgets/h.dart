@@ -5,7 +5,7 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // TODO: Wrap: Repeat
-    AwesomeShader('shaders/h/Hell.frag'.feed(SA.textureRgbaNoiseMedium)),
+    // TODO: Effect not match
+    // AwesomeShader(SA.hell.feed(SA.textureRgbaNoiseMedium, wrap: .repeat, filter: .linear)),
   ];
 }

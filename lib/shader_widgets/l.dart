@@ -5,23 +5,15 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // TODO: Fix texture input
-    Builder(builder: (context) {
-      final mainBuffer = SA.v2lLandmassZMorph.shaderBuffer;
-      mainBuffer.feedImageFromAsset(SA.textureLichen);
-      return AwesomeShader(mainBuffer);
-    }),
-    AwesomeShader(
-      SA.v2lLandmassZMorph.feed(SA.textureLichen),
+    //  It is quite laggy but works fine, the reason is source filter is mipmap
+    Builder(
+      builder: (context) {
+        final mainBuffer = SA.landmassZMorph.shaderBuffer;
+        mainBuffer.feed(SA.textureLichen, wrap: .repeat);
+        return AwesomeShader(mainBuffer);
+      },
     ),
-    AwesomeShader(SA.v2lLetsSelfReflect),
-  ];
-}
-
-List<Widget> shadersWidgetWithShaderBuffer() {
-  return [
-    // TODO: Fix texture input
-    shader(SA.v2lLandmassZMorph, channels: [SA.textureLichen]),
-    shader(SA.v2lLetsSelfReflect),
+    AwesomeShader(SA.letsSelfReflect),
+    AwesomeShader(SA.lightInSmoke),
   ];
 }

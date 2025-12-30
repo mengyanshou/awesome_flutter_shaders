@@ -5,16 +5,32 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    AwesomeShader(SA.v2aAStudyOfGlass),
-    Builder(builder: (context) {
-      final mainBuffer = SA.v2aAlienOcean.shaderBuffer;
-      final bufferA = SA.v2aAlienOceanBufferA.shaderBuffer;
-      mainBuffer.feed(bufferA).feed(SA.textureRgbaNoiseSmall);
-      return AwesomeShader(
-        [mainBuffer, bufferA],
-      );
-    }),
-    AwesomeShader(SA.v2aAlienSpaceJockey),
-    AwesomeShader(SA.v2aArtifactAtSea),
+    AwesomeShader(SA.aLotOfSpheres),
+    AwesomeShader(SA.aStudyOfGlass),
+    Builder(
+      builder: (context) {
+        final mainBuffer = SA.alienOcean.shaderBuffer;
+        final bufferA = SA.alienOceanBufferA.shaderBuffer;
+        mainBuffer.feed(bufferA).feed(SA.textureRgbaNoiseSmall);
+        return AwesomeShader(
+          [mainBuffer, bufferA],
+        );
+      },
+    ),
+    AwesomeShader(SA.alienSpaceJockey),
+    AwesomeShader(
+      SA.alphaClip1BitDissolve
+          .feed(SA.textureLondon)
+          .feed(
+            SA.textureGreyNoiseSmall,
+            wrap: .repeat,
+            filter: .linear,
+          ),
+      upSideDown: false,
+    ),
+    AwesomeShader(SA.angel),
+    AwesomeShader(SA.arcadePacman),
+    AwesomeShader(SA.artifactAtSea),
+    AwesomeShader(SA.atmosphereSystemTest),
   ];
 }

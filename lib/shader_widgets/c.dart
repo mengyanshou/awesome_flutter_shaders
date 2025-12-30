@@ -5,17 +5,21 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    AwesomeShader(SA.v2cColorfulUnderwaterBubblesIi),
-    // TODO 这个 channel 没必要
-    AwesomeShader(SA.v2cCubeLines.feed(SA.wall)),
-    AwesomeShader(SA.v2cCubular),
-    AwesomeShader(SA.v2cCineShaderLava),
-    AwesomeShader(SA.v2cClouds2D),
-    AwesomeShader(SA.v2cCobwebTest),
-    AwesomeShader(SA.v2cCold),
-    // Curl noise Image transition
+    AwesomeShader(SA.cineShaderLava),
+    AwesomeShader(SA.clouds2D),
+    AwesomeShader(SA.cobwebTest),
+    AwesomeShader(SA.cold),
+    AwesomeShader(SA.colorfulUnderwaterBubblesIi),
+    AwesomeShader(SA.combustibleVoronoi),
     AwesomeShader(
-      'shaders/c/Curl noise Image transition.frag'.feed(SA.wall).feed(SA.textureLondon),
+      SA.crosswarpTransition.feed(SA.textureAbstract1).feed(SA.textureLondon),
+      upSideDown: false,
+    ),
+    // TODO: No input needed
+    AwesomeShader(SA.cubeLines.feed(SA.textureLondon)),
+    AwesomeShader(SA.cubular),
+    AwesomeShader(
+      SA.curlNoiseImageTransition.feed(SA.wall).feed(SA.textureLondon),
       upSideDown: false,
     ),
   ];

@@ -5,37 +5,20 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // Spreading Frost
-    AwesomeShader('shaders/r/Rotate And Points Circle.frag'),
-    AwesomeShader('shaders/r/Red-Blue Swirl.frag'),
-    AwesomeShader('shaders/r/Raymarching Basic.frag'),
-    // TODO: Support repeat
-    AwesomeShader('shaders/r/Rainier mood.frag'.feed(SA.textureWood)),
-    //  TODO 效果不一样
-    Builder(builder: (_) {
-      final shader = SA.v2rPortalIosAr.shaderBuffer;
-      final bufferA = SA.v2rPortalIosArBufferA.shaderBuffer;
-      bufferA.feedback();
-      shader.feedShader(bufferA);
-      shader.feedImageFromAsset(SA.textureLondon);
-      return AwesomeShader([bufferA, shader]);
-    }),
-    // TODO: 卡
-    // Builder(builder: (_) {
-    //   final shader = 'shaders/r/Rainforest.frag'.shaderBuffer;
-    //   final bufferA = 'shaders/r/Rainforest BufferA.frag'.shaderBuffer;
-    //   bufferA.feedback();
-    //   shader.feedShader(bufferA);
-    //   return AwesomeShader([bufferA, shader]);
-    // }),
-    // ShaderSurfaceWrapper.builder(() {
-    //   final shader = 'shaders/r/Rainforest.frag'.shaderBuffer;
-    //   final bufferA = 'shaders/r/Rainforest BufferA.frag'.shaderBuffer;
-    //   bufferA.feedback();
-    //   shader.feedShader(bufferA);
-    //   return [bufferA, shader];
-    // }),
-    // 'shaders/r/Reclaim the streets.frag'
-    AwesomeShader(SA.v2rReclaimTheStreets),
+    // TODO: The effect is a bit different, the reson mabey is the linear filter
+    // Builder(
+    //   builder: (_) {
+    //     final shader = 'shaders/r/Rainforest.frag'.shaderBuffer;
+    //     final bufferA = 'shaders/r/Rainforest BufferA.frag'.shaderBuffer;
+    //     bufferA.feedback();
+    //     shader.feedShader(bufferA);
+    //     return AwesomeShader([bufferA, shader]);
+    //   },
+    // ),
+    AwesomeShader(SA.rainierMood.feed(SA.textureAbstract1, wrap: .repeat)),
+    AwesomeShader(SA.raymarchingBasic),
+    AwesomeShader(SA.redBlueSwirl),
+    AwesomeShader(SA.reclaimTheStreets),
+    AwesomeShader(SA.rotateAndPointsCircle),
   ];
 }

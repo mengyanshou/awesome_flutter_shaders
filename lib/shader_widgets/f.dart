@@ -5,9 +5,17 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    AwesomeShader(SA.v2fFire),
-    AwesomeShader(SA.v2fFlame),
-    AwesomeShader(SA.v2fFractalPyramid),
-    AwesomeShader(SA.v2fFullSpectrumCyber),
+    AwesomeShader(SA.fire),
+    AwesomeShader(SA.flame),
+    AwesomeShader(SA.fractalPyramid),
+    Builder(
+      builder: (_) {
+        final bufferA = SA.fracturedOrbBufferA.shaderBuffer;
+        bufferA.feed(SA.textureRgbaNoiseMedium, wrap: WrapMode.repeat, filter: FilterMode.linear);
+        final bufferB = SA.fracturedOrb.feed(bufferA);
+        return AwesomeShader([bufferA, bufferB]);
+      },
+    ),
+    AwesomeShader(SA.fullSpectrumCyber),
   ];
 }

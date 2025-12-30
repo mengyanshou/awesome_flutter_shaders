@@ -1,49 +1,52 @@
 import 'package:awesome_flutter_shaders/main.dart';
 import 'package:awesome_flutter_shaders/shaders.dart';
 import 'package:flutter/material.dart';
-import 'package:shader_buffers/shader_buffers.dart';
 import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    // Pulsar Explained
-    AwesomeShader(SA.v2pPulsarExplained),
-    // TODO 奇卡无比
-    // ShaderSurfaceWrapper.builder(() {
-    //   final shader = 'shaders/p/Pistons with Motion Blur.frag'.shaderBuffer;
-    //   shader.feedImageFromAsset(UffiziGallery);
-    //   shader.feedImageFromAsset(RGBANoiseMedium);
-    //   return [shader];
-    // }),
-    AwesomeShader('shaders/p/Phantom Star for CineShader.frag'),
-    // TODO 效果不一样
     AwesomeShader(
-      SA.v2pPlasmaGlobe.feed(SA.textureRgbaNoiseMedium),
+      SA.pageCurlEffectOnBall.shaderBuffer
+          .feed(SA.cubemapUffiziGallery)
+          .feed(SA.textureAbstract1)
+          .feed(SA.textureOrganic2),
     ),
-    // TODO 和 Shadertoy 上的效果不一样
-    Builder(builder: (_) {
-      final shader = SA.v2pPortal2BoxFlipRotation.shaderBuffer;
-      shader.feed(SA.textureLondon);
-      shader.feed(SA.textureWood);
-      return AwesomeShader([shader]);
-    }),
-    AwesomeShader(SA.v2pProteanClouds),
+    AwesomeShader(SA.pulsarExplained),
+    AwesomeShader(SA.palaceOfMind),
     AwesomeShader(
-      SA.v2pPerspexWebLattice.feed(SA.textureLondon),
-    ),
-    AwesomeShader(SA.v2pPerlinSinSphere),
-    AwesomeShader(
-      SA.v2pSimplePageCurlEffect.feed(SA.textureLondon).feed(SA.textureWood),
+      SA.parallaxTransitionWithMouse.shaderBuffer.feed(SA.textureLondon).feed(SA.textureOrganic2),
       upSideDown: false,
     ),
-    // TODO 这个的效果和 https://www.shadertoy.com/view/flVGWK 不一样
-    // Up side down
-    AwesomeShader(SA.v2pParallaxTransitionWithMouse.shaderBuffer.feed(SA.textureLondon).feed(SA.textureOrganic2)),
-    AwesomeShader(SA.v2pPalaceOfMind),
-    AwesomeShader(SA.v2pPigSquad9YearAnniversary),
-    AwesomeShader(SA.v2pPageCurlEffectOnBall.shaderBuffer
-        .feed(SA.cubemapUffiziGallery)
-        .feed(SA.textureAbstract1)
-        .feed(SA.textureOrganic2)),
+    AwesomeShader(SA.perlinSinSphere),
+    AwesomeShader(SA.perspexWebLattice.feed(SA.textureLondon), upSideDown: false),
+    AwesomeShader(SA.phantomStarForCineShader),
+    AwesomeShader(SA.pigSquad9YearAnniversary),
+    AwesomeShader(
+      SA.pistonsWithMotionBlur.shaderBuffer.feed(SA.cubemapUffiziGallery).feed(SA.textureRgbaNoiseMedium),
+    ),
+    AwesomeShader(SA.plasmaGlobe.feed(SA.textureRgbaNoiseMedium)),
+    Builder(
+      builder: (_) {
+        final shader = SA.portalIosAr.shaderBuffer;
+        final bufferA = SA.portalIosArBufferA.shaderBuffer;
+        bufferA.feedback();
+        shader.feedShader(bufferA);
+        shader.feedImageFromAsset(SA.textureLondon);
+        return AwesomeShader([bufferA, shader]);
+      },
+    ),
+    Builder(
+      builder: (_) {
+        final shader = SA.portal2BoxFlipRotation.shaderBuffer;
+        shader.feed(SA.textureLondon);
+        shader.feed(SA.textureWood);
+        return AwesomeShader(shader, upSideDown: false);
+      },
+    ),
+    AwesomeShader(SA.proteanClouds, upSideDown: false),
+    AwesomeShader(
+      SA.simplePageCurlEffect.feed(SA.textureLondon).feed(SA.textureWood),
+      upSideDown: false,
+    ),
   ];
 }

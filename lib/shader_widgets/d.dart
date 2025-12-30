@@ -5,16 +5,35 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> shadersWidget() {
   return [
-    AwesomeShader(SA.v2dDevilGlass),
-    AwesomeShader(SA.v2dDiveToCloud),
-    // TODO，需要输入颜色
-    // AswsomeShader('shaders/d/Digital Brain.frag'),
-    // divergence-free flow curly noise
-    // ! 比较卡，但能正常显示，先注释
-    // AswsomeShader('shaders/d/divergence-free flow curly noise.frag'),
-    // DULL SKULL - Prometheus.frag
-    AwesomeShader(SA.v2dDullSkullPrometheus.feed(SA.wall)),
-    // 需要鼠标点内部才有画面
-    AwesomeShader(SA.v2dDrifting),
+    AwesomeShader(SA.darkTransit),
+    AwesomeShader(SA.desireCrystal),
+    AwesomeShader(SA.devilGlass),
+    AwesomeShader(SA.diveToCloud),
+    // TODO: Effect not match
+    AwesomeShader(
+      SA.digitalBrain.feed(SA.textureRgbaNoiseSmall, wrap: WrapMode.repeat, filter: FilterMode.linear),
+    ),
+    // ! It is quite laggy but works fine, so comment it out for now
+    // AwesomeShader('shaders/d/divergence-free flow curly noise.frag'),
+    Builder(
+      builder: (context) {
+        final bufferA = SA.dodecahedronBufferA.shaderBuffer.feedback();
+        final bufferB = SA.dodecahedron.feed(bufferA);
+        return AwesomeShader([bufferA, bufferB]);
+      },
+    ),
+    AwesomeShader(SA.drifting),
+    AwesomeShader(SA.driveHome6RainWindow),
+    AwesomeShader(SA.dullSkullPrometheus.feed(SA.wall)),
+    // TODO: Look into the function of this keyboard input
+    AwesomeShader(
+      SA.dustyNebula4
+          .feed(
+            SA.textureRgbaNoiseMedium,
+            wrap: WrapMode.mirror,
+            filter: FilterMode.linear,
+          )
+          .feedKeyboard(),
+    ),
   ];
 }
