@@ -1,142 +1,131 @@
 # Awesome Flutter Shaders
 
-awesome flutter shaders, manual migration from https://www.shadertoy.com some of most viewed shaders one by one
+一个 Flutter Shader 作品集（Gallery）：将 Shadertoy 风格的片元着色器（`.frag`）迁移到 Flutter runtime shader，并以网格列表方式展示与预览。
 
-## Considerations
-Currently, Flutter supports some shaders, but there isn't a collection to showcase Flutter-supported shader examples.
+本仓库定位是“可运行的迁移样例集合”：每个 shader 都对应一个小组件，必要时会绑定纹理输入（iChannel0..）或使用 BufferA/BufferB 做多 pass。
 
-This surprising discovery led me to learn a bit about shaders and realize that some shaders can be directly used in Flutter. I then embarked on extensive exploration, manually migrating shaders I found to Flutter. Although most attempts were unsuccessful, I eventually obtained some usable shaders.
+## 功能
 
-## Issues
-The problems encountered can be categorized into three types:
-1. Compilation errors such as `Only simple shader sampling is supported` or `syntax error, unexpected IDENTIFIER`. The former is particularly challenging to resolve.
-2. Runtime errors like `for loop(;;)`, unsupported `uvec3`, or `program is too large`.
-3. Shader effects not matching expectations, typically when multiple buffers are involved, resulting in discrepancies from the effect displayed on the `shadertoy` website.
+- 首页 `GridView` 展示多个 shader 卡片（包含缩略渲染 + 名称）
+- 点击卡片进入全屏；双击退出并恢复播放
+- 支持单 pass / 多 pass 与纹理输入
 
-## Gallery
+入口：`lib/main.dart`
 
-[Gallery](https://mengyanshou.github.io/awesome_flutter_shaders/)
+## 运行要求
 
-## Migration
-For example, consider https://www.shadertoy.com/view/ctSSDR:
+- Dart：`>=3.10.0 <4.0.0`（见 `pubspec.yaml`）
+- Flutter：按常规方式运行到 iOS/Android/macOS/Web 均可
+
+## 重要：依赖包含本地 path（需要你自行调整）
+
+当前 `pubspec.yaml` 里存在作者本机绝对路径依赖：
+
+- `shader_graph: path: /Users/.../shader_graph`
+- `dependency_overrides.shader_buffers: path: /Users/.../shader_buffers`
+
+如果你不在相同环境下开发，`flutter pub get` 会失败。你可以选择：
+
+1) 把 `path:` 改成你本地真实路径（适合本地开发）
+2) 改回 pub.dev / git 依赖并移除 `dependency_overrides`（适合开源/CI）
+
+## 快速开始
+
+```bash
+flutter pub get
+flutter run
+```
+
+运行到指定设备：
+
+```bash
+flutter run -d macos
+flutter run -d chrome
+```
+
+## Shader 文件约定（Shadertoy 风格）
+
+shader 通常实现 Shadertoy 风格入口函数：
 
 ```glsl
-#define PI 3.1415926535897932384626433832795
-
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 center = fragCoord / iResolution.xy - vec2(0.5, 0.5);
-    
-    float dist = length(center);
-    float p = (atan(center.y, center.x)) / (2.0 * PI);
-    float numStripes = 12.0;
-        
-    bool stripeA = mod(floor((p * numStripes) + (sin(dist * 10.0 + sin(iTime)))), 2.0) == 1.0;
-    bool stripeB = mod(floor((p * numStripes) - (sin(dist * 10.0 + cos(iTime)))), 2.0) == 1.0;
-    
-    vec3 col;
-    
-    if (stripeA && stripeB) {
-        col = vec3(0.4);
-    } else if (!stripeA && stripeB) {
-        col = vec3(0.5, 0.2, 0.1);
-    } else if (stripeA && !stripeB) {
-        col = vec3(0.3, 0.2, 0.1);
-    } else {
-        col = vec3(0.7);
-    }
-
-    fragColor = vec4(col, 1.0);
-}
+void mainImage(out vec4 fragColor, in vec2 fragCoord);
 ```
-Traditionally, you would change `void mainImage(out vec4 fragColor, in vec2 fragCoord)` to void `main(void)` and then import the `runtime_effect.glsl` package at the top of the current file, modifying the main function as follows:
-```
-#include <flutter/runtime_effect.glsl>
-void main(void) {
-    iResolution = uSize;
-    vec2 fragCoord = FlutterFragCoord();
-    // *
-}
-```
-However, this approach becomes cumbersome when migrating many shaders.
 
-Referring to the shader_buffers approach, you only need to import `#include <common/common_header.frag>` at the top and `#include <common/main_shadertoy.frag>` at the bottom of the file. If the current shader requires inputs like iChannel0, iChannel1..., declare them below the import line:
+每个 `.frag` 顶部/底部分别 include：
 
-```uniform sampler2D iChannel0;```
-You can determine the number and type of inputs from the shader's details on shadertoy.
-
-Here is the complete code for this example:
 ```glsl
 #include <common/common_header.frag>
-#define PI 3.1415926535897932384626433832795
-
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 center = fragCoord / iResolution.xy - vec2(0.5, 0.5);
-    
-    float dist = length(center);
-    float p = (atan(center.y, center.x)) / (2.0 * PI);
-    float numStripes = 12.0;
-        
-    bool stripeA = mod(floor((p * numStripes) + (sin(dist * 10.0 + sin(iTime)))), 2.0) == 1.0;
-    bool stripeB = mod(floor((p * numStripes) - (sin(dist * 10.0 + cos(iTime)))), 2.0) == 1.0;
-    
-    vec3 col;
-    
-    if (stripeA && stripeB) {
-        col = vec3(0.4);
-    } else if (!stripeA && stripeB) {
-        col = vec3(0.5, 0.2, 0.1);
-    } else if (stripeA && !stripeB) {
-        col = vec3(0.3, 0.2, 0.1);
-    } else {
-        col = vec3(0.7);
-    }
-
-    fragColor = vec4(col, 1.0);
-}
+// ... your shader code ...
 #include <common/main_shadertoy.frag>
 ```
-common_header.frag
+
+公共文件位置：
+
+- `shaders/common/common_header.frag`
+- `shaders/common/main_shadertoy.frag`
+
+### iChannel 输入
+
+如果 shader 需要纹理输入，按需声明：
+
 ```glsl
-// This include is mandatory for all shaders since the [LayerBuffer] always
-// sets the uniforms defined here
-#version 460 core
-#include <flutter/runtime_effect.glsl>
-precision mediump float;
-
-// Add `uniform sampler2D iChannel[0-N];` into the fragment source as needed
-uniform vec2 iResolution;
-uniform float iTime;
-uniform float iFrame;
-uniform vec4 iMouse;
-
-out vec4 fragColor;
-```
-main_shadertoy
-```glsl
-void main() {
-    // Shader compiler optimizations will remove unusued uniforms.
-    // Since [LayerBuffer.computeLayer] needs to always set these uniforms, when 
-    // this happens, an error occurs when calling setFloat()
-    // `IndexError (RangeError (index): Index out of range: index should be less than 3: 3)`
-    // With the following line, the compiler will not remove unusued
-    float tmp = (iFrame/iFrame) * (iMouse.x/iMouse.x) * 
-        (iTime/iTime) * (iResolution.x/iResolution.x);
-    if (tmp != 1.) tmp = 1.;
-
-    mainImage( fragColor, FlutterFragCoord().xy * tmp );
-}
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
 ```
 
-<iframe width="640" height="360" frameborder="0" src="https://www.shadertoy.com/embed/ldfyzl?gui=true&t=10&paused=true&muted=false" allowfullscreen></iframe>
+然后在 Dart 侧把纹理“喂”给 shader（见下节）。
 
+## 如何新增一个 shader
 
-传入的鼠标事件好像没有 * radio
+1) 新增 `.frag`
 
-想一个防作弊的方案，如何防止用户用同一个激活码激活所有的app
+- 放到 `shaders/<首字母>/`（仓库按字母分组）
+- 确保 include 了公共头尾（上一节）
 
+2) 在 `pubspec.yaml` 注册 shader
 
-sudo scutil --set ComputerName "Laurie's MacBook-Pro-M2Max"
-sudo scutil --set HostName "Laurie's MacBook-Pro-M2Max"
-sudo scutil --set LocalHostName "Laurie's MacBook-Pro-M2Max"
+把 shader 路径加入 `flutter:` -> `shaders:` 列表，否则 Flutter 不会编译/打包。
+
+3) 加到展示列表
+
+在 `lib/shader_widgets/<字母>.dart` 中加入一个卡片：
+
+```dart
+AwesomeShader('shaders/x/Your Shader.frag')
+```
+
+4) 绑定纹理/多 pass（示例）
+
+```dart
+final mainBuffer = 'shaders/.../Main.frag'.shaderBuffer;
+final bufferA = 'shaders/.../BufferA.frag'.shaderBuffer;
+
+mainBuffer.feed(bufferA).feed(SA.textureRgbaNoiseSmall);
+return AwesomeShader([mainBuffer, bufferA]);
+```
+
+常用纹理/cubemap 路径常量在 `lib/shaders.dart`（`SA.texture...` / `SA.cubemap...`）。
+
+## 目录结构
+
+- `lib/main.dart`：网格展示、点击全屏逻辑
+- `lib/shaders.dart`：shader/纹理/cubemap 路径常量
+- `lib/shader_widgets/`：按字母分组的 shader 列表
+- `shaders/`：`.frag` 源码（含 `common/` 公共 include）
+- `assets/`：纹理与 cubemap
+
+## 常见问题
+
+不同平台的 Flutter runtime shader/编译器限制不完全一致，常见问题包括：
+
+- 编译失败：采样限制、语法差异、部分类型/特性不可用
+- 黑屏/崩溃：循环/数组/程序体积限制
+- 效果不一致：多 pass、精度（highp/mediump）、坐标系差异
+
+排查建议：
+
+1) 确认该 shader 已加入 `pubspec.yaml` 的 `flutter.shaders`
+2) 确认所需 iChannel 已在 Dart 侧喂入
+3) 逐步降低复杂度（循环次数、采样次数、分支）定位不兼容点
 
 

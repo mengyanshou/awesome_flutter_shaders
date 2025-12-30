@@ -12,7 +12,7 @@ description: Adjust the current shader file to follow the Flutter-compatible Sha
      ```glsl
      // --- Migrate Log ---
      // {中文改动摘要}
-     // --- Migrate Log (EN) ---
+     //
      // {English change summary}
      
      #include <../common/common_header.frag>
@@ -29,6 +29,13 @@ description: Adjust the current shader file to follow the Flutter-compatible Sha
      - 对 `iChannel0..3`：优先用 `SG_TEXELFETCH0..3(ivec2_ipos)`（使用 `common_header.frag` 内的 `iChannelResolution0..3`，由 Dart 侧自动填充）
      - 其他 sampler：使用 `SG_TEXELFETCH(sampler, ivec2_ipos, sizePx)`，其中 `sizePx` 可来自你已有的常量，或从上游逻辑传入
      - 只有在“纹理尺寸是固定且不由引擎提供”的情况下，才定义常量（例如 `const vec2 keyboardSize = vec2(256.0, 1.0);`）
+   - 关于 `iChannel0..3` 的 wrap/filter（**必须使用 `SG_TEX0..3`**）：
+     - **将所有 `texture(iChannelN, uv)` 替换为对应的 `SG_TEX0..3` 宏**：
+       - `SG_TEX0(iChannel0, uv)` / `SG_TEX1(iChannel1, uv)` / `SG_TEX2(iChannel2, uv)` / `SG_TEX3(iChannel3, uv)`
+     - 这些宏会读取 `iChannelWrap` / `iChannelFilter` / `iChannelResolutionN`，在 **shader 内部**实现 wrap + linear/nearest，从而不依赖 Flutter 后端 `texture()` 的默认 sampler filter。
+     - **若不使用 `SG_TEX0..3`，wrap 和 filter uniform 将被完全忽视**，导致画面与 Shadertoy 不一致。
+     - 对于 `textureLod(iChannelN, uv, lod)` 等显式 LOD 采样，改为等价的 `SG_TEX0..3` 调用（LOD 参数目前被忽略）。
+     - 性能提示：当 filter=linear 时会做 4 次采样（手动双线性），通常比单次 `texture()` 慢；当 filter=nearest 时开销接近单次采样。
    - **文件底部**必须包含 `#include <../common/main_shadertoy.frag>`。
    - 如果 shader 有共同的代码或函数，且有现有的 Common.frag 文件，直接导入，例如 `#include <../common/DULL SKULL - Prometheus Common.frag>`。
 
@@ -89,7 +96,7 @@ description: Adjust the current shader file to follow the Flutter-compatible Sha
      // --- Migrate Log ---
      // 初始化局部变量以避免未定义行为
      // 保护 log(r)*r/dr 防止 r=0
-     // --- Migrate Log (EN) ---
+     //
      // Initialize local variables to avoid undefined behavior
      // Protect log(r)*r/dr against r=0
      ```
