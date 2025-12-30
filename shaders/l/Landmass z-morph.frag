@@ -24,8 +24,8 @@ float bo(vec3 p,vec3 r) {p=abs(p)-r;return max(max(p.x,p.y),p.z);}
 mat2 r2(float r){return mat2(cos(r),sin(r),-sin(r),cos(r));}
 float smin( float d1, float d2, float k ){  float h = max(k-abs(d1-d2),0.0);return min(d1,d2)-h*h*0.25/k; }
 float smax( float d1, float d2, float k ){  float h = max(k-abs(-d1-d2),0.0);return max(-d1,d2)+h*h*0.25/k; }
-vec4 texNoise(vec2 uv){ float f = 0.0; f+=texture(iChannel0, uv*.125).r*.5; f+=texture(iChannel0,uv*.25).r*.25;
-                       f+=texture(iChannel0,uv*.5).r*.125; f+=texture(iChannel0,uv*1.).r*.125; f=pow(f,1.2);return vec4(f*.45+.05);} // 修改 1 / Change 1: 移除 C 风格浮点后缀 (0.0f → 0.0)
+vec4 texNoise(vec2 uv){ float f = 0.0; f+=SG_TEX0(iChannel0, uv*.125).r*.5; f+=SG_TEX0(iChannel0,uv*.25).r*.25;
+                       f+=SG_TEX0(iChannel0,uv*.5).r*.125; f+=SG_TEX0(iChannel0,uv*1.).r*.125; f=pow(f,1.2);return vec4(f*.45+.05);} // 修改 1 / Change 1: 移除 C 风格浮点后缀 (0.0f → 0.0)
 vec2 fbAngular( vec3 p )
 {
     float mMix=mix(2.0,1.0,clamp(mixer,.5,1.0)*2.0-1.0);//MATERIAL ID MIXER

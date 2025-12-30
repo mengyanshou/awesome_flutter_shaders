@@ -114,7 +114,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uvTex = uv * 0.5 + 0.5;
 
     // Get the color from the distortion texture, adding time to make it move (use vec2 to offset UV)
-    vec4 dist = texture(iChannel1, uvTex + vec2(iTime * 0.02));
+    vec4 dist = sg_texture0(iChannel1, uvTex + vec2(iTime * 0.02));
 
     // Use the red channel of the distortion texture to create a small offset
     vec2 distortionOffset = dist.rr * vec2(0.0155, 0.0155);

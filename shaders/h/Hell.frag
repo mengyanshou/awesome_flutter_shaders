@@ -1,18 +1,22 @@
 // --- Migrate Log ---
-// 添加 Flutter/SkSL 公共 include；替换 shader 中的 textureLod 调用为 texture，以兼容 Impeller/SkSL；声明缺失的采样器 `iChannel0`。
-// --- Migrate Log (EN) ---
-// Add Flutter/SkSL common include; replace textureLod calls with texture for Impeller/SkSL compatibility; declare missing sampler `iChannel0`.
+// 使用 SG_TEX0 宏替换 textureLod(iChannel0)，以支持 wrap/filter uniforms
+// 声明并使用 iChannel0 sampler（若未声明）
+// 保持变量初始化，避免 SkSL/Impeller 对未初始化值的敏感性
+//
+// Replace textureLod(iChannel0) with SG_TEX0 macro for wrap/filter support
+// Declare and use iChannel0 sampler if missing
+// Keep local variables initialized to avoid SkSL/Impeller sensitivity
 
 #include <../common/common_header.frag>
 
+// Declare Shadertoy-style input channels used by this shader
 uniform sampler2D iChannel0;
 
 // Copyright Inigo Quilez, 2013 - https://iquilezles.org/
 // I am the sole copyright owner of this Work. You cannot
 // host, display, distribute or share this Work neither as
 // is or altered, in any form including physical and
-// digital. You cannot use this Work in any commercial or
-// non-commercial product, website or project. You cannot
+// digital. You cannot use this Work in any commercial or// non-commercial product, website or project. You cannot
 // sell this Work and you cannot mint an NFTs of it. You
 // cannot use this Work to train AI models. I share this
 // Work for educational purposes, you can link to it as
@@ -27,7 +31,7 @@ float noise( in vec3 x )
 	f = f*f*(3.0-2.0*f);
 	
 	vec2 uv = (p.xy+vec2(37.0,17.0)*p.z) + f.xy;
-	vec2 rg = texture( iChannel0, (uv + 0.5) / 256.0 ).yx;
+	vec2 rg = SG_TEX0(iChannel0, (uv + 0.5) / 256.0).yx;
 	return mix( rg.x, rg.y, f.z );
 }
 
@@ -96,8 +100,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	
     // camera
     vec3 ro = 4.0*normalize(vec3(1.0, 1.5, 0.0));
-	vec3 ta = vec3(0.0, 1.0, 0.0) + 0.05*(-1.0+2.0*texture( iChannel0, iTime*vec2(0.013,0.008) ).xyz);
-	float cr = 0.5 * cos(0.7 * iTime);
+	vec3 ta = vec3(0.0, 1.0, 0.0) + 0.05*(-1.0+2.0*SG_TEX0(iChannel0, iTime*vec2(0.013,0.008)).xyz);
+	float cr = 0.5*cos(0.7*iTime);
+	
 	// build ray
     vec3 ww = normalize( ta - ro);
     vec3 uu = normalize(cross( vec3(sin(cr),cos(cr),0.0), ww ));
@@ -116,4 +121,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	
     fragColor = vec4( col, 1.0 );
 }
+
 #include <../common/main_shadertoy.frag>

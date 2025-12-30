@@ -2,12 +2,12 @@
 // 初始化局部变量 uv
 // 保护除以 r.x 防止为 0
 // 声明 iChannel0 uniform
-// 替换 textureLod 为 texture
+// 替换 texture(iChannel0, ...) 为 SG_TEX0(...) 以使用可控 wrap/filter
 // --- Migrate Log (EN) ---
 // Initialize local variable uv
 // Protect against division by r.x = 0
 // Declare iChannel0 uniform
-// Replace textureLod with texture
+// Replace texture(iChannel0, ...) with SG_TEX0(...) for controlled wrap/filter
 
 #include <../common/common_header.frag>
 
@@ -61,16 +61,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         {
             uv.z = (float(i)+ran.x)/float(HSAMPLES-1);
             uv.xy = off + vec2( 0.2/(r.x*(1.0-0.6*uv.z)), r.y );
-            if( texture( iChannel0, uv.xy ).x < uv.z )
+            if( SG_TEX0( iChannel0, uv.xy ).x < uv.z )
                 break;
         }
 
         // shading/coloring
-        float dif = clamp( 8.0*(texture(iChannel0, uv.xy).x - texture(iChannel0, uv.xy+vec2(0.02,0.0)).x), 0.0, 1.0 );
+        float dif = clamp( 8.0*(SG_TEX0( iChannel0, uv.xy).x - SG_TEX0( iChannel0, uv.xy+vec2(0.02,0.0)).x), 0.0, 1.0 );
         vec3  col = vec3(1.0);
-        col *= 1.0-texture( iChannel0, 1.0*uv.xy ).xyz;
-        col = mix( col*1.2, 1.5*texture( iChannel0, vec2(uv.x*0.4,0.1*sin(2.0*uv.y*3.1316)) ).yzx, 1.0-0.7*col );
-        col = mix( col, vec3(0.2,0.1,0.1), 0.5-0.5*smoothstep( 0.0, 0.3, 0.3-0.8*uv.z + texture( iChannel0, 2.0*uv.xy + uv.z ).x ) );
+        col *= 1.0-SG_TEX0( iChannel0, 1.0*uv.xy ).xyz;
+        col = mix( col*1.2, 1.5*SG_TEX0( iChannel0, vec2(uv.x*0.4,0.1*sin(2.0*uv.y*3.1316)) ).yzx, 1.0-0.7*col );
+        col = mix( col, vec3(0.2,0.1,0.1), 0.5-0.5*smoothstep( 0.0, 0.3, 0.3-0.8*uv.z + SG_TEX0( iChannel0, 2.0*uv.xy + uv.z ).x ) );
         col *= 1.0-1.3*uv.z;
         col *= 1.3-0.2*dif;
         col *= exp(-0.35/(0.0001+r.x));

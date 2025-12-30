@@ -81,7 +81,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     float intensity = mix(0.01, 0.15, smoothstep(0.1, 0.6, abs(fract(0.05 * iTime + 0.5) * 2.0 - 1.0)));
     vec3 n = vec3(circles, sqrt(1.0 - dot(circles, circles)));
-    vec3 color = texture(iChannel0, uv / resolution - intensity * n.xy).rgb + 5.0 * pow(clamp(dot(n, normalize(vec3(1.0, 0.7, 0.5))), 0.0, 1.0), 6.0);
+    vec3 color = SG_TEX0(iChannel0, uv / resolution - intensity * n.xy).rgb + 5.0 * pow(clamp(dot(n, normalize(vec3(1.0, 0.7, 0.5))), 0.0, 1.0), 6.0);
     fragColor = vec4(color, 1.0);
 }
 

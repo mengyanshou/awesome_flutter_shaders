@@ -5,6 +5,7 @@
 
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
 
 // The sun, the sky and the clouds. By StillTravelling
 // https://www.shadertoy.com/view/tdSXzD

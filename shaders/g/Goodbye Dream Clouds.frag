@@ -1,15 +1,16 @@
-
 // --- Migrate Log ---
-// 添加必要的 include 指令以兼容 Flutter/Skia
-// 修复 vec3a 类型错误，改为 vec3
-// 替换 Hash 函数以避免位操作，使用三角函数版本
-// 替换 Noise 函数为程序化实现，移除 iChannel0 依赖
-// Add required include directives for Flutter/Skia compatibility
-// Fixed vec3a type error, changed to vec3
-// Replaced hash function to avoid bitwise operations, using trigonometric version
-// Replaced noise function with procedural implementation, removed iChannel0 dependency
+// 使用 SG_TEX0 宏替换 textureLod(iChannel0)，以支持 wrap/filter uniforms
+// 初始化局部变量以避免未定义行为
+// 保护除以0操作 (depthAlphaSum 分母)
+//
+// Replace textureLod(iChannel0) with SG_TEX0 macro for wrap/filter support
+// Initialize local variables to avoid undefined behavior
+// Protect division by zero (depthAlphaSum denominator)
 
 #include <../common/common_header.frag>
+
+// Declare Shadertoy-style input channels used by this shader
+uniform sampler2D iChannel0;
 
 //
 // Clouds shader from Goodbye Dream, released at Outline 2024
@@ -57,43 +58,29 @@
 
 #define Loop_Max 159
 
-float hashu(vec2 q) {
-    return fract(sin(dot(q, vec2(12.9898, 78.233))) * 43758.5453);
+// Simple float-based hash to avoid unsigned integer/bitwise ops that can
+// cause spirv_cross/Impeller to crash during GLSL->SPIR-V translation.
+// This is a stable, well-known 2D->1D hash used in many shaders.
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
-float hash(vec2 n) {
-    return hashu(n);
-}
 
-
-// Simple hash function for 3D noise
-vec4 hash4(vec3 p) {
-    p = vec3(dot(p,vec3(127.1,311.7, 74.7)),
-             dot(p,vec3(269.5,183.3,246.1)),
-             dot(p,vec3(113.5,271.9,124.6)));
-    return -1.0 + 2.0 * fract(sin(p.xyzx + 20.0) * 43758.5453123);
-}
-
-float noise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
+float noise(vec3 c)
+{
+    // This the shadertoy built-in "RGBA Noise Medium" / 3D noise by iq
+    //
+    // The actual demo uses a larger precalculated noise texture,
+    // based on the triple round hash function found here: 
+    // https://nullprogram.com/blog/2018/07/31/
     
-    // Cubic smoothstep
-    f = f * f * (3.0 - 2.0 * f);
-    
-    // 8 vertex contributions
-    return mix(
-        mix(mix(dot(hash4(i + vec3(0,0,0)).xyz, f - vec3(0,0,0)),
-                dot(hash4(i + vec3(1,0,0)).xyz, f - vec3(1,0,0)), f.x),
-            mix(dot(hash4(i + vec3(0,1,0)).xyz, f - vec3(0,1,0)),
-                dot(hash4(i + vec3(1,1,0)).xyz, f - vec3(1,1,0)), f.x), f.y),
-        mix(mix(dot(hash4(i + vec3(0,0,1)).xyz, f - vec3(0,0,1)),
-                dot(hash4(i + vec3(1,0,1)).xyz, f - vec3(1,0,1)), f.x),
-            mix(dot(hash4(i + vec3(0,1,1)).xyz, f - vec3(0,1,1)),
-                dot(hash4(i + vec3(1,1,1)).xyz, f - vec3(1,1,1)), f.x), f.y), f.z)
-        * 0.5 + 0.5;
+    vec3 p = floor(c);
+    vec3 f = fract(c);
+	f = f*f*(3.0-2.0*f);
+	vec2 uv = (p.xy+vec2(37.0,239.0)*p.z) + f.xy;
+    vec2 rg = SG_TEX0(iChannel0, (uv+0.5)/256.0).yx;
+	return mix( rg.x, rg.y, f.z )*2.0-1.0;
 }
-
 
 float cloudDensity(vec3 p, float len) {
     float linearField = (p.y * _BaseGradient + _BaseOffset) * _BaseWeight;
@@ -219,7 +206,7 @@ vec4 rm(vec3 ro, vec3 rd, vec2 uv) {
         return vec4(vec3((float(n)/float(Loop_Max))), 1.0);
 
 
-    float depthAlpha = 1.0 - depthAlphaSum / (sum.a + 0.00001);
+    float depthAlpha = 1.0 - depthAlphaSum / (sum.a + 1e-5);
 
     // if alpha has reached _AlphaMax
     // clouds should be fully opaque
@@ -327,4 +314,3 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 }
 
 #include <../common/main_shadertoy.frag>
- 

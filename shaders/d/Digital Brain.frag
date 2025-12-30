@@ -1,10 +1,16 @@
 // --- Migrate Log ---
-// 添加 Flutter 兼容性 include 文件，声明 iChannel0 uniform
-// Added Flutter compatibility includes, declared iChannel0 uniform
-// by srtuss, 2013
+// 修复 vec2 += float（改为 vec2(...)）以兼容 SkSL；
+// 在文件顶部加入共用 include，并补充缺失的 `uniform sampler2D iChannel0`。
+// 保证所有局部变量已显式初始化（无需改动）
+//
+// Fix vec2 += float (changed to vec2(...)) for SkSL compatibility;
+// Add common include at top and declare missing `uniform sampler2D iChannel0`.
+// Ensure local variables are explicitly initialized (no changes needed)
 
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
+
+// by srtuss, 2013
 
 // rotate position around axis
 vec2 rotate(vec2 p, float a)
@@ -84,7 +90,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	// a bit of camera movement
 	uv *= 0.6 + sin(iTime * 0.1) * 0.4;
 	uv = rotate(uv, sin(iTime * 0.3) * 1.0);
-	uv += iTime * 0.4;
+	uv += vec2(iTime * 0.4);
 	
 	
 	// add some noise octaves
@@ -127,7 +133,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	v *= exp(-0.6 * length(suv)) * 1.2;
 	
 	// use texture channel0 for color? why not.
-	vec3 cexp = texture(iChannel0, uv * 0.001).xyz * 3.0 + texture(iChannel0, uv * 0.01).xyz;//vec3(1.0, 2.0, 4.0);
+	vec3 cexp = texture(iChannel0, uv * 0.001).xyz * 3.0 + texture(iChannel0, uv * 0.01).xyz;
 	cexp *= 1.4;
 	
 	// old blueish color set

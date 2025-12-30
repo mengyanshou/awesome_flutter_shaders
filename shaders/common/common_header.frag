@@ -24,6 +24,11 @@ uniform vec4 iMouse;
 // 0 = clamp, 1 = repeat, 2 = mirror.
 uniform vec4 iChannelWrap;
 
+// Shadertoy-style per-channel filter modes (x/y/z/w == iChannel0..3).
+// Encoded as floats:
+// 0 = linear, 1 = nearest, 2 = mipmap (currently best-effort / may be unsupported).
+uniform vec4 iChannelFilter;
+
 // iChannel0..3 对应输入纹理的像素尺寸（width,height），用于 texel-center / texelFetch 替代。
 //
 // Per-channel input texture resolution in pixels (width,height) for iChannel0..3.
@@ -31,6 +36,8 @@ uniform vec2 iChannelResolution0;
 uniform vec2 iChannelResolution1;
 uniform vec2 iChannelResolution2;
 uniform vec2 iChannelResolution3;
+
+// TODO: 要不要考虑直接在这里定义各个 iChannelN 的 sampler2D？
 
 vec2 sg_wrapUv(vec2 uv, float mode) {
 	// Clamp / Clamp
@@ -102,8 +109,71 @@ vec2 sg_texelCenterUv(ivec2 ipos, vec2 sizePx) {
 // Convenience macros (only take effect when used).
 // IMPORTANT: avoid passing `sampler2D` as a function parameter (may fail on SkSL/Impeller).
 #define SG_SAMPLE(tex, uv, mode) texture(tex, sg_wrapUv(uv, mode))
-#define SG_TEX0(tex, uv) SG_SAMPLE(tex, uv, iChannelWrap.x)
-#define SG_TEX1(tex, uv) SG_SAMPLE(tex, uv, iChannelWrap.y)
-#define SG_TEX2(tex, uv) SG_SAMPLE(tex, uv, iChannelWrap.z)
-#define SG_TEX3(tex, uv) SG_SAMPLE(tex, uv, iChannelWrap.w)
+
+// Shader-side bilinear filtering (best-effort).
+// We implement this explicitly so `FilterMode.linear` remains meaningful even
+// if the backend uses a fixed sampler filter (e.g. nearest).
+//
+// Notes:
+// - `wrapMode` is applied in UV space first.
+// - Texel coords are clamped to the texture bounds.
+// - This matches our existing wrap-as-UV-transform approach (no true sampler wrap).
+#define SG_LINEAR_ST(uv, wrapMode, sizePx) (sg_wrapUv((uv), (wrapMode)) * (sizePx) - 0.5)
+#define SG_LINEAR_I0(uv, wrapMode, sizePx) (floor(SG_LINEAR_ST((uv), (wrapMode), (sizePx))))
+#define SG_LINEAR_F(uv, wrapMode, sizePx) (fract(SG_LINEAR_ST((uv), (wrapMode), (sizePx))))
+#define SG_TEXEL_UV_FROM_I(i, sizePx) ((clamp((i), vec2(0.0), (sizePx) - 1.0) + 0.5) / (sizePx))
+
+#define SG_SAMPLE_LINEAR(tex, uv, wrapMode, sizePx) \
+	(mix( \
+		mix( \
+			texture((tex), SG_TEXEL_UV_FROM_I(SG_LINEAR_I0((uv), (wrapMode), (sizePx)), (sizePx))), \
+			texture((tex), SG_TEXEL_UV_FROM_I(SG_LINEAR_I0((uv), (wrapMode), (sizePx)) + vec2(1.0, 0.0), (sizePx))), \
+			SG_LINEAR_F((uv), (wrapMode), (sizePx)).x \
+		), \
+		mix( \
+			texture((tex), SG_TEXEL_UV_FROM_I(SG_LINEAR_I0((uv), (wrapMode), (sizePx)) + vec2(0.0, 1.0), (sizePx))), \
+			texture((tex), SG_TEXEL_UV_FROM_I(SG_LINEAR_I0((uv), (wrapMode), (sizePx)) + vec2(1.0, 1.0), (sizePx))), \
+			SG_LINEAR_F((uv), (wrapMode), (sizePx)).x \
+		), \
+		SG_LINEAR_F((uv), (wrapMode), (sizePx)).y \
+	))
+
+// Helper: compute UV for nearest sampling (round to nearest texel, clamp, then to texel-center)
+#define SG_NEAREST_UV(uv, wrapMode, sizePx) \
+	(clamp(floor(sg_wrapUv((uv), (wrapMode)) * (sizePx) + 0.5), vec2(0.0), (sizePx) - 1.0) + 0.5) / (sizePx)
+
+// Filtered sampling: 0=linear, 1=nearest. (2=mipmap reserved)
+// Implemented shader-side to avoid relying on backend sampler state.
+#define SG_SAMPLE_FILTER(tex, uv, wrapMode, filterMode, sizePx) \
+	(((filterMode) < 0.5) ? SG_SAMPLE_LINEAR((tex), (uv), (wrapMode), (sizePx)) : texture((tex), SG_NEAREST_UV((uv), (wrapMode), (sizePx))))
+
+
+#define SG_TEX0(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.x, iChannelFilter.x, SG_CHANNEL_SIZE0)
+#define SG_TEX1(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.y, iChannelFilter.y, SG_CHANNEL_SIZE1)
+#define SG_TEX2(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.z, iChannelFilter.z, SG_CHANNEL_SIZE2)
+#define SG_TEX3(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.w, iChannelFilter.w, SG_CHANNEL_SIZE3)
+
+// Filtered sampling: 0=linear, 1=nearest. (2=mipmap reserved)
+// Implemented shader-side to avoid relying on backend sampler state.
+vec4 sg_sample_filter(sampler2D tex, vec2 uv, float wrapMode, float filterMode, vec2 sizePx) {
+    if (filterMode < 0.5) {
+        return SG_SAMPLE_LINEAR(tex, uv, wrapMode, sizePx);
+    } else {
+        return texture(tex, SG_NEAREST_UV(uv, wrapMode, sizePx));
+    }
+}
+vec4 sg_texture0(sampler2D tex, vec2 uv) {
+	return sg_sample_filter(tex, uv, iChannelWrap.x, iChannelFilter.x, SG_CHANNEL_SIZE0);
+}
+
+// TODO: 非常奇怪，在编写的过程中，传递 sampler2D 作为参数一直有运行报错，但现在又没了
+vec4 sg_texture(int idx, sampler2D tex, vec2 uv) {
+    switch (idx) {
+        case 0: return SG_TEX0(tex, uv);
+        case 1: return SG_TEX1(tex, uv);
+        case 2: return SG_TEX2(tex, uv);
+        default: return SG_TEX3(tex, uv);
+    }
+}
+
 out vec4 fragColor;
