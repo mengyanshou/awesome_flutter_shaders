@@ -61,12 +61,11 @@ vec2 sg_wrapUv(vec2 uv, float mode) {
 //
 // Flutter 可用的 texelFetch 替代方案（避免 sampler2D 作为函数参数）
 //
-// Flutter-usable texelFetch replacement (no sampler2D params)
-//
-
 // 把整型 texel 坐标转换为 texel center 的 UV，并再次“吸附”到中心，
 // 用于减少某些 GPU 上因微小 UV 误差造成的线性混合。
 //
+// Flutter-usable texelFetch replacement (no sampler2D params)
+
 // Convert integer texel coord -> UV at texel center, then "snap" to center again
 // to reduce accidental linear mixing due to tiny UV errors on some GPUs.
 vec2 sg_texelCenterUv(ivec2 ipos, vec2 sizePx) {
@@ -153,6 +152,15 @@ vec2 sg_texelCenterUv(ivec2 ipos, vec2 sizePx) {
 #define SG_TEX2(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.z, iChannelFilter.z, SG_CHANNEL_SIZE2)
 #define SG_TEX3(tex, uv) SG_SAMPLE_FILTER((tex), (uv), iChannelWrap.w, iChannelFilter.w, SG_CHANNEL_SIZE3)
 
+
+
+
+// TODO:
+// 非常奇怪，在编写的过程中，传递 sampler2D 在 awesome_flutter_shaders 的 runtime 下正常
+// 但是在当前 example 中有运行报错
+//
+// It's very strange that passing sampler2D works fine in awesome_flutter_shaders runtime
+// but causes runtime error in the current example
 // Filtered sampling: 0=linear, 1=nearest. (2=mipmap reserved)
 // Implemented shader-side to avoid relying on backend sampler state.
 vec4 sg_sample_filter(sampler2D tex, vec2 uv, float wrapMode, float filterMode, vec2 sizePx) {
@@ -165,8 +173,6 @@ vec4 sg_sample_filter(sampler2D tex, vec2 uv, float wrapMode, float filterMode, 
 vec4 sg_texture0(sampler2D tex, vec2 uv) {
 	return sg_sample_filter(tex, uv, iChannelWrap.x, iChannelFilter.x, SG_CHANNEL_SIZE0);
 }
-
-// TODO: 非常奇怪，在编写的过程中，传递 sampler2D 作为参数一直有运行报错，但现在又没了
 vec4 sg_texture(int idx, sampler2D tex, vec2 uv) {
     switch (idx) {
         case 0: return SG_TEX0(tex, uv);

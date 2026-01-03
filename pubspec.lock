@@ -205,7 +205,7 @@ packages:
       path: "/Users/laurie/Desktop/nightmare-space/shader_graph"
       relative: false
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   sky_engine:
     dependency: transitive
     description: flutter

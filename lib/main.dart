@@ -26,6 +26,7 @@ import 'shader_widgets/u.dart' as u;
 import 'shader_widgets/v.dart' as v;
 import 'shader_widgets/w.dart' as w;
 import 'shader_widgets/z.dart' as z;
+import 'shaders.dart';
 
 typedef Shaders = List<ShaderBuffer>;
 
@@ -37,6 +38,7 @@ class AwesomeShader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final buffers = <ShaderBuffer>[];
+    print('buffer runtimeType: ${buffer.runtimeType}');
     if (buffer is String) {
       buffers.add((buffer as String).shaderBuffer);
     } else if (buffer is ShaderBuffer) {
@@ -119,10 +121,13 @@ bool get isAndroid => GetPlatform.isAndroid;
 
 List<Widget> shadersWidget() {
   List<Widget> children = [
-    ...z.shadersWidget(),
-    ...w.shadersWidget(),
-    ...v.shadersWidget(),
-    ...u.shadersWidget(),
+    // Lights in Smoke
+    // // electron
+    // AwesomeShader('shaders/a/anamorphic rendering.frag'.feed(SA.textureLondon), upSideDown: false),
+    // ...z.shadersWidget(),
+    // ...w.shadersWidget(),
+    // ...v.shadersWidget(),
+    // ...u.shadersWidget(),
     ...t.shadersWidget(),
     ...s.shadersWidget(),
     ...r.shadersWidget(),
@@ -132,8 +137,8 @@ List<Widget> shadersWidget() {
     ...m.shadersWidget(),
     ...l.shadersWidget(),
     ...i.shadersWidget(),
-    ...g.shadersWidget(),
     ...h.shadersWidget(),
+    ...g.shadersWidget(),
     ...f.shadersWidget(),
     ...e.shadersWidget(),
     ...d.shadersWidget(),

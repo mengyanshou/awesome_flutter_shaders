@@ -11,7 +11,11 @@ List<Widget> shadersWidget() {
     Builder(
       builder: (_) {
         final bufferA = SA.fracturedOrbBufferA.shaderBuffer;
-        bufferA.feed(SA.textureRgbaNoiseMedium, wrap: WrapMode.repeat, filter: FilterMode.linear);
+        bufferA.feed(
+          SA.textureRgbaNoiseMedium,
+          wrap: WrapMode.repeat,
+          filter: FilterMode.linear,
+        );
         final bufferB = SA.fracturedOrb.feed(bufferA);
         return AwesomeShader([bufferA, bufferB]);
       },
