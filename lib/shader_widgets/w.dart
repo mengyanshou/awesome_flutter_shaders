@@ -13,8 +13,6 @@ List<Widget> shadersWidget() {
       SA.wavyfire.feed(SA.textureLondon),
       upSideDown: false,
     ),
-    // TODO: filter: mipmap wrap: repeat
-    shader(SA.warpingProcedural2),
     AwesomeShader(SA.water2D.feed(SA.textureLondon)),
     shader(SA.wavyfire, channels: [SA.wall]),
     AwesomeShader(SA.whereTheRiverGoes.feed(SA.textureLichen)),

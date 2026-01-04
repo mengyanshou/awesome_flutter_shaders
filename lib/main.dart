@@ -124,10 +124,10 @@ List<Widget> shadersWidget() {
     // Lights in Smoke
     // // electron
     // AwesomeShader('shaders/a/anamorphic rendering.frag'.feed(SA.textureLondon), upSideDown: false),
-    // ...z.shadersWidget(),
-    // ...w.shadersWidget(),
-    // ...v.shadersWidget(),
-    // ...u.shadersWidget(),
+    ...z.shadersWidget(),
+    ...w.shadersWidget(),
+    ...v.shadersWidget(),
+    ...u.shadersWidget(),
     ...t.shadersWidget(),
     ...s.shadersWidget(),
     ...r.shadersWidget(),
