@@ -6,6 +6,21 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> buildShaderWidgets() {
   return [
+    // for compare different noise inputs
+    // AwesomeShader(() {
+    //   final main = 'shaders/w/Warp Tunnel.frag'.shaderBuffer;
+    //   main.feed(SA.textureRgbaNoiseMedium, wrap: .repeat, filter: .linear);
+    //   main.feed(SA.textureStars, wrap: .repeat, filter: .linear);
+    //   main.feed(SA.textureOrganic2, wrap: .repeat, filter: .linear);
+    //   return [main];
+    // }),
+    AwesomeShader(() {
+      final main = 'shaders/w/Warp Tunnel.frag'.shaderBuffer;
+      main.feedInput(rgbaNoiseMediumInput);
+      main.feed(SA.textureStars, wrap: .repeat, filter: .linear);
+      main.feed(SA.textureOrganic2, wrap: .repeat, filter: .linear);
+      return [main];
+    }),
     AwesomeShader(SA.warpedExtrudedSkewedGrid.feed(SA.textureOrganic2)),
     AwesomeShader(SA.warpingProcedural2),
     AwesomeShader(
@@ -18,5 +33,6 @@ List<Widget> buildShaderWidgets() {
       upSideDown: false,
     ),
     if (!kIsWeb) AwesomeShader(SA.whereTheRiverGoes.feed(SA.textureLichen)),
+    AwesomeShader('shaders/w/WMW.frag'),
   ];
 }

@@ -217,6 +217,8 @@ flutter:
     # - shaders/s/superResolution BufferC.frag
     # - shaders/s/superResolution BufferD.frag
     # t
+    # - shaders/t/Taste of Noise 7 BufferA.frag
+    # - shaders/t/Taste of Noise 7.frag
     - shaders/t/The sun, the sky and the clouds.frag
     - shaders/t/TIE Fighters.frag
     - shaders/t/Tissue.frag
@@ -234,14 +236,17 @@ flutter:
     #
     # v
     - shaders/v/Very fast procedural ocean.frag
+    # - shaders/v/Volumetric explosion.frag
+    # - shaders/v/Volumetric Mandelbulb.frag
     #
     # w
+    # - shaders/w/Warp Tunnel.frag
     - shaders/w/Warped Extruded Skewed Grid.frag
     - shaders/w/Warping - procedural 2.frag
     - shaders/w/Water2D.frag
     - shaders/w/wavyfire.frag
     - shaders/w/Where the River Goes.frag
+    # - shaders/w/WMW.frag
     #
     # z
     - shaders/z/Zippy Zaps.frag
-    #

@@ -168,8 +168,8 @@ List<Widget> buildShaderGames() {
 List<Widget> buildShaderWidgets() {
   List<Widget> children = [
     ...z.buildShaderWidgets(),
-    ...w.buildShaderWidgets(),
-    ...v.buildShaderWidgets(),
+    // ...w.buildShaderWidgets(),
+    // ...v.buildShaderWidgets(),
     ...u.buildShaderWidgets(),
     ...t.buildShaderWidgets(),
     ...s.buildShaderWidgets(),
