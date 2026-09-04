@@ -12,7 +12,7 @@ List<Widget> buildShaderWidgets() {
     //     final shader = 'shaders/r/Rainforest.frag'.shaderBuffer;
     //     final bufferA = 'shaders/r/Rainforest BufferA.frag'.shaderBuffer;
     //     bufferA.feedback();
-    //     shader.feedShader(bufferA, filter: .linear);
+    //     shader.feed(bufferA, filter: .linear);
     //     return AwesomeShader([bufferA, shader]);
     //   },
     // ),
