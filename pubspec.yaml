@@ -111,6 +111,11 @@ flutter:
     - shaders/e/Ether.frag
     - shaders/e/Eve Arrives.frag
     - shaders/e/Even faster procedural ocean.frag
+    - shaders/e/expansive reaction-diffusion BufferA.frag
+    - shaders/e/expansive reaction-diffusion BufferB.frag
+    - shaders/e/expansive reaction-diffusion BufferC.frag
+    - shaders/e/expansive reaction-diffusion BufferD.frag
+    - shaders/e/expansive reaction-diffusion.frag
     #
     # f
     - shaders/f/3D Fire.frag
