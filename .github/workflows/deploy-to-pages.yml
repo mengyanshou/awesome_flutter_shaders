@@ -4,14 +4,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,7 +23,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.38.4
+          flutter-version: "3.38.4"
 
       - name: Install dependencies
         run: flutter pub get
@@ -28,10 +31,21 @@ jobs:
       - name: Build web
         run: flutter build web --wasm --base-href /awesome_flutter_shaders/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          publish_branch: gh-pages
-          force_orphan: true
+          path: ./build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
