@@ -22,9 +22,9 @@ List<Widget> buildShaderWidgets() {
     AwesomeShader(SA.splitPrism.feed(SA.textureLondon)),
     AwesomeShader(upSideDown: false, () {
       final shader = SA.spreadingFrost.shaderBuffer;
-      shader.feedImageFromAsset(SA.textureLondon);
-      shader.feedImageFromAsset(SA.textureLichen);
-      shader.feedImageFromAsset(SA.textureOrganic2);
+      shader.feed(SA.textureLondon);
+      shader.feed(SA.textureLichen);
+      shader.feed(SA.textureOrganic2);
       return [shader];
     }),
     if (!kIsWeb) AwesomeShader(SA.starfieldNew.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),

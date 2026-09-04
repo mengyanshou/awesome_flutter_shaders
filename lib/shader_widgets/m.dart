@@ -11,7 +11,7 @@ List<Widget> buildShaderWidgets() {
       AwesomeShader(() {
         final bufferA = ShaderBuffer(SA.macOsMonterey2BufferA);
         final mainBuffer = ShaderBuffer(SA.macOsMonterey2);
-        mainBuffer.feedShader(bufferA);
+        mainBuffer.feed(bufferA);
         return [bufferA, mainBuffer];
       }),
     if (!kIsWeb) AwesomeShader(SA.macOsMonterey2BufferA),
@@ -19,7 +19,7 @@ List<Widget> buildShaderWidgets() {
       AwesomeShader(() {
         final bufferA = ShaderBuffer(SA.macOsMontereyWallpaperBufferA);
         final mainBuffer = ShaderBuffer(SA.macOsMontereyWallpaper);
-        mainBuffer.feedShader(bufferA);
+        mainBuffer.feed(bufferA);
         return [bufferA, mainBuffer];
       }),
     if (!kIsWeb) AwesomeShader(SA.macOsMontereyWallpaperBufferA),

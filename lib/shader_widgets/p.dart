@@ -19,7 +19,7 @@ List<Widget> buildShaderWidgets() {
       upSideDown: false,
     ),
     AwesomeShader(SA.perlinSinSphere),
-    if (!kIsWeb) AwesomeShader(SA.perspexWebLattice.feed(SA.textureLondon), upSideDown: false),
+    if (!kIsWeb) AwesomeShader(SA.perspexWebLattice.shaderBuffer.feed(SA.textureLondon), upSideDown: false),
     AwesomeShader(SA.phantomStarForCineShader),
     AwesomeShader(SA.pigSquad9YearAnniversary),
     if (!kIsWeb)
@@ -32,8 +32,8 @@ List<Widget> buildShaderWidgets() {
         final shader = SA.portalIosAr.shaderBuffer;
         final bufferA = SA.portalIosArBufferA.shaderBuffer;
         bufferA.feedback();
-        shader.feedShader(bufferA);
-        shader.feedImageFromAsset(SA.textureLondon);
+        shader.feed(bufferA);
+        shader.feed(SA.textureLondon);
         return [bufferA, shader];
       }),
     if (!kIsWeb)
