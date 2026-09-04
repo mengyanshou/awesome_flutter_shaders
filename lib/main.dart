@@ -195,7 +195,7 @@ AwesomeShader? findShaderByName(String shaderAsset) {
     if (widget is AwesomeShader) {
       final as = widget;
       final name = basenameWithoutExtension(as.buffers.last.shaderAssetPath);
-      Log.i('Checking shader asset: ${as.buffers.last.shaderAssetPath}');
+      Log.i('Checking shader asset: $name');
       if (name == shaderAsset) {
         return as;
       }
@@ -217,70 +217,124 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List<Widget> children = gameWidgets() + buildShaderWidgets();
-    List<Widget> children = buildShaderWidgets();
     return MaterialApp(
       title: 'Shaders Gallery',
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
-      home: Scaffold(
-        backgroundColor: Colors.black,
-        body: Builder(
-          builder: (context) {
-            double width = MediaQuery.of(context).size.width / 4;
-            double height = width * 9 / 16 + 24;
-            double childAspectRatio = width / height;
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: width,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: childAspectRatio,
-              ),
-              itemCount: children.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return Material(
-                            color: Colors.black,
-                            child: GestureDetector(
-                              onDoubleTap: () async {
-                                Navigator.of(context).pop();
-                              },
-                              child: Center(child: children[index]),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  behavior: HitTestBehavior.translucent,
-                  child: Column(
-                    children: [
-                      Expanded(child: children[index]),
-                      Builder(
-                        builder: (context) {
-                          Log.i(children[index].runtimeType);
-                          if (children[index] is AwesomeShader) {
-                            final as = children[index] as AwesomeShader;
-                            return Text(
-                              basenameWithoutExtension(as.buffers.last.shaderAssetPath),
-                              style: shaderTitleStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
+      onGenerateRoute: (settings) {
+        // 在 Web 平台解析 URL 查询参数
+        String? shaderParam;
+        if (kIsWeb) {
+          final uri = Uri.base;
+          shaderParam = uri.queryParameters['shader'];
+          Log.i('URL query parameter "shader": $shaderParam');
+        }
+
+        // 如果有 shader 参数，尝试直接渲染该 shader
+        if (shaderParam != null && shaderParam.isNotEmpty) {
+          final shaderWidget = findShaderByName(shaderParam);
+          if (shaderWidget != null) {
+            return MaterialPageRoute(
+              builder: (context) => ShaderDetailPage(shaderWidget),
+              settings: settings,
             );
-          },
+          } else {
+            Log.w('Shader not found: $shaderParam');
+          }
+        }
+
+        // 默认显示画廊首页
+        return MaterialPageRoute(
+          builder: (context) => const GalleryPage(),
+          settings: settings,
+        );
+      },
+    );
+  }
+}
+
+/// 画廊首页 - 显示所有 shader 的网格视图
+class GalleryPage extends StatelessWidget {
+  const GalleryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = buildShaderWidgets();
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Builder(
+        builder: (context) {
+          double width = MediaQuery.of(context).size.width / 2;
+          double height = width * 9 / 16 + 24;
+          double childAspectRatio = width / height;
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: width,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: childAspectRatio,
+            ),
+            itemCount: children.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ShaderDetailPage(children[index]);
+                      },
+                    ),
+                  );
+                },
+                behavior: HitTestBehavior.translucent,
+                child: Column(
+                  children: [
+                    Expanded(child: children[index]),
+                    Builder(
+                      builder: (context) {
+                        Log.i(children[index].runtimeType);
+                        if (children[index] is AwesomeShader) {
+                          final as = children[index] as AwesomeShader;
+                          return Text(
+                            basenameWithoutExtension(as.buffers.last.shaderAssetPath),
+                            style: shaderTitleStyle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Shader 详情页 - 全屏显示单个 shader
+class ShaderDetailPage extends StatelessWidget {
+  final Widget shaderWidget;
+
+  const ShaderDetailPage(this.shaderWidget, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black,
+      child: GestureDetector(
+        onDoubleTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Center(
+          child: SizedBox(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.width * 9 / 16,
+            child: shaderWidget,
+          ),
         ),
       ),
     );
