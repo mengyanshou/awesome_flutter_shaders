@@ -1,7 +1,9 @@
-
 // --- Migrate Log ---
-// 添加 Flutter 兼容性 includes，重写 mainImage 使用标准参数并初始化变量
-// Added Flutter compatibility includes, rewrote mainImage to use standard parameters and initialize variables
+// 1) 添加 Flutter 兼容性 includes，重写 mainImage 使用标准参数并初始化变量
+// 2) 将内层表达式型 for 循环改为固定次数的整数循环，以兼容 SkSL
+//
+// 1) Added Flutter compatibility includes, rewrote mainImage to use standard parameters and initialized variables
+// 2) Replaced the inner expression-style for loop with a fixed-count integer loop for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -18,10 +20,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         d += s = 0.01 + min(0.03 + abs(9.0 - q.y) * 0.1,
                            0.01 + abs(1.0 + p.y) * 0.2);
         fragColor += 1.0 / s;
-        for (q = p = vec3(u * d, d + t), s = 0.01; s < 2.0;
-             p += abs(dot(sin(p * s * 24.0), p - p + 0.01)) / s,
-             q += abs(dot(sin(0.3 * t + q * s * 16.0), p - p + 0.005)) / s,
-             s += s);
+        q = p = vec3(u * d, d + t);
+        s = 0.01;
+        for (int layer = 0; layer < 8; layer++) {
+            p += abs(dot(sin(p * s * 24.0), p - p + 0.01)) / s;
+            q += abs(dot(sin(0.3 * t + q * s * 16.0), p - p + 0.005)) / s;
+            s += s;
+        }
     }
     fragColor = tanh(fragColor * vec4(1, 2, 4, 0) / 1e4 / length(u - 0.2));
 }

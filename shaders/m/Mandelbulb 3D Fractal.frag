@@ -1,11 +1,11 @@
 // --- Migrate Log ---
-// 初始化 r 为安全值以防止 log(0) 或除以 0 的未定义行为
-// 将步数计数器明确为 int，避免隐式 float-int 转换
-// 用显式初始化替换未定义的局部变量
-// --- Migrate Log (EN) ---
-// Initialize r with a safe value to avoid log(0)/divide-by-zero undefined behavior
-// Use an integer step counter to prevent implicit float-int conversions
-// Explicitly initialize local variables to avoid undefined state
+// 1) 初始化 r 和其他局部变量，避免未定义行为
+// 2) 使用整数步数计数器，避免隐式 float/int 转换
+// 3) 将不受支持的 do-while 光线步进改为最多 512 次的整数循环，并保留原退出条件
+//
+// 1) Initialized r and other local variables to avoid undefined behavior
+// 2) Used an integer step counter to avoid implicit float/int conversions
+// 3) Replaced the unsupported do-while ray march with an integer loop capped at 512 steps while preserving the original exit condition
 
 #include <../common/common_header.frag>
 
@@ -61,14 +61,16 @@ vec3 ray_marching(const vec3 eye, const vec3 ray, out float depth, out float ste
 	float dist = 0.;
 	vec3 intersection_point = eye;
 
-	do
+	for (int marchStep = 0; marchStep < 512; marchStep++)
 	{
 		dist = scene_sdf(intersection_point);
-        intersection_point += dist*ray;
+	        intersection_point += dist*ray;
 		depth += dist;
 		isteps++;
+		if (depth >= view_radius || dist <= epsilon) {
+			break;
+		}
 	}
-	while(depth < view_radius && dist > epsilon);
 	steps = float(isteps);
 
 	return intersection_point;

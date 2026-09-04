@@ -1,7 +1,9 @@
 // --- Migrate Log ---
 // 添加 include 和迁移日志，修复浮点常量格式，将 float 循环变量改为 int，初始化变量，声明 iChannel samplers
-// --- Migrate Log (EN) ---
+// 手写当前变换矩阵的等价逆变换，避免 SkSL 生成不支持的 spvInverse
+//
 // Added include and migration log, fixed float constant format, changed float loop var to int, initialized variables, declared iChannel samplers
+// Replaced the current matrix inverse with its equivalent explicit transform to avoid unsupported spvInverse in SkSL
 
 #include <../common/common_header.frag>
 
@@ -49,7 +51,9 @@ void mainImage(out vec4 fragColor, vec2 fragCoord)
         float side = step(0.5, phase);
 
         float angle = radians(phase * 180.0), z = 2.0;
-        vec3 p = inverse(mat3(cos(angle),0.0,-sin(angle), 0.0,1.0,0.0, 0.0,0.0,z)) * vec3(xy, z);
+        float c = cos(angle);
+        float s = sin(angle);
+        vec3 p = vec3(xy.x / c, xy.y, (z + s * xy.x / c) / z);
         vec2 uv = p.xy / p.z + 0.5;
 
         float alpha = 1.0;

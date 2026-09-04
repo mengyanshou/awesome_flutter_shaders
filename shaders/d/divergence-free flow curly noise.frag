@@ -1,6 +1,6 @@
 // --- Migrate Log ---
-// 添加 Flutter 兼容性 includes，无其他修改
-// Added Flutter compatibility includes, no other changes
+// 添加 Flutter 兼容层；移除 uint、整数向量 abs、动态循环初值和复合循环条件以兼容 SkSL。
+// Added Flutter compatibility; removed uint, integer-vector abs, dynamic loop initializers, and compound loop conditions for SkSL.
 
 #include <../common/common_header.frag>
 
@@ -50,7 +50,7 @@
 
 #define EPSILON 0.001
 #define DIST_MAX (float(BOUNDS)*5.0)
-#define ITER_MAX uint(BOUNDS*10)
+#define ITER_MAX (BOUNDS*10)
 
 #define pi 3.1415926
 #define tau (pi+pi)
@@ -225,7 +225,7 @@ result map(ivec3 v, vec3 l) // unit grid: voxel = float(position), local = fract
     ivec3 bounds = ivec3(BOUNDS);
     //ivec3 bounds = ivec3(BOUNDS,BOUNDS,1);
     //if(all(lessThan(abs(v),bounds)) && abs(v.z) < 2)
-    if(all(lessThan(abs(v),bounds)))
+    if(all(lessThan(ivec3(abs(float(v.x)), abs(float(v.y)), abs(float(v.z))), bounds)))
     {
         //res = combine(res, result(vec3(1), frame(l-0.5,vec3(0.5),0.01))); // debug grid
 
@@ -244,11 +244,11 @@ result map(vec3 p) // for correct ambient occlusion sample 2x2x2 voxels (slow!)
     // I think kastorp originally suggested to sample only 2x2x2 instead of 3x3x3, thanks!
     result d = result(vec3(0), DIST_MAX);
     ivec3 s = ivec3(step(0.5, fract(p)));
-    ivec3 o;
-    for(o.z = s.z-1; o.z < s.z+1; o.z++)
-        for(o.y = s.y-1; o.y < s.y+1; o.y++)
-            for(o.x = s.x-1; o.x < s.x+1; o.x++)
+    for(int oz=-1; oz<=0; oz++)
+        for(int oy=-1; oy<=0; oy++)
+            for(int ox=-1; ox<=0; ox++)
             {
+                ivec3 o = s + ivec3(ox, oy, oz);
                 result r = map(ivec3(floor(p))+o, fract(p)-vec3(o));
                 if(r.dist < d.dist)
                     d = r;
@@ -281,10 +281,10 @@ vec3 sgn(vec3 v) // WORKAROUND FOR COMPILER ERROR on some systems
 result trace(vec3 ro, vec3 rd, float t0, float t1, bool pass) // ray-march sdf handling discontinuities between voxels  (jt)
 {
     result h;
-    uint i;
-    float t;
-    for(t = t0, i = 0u; t < t1 && i < ITER_MAX; i++) // finite loop originally suggested by pyBlob to avoid stalling if ray parallel to surface just above EPSILON
+    float t = t0;
+    for(int i = 0; i < ITER_MAX; i++) // finite loop originally suggested by pyBlob to avoid stalling if ray parallel to surface just above EPSILON
     {
+        if(t >= t1) break;
         vec3 p = ro + rd * t;
         h = map(p);
         if(h.dist < EPSILON)
@@ -323,10 +323,10 @@ float softshadow(vec3 ro, in vec3 rd, float t0, float t1, float k)
 {
     float res = 1.0;
     float ph = 1e20;
-    uint i;
-    float t;
-    for(t = t0, i = 0u; t < t1 && i < ITER_MAX; i++)
+    float t = t0;
+    for(int i = 0; i < ITER_MAX; i++)
     {
+        if(t >= t1) break;
         float h = map(ro + rd*t).dist;
         if( h < EPSILON )
             return 0.0;

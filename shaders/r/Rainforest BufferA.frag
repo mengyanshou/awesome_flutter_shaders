@@ -1,11 +1,6 @@
 // --- Migrate Log ---
-// 初始化未初始化的变量（isCloud, o）
-// 替换 texelFetch 为 texture 调用
-// 添加 Flutter/SkSL 兼容性 include
-// --- Migrate Log (EN) ---
-// Initialize uninitialized variables (isCloud, o)
-// Replace texelFetch with texture calls
-// Add Flutter/SkSL compatibility includes
+// 初始化局部变量并添加 Flutter 兼容层；替换 texelFetch、运行时循环初值和位运算以兼容 SkSL。
+// Initialize locals and add Flutter compatibility; replace texelFetch, runtime loop initializers, and bitwise operations for SkSL.
 
 #include <../common/common_header.frag>
 
@@ -221,7 +216,7 @@ float fbm_4( in vec2 x )
     float s = 0.55;
     float a = 0.0;
     float b = 0.5;
-    for( int i=ZERO; i<4; i++ )
+    for( int i=0; i<4; i++ )
     {
         float n = noise(x);
         a += b*n;
@@ -237,7 +232,7 @@ float fbm_4( in vec3 x )
     float s = 0.5;
     float a = 0.0;
     float b = 0.5;
-    for( int i=ZERO; i<4; i++ )
+    for( int i=0; i<4; i++ )
     {
         float n = noise(x);
         a += b*n;
@@ -257,7 +252,7 @@ vec4 fbmd_7( in vec3 x )
     mat3  m = mat3(1.0,0.0,0.0,
                    0.0,1.0,0.0,
                    0.0,0.0,1.0);
-    for( int i=ZERO; i<7; i++ )
+    for( int i=0; i<7; i++ )
     {
         vec4 n = noised(x);
         a += b*n.x;          // accumulate values		
@@ -279,7 +274,7 @@ vec4 fbmd_8( in vec3 x )
     mat3  m = mat3(1.0,0.0,0.0,
                    0.0,1.0,0.0,
                    0.0,0.0,1.0);
-    for( int i=ZERO; i<8; i++ )
+    for( int i=0; i<8; i++ )
     {
         vec4 n = noised(x);
         a += b*n.x;          // accumulate values		
@@ -298,7 +293,7 @@ float fbm_9( in vec2 x )
     float s = 0.55;
     float a = 0.0;
     float b = 0.5;
-    for( int i=ZERO; i<9; i++ )
+    for( int i=0; i<9; i++ )
     {
         float n = noise(x);
         a += b*n;
@@ -317,7 +312,7 @@ vec3 fbmd_9( in vec2 x )
     float b = 0.5;
     vec2  d = vec2(0.0);
     mat2  m = mat2(1.0,0.0,0.0,1.0);
-    for( int i=ZERO; i<9; i++ )
+    for( int i=0; i<9; i++ )
     {
         vec3 n = noised(x);
         a += b*n.x;          // accumulate values		
@@ -400,7 +395,7 @@ vec4 renderClouds( in vec3 ro, in vec3 rd, float tmin, float tmax, inout float r
     //t += 1.0*hash1(gl_FragCoord.xy);
     float lastT = -1.0;
     float thickness = 0.0;
-    for(int i=ZERO; i<128; i++)
+    for(int i=0; i<128; i++)
     { 
         vec3  pos = ro + t*rd; 
         float nnd;
@@ -508,7 +503,7 @@ float terrainShadow( in vec3 ro, in vec3 rd, in float mint )
     float res = 1.0;
     float t = mint;
 #ifdef LOWQUALITY
-    for( int i=ZERO; i<32; i++ )
+    for( int i=0; i<32; i++ )
     {
         vec3  pos = ro + t*rd;
         vec2  env = terrainMap( pos.xz );
@@ -518,7 +513,7 @@ float terrainShadow( in vec3 ro, in vec3 rd, in float mint )
         t += clamp( hei, 2.0+t*0.1, 100.0 );
     }
 #else
-    for( int i=ZERO; i<128; i++ )
+    for( int i=0; i<128; i++ )
     {
         vec3  pos = ro + t*rd;
         vec2  env = terrainMap( pos.xz );
@@ -544,7 +539,7 @@ vec2 raymarchTerrain( in vec3 ro, in vec3 rd, float tmin, float tmax )
     float ot = t;
     float odis = 0.0;
     float odis2 = 0.0;
-    for( int i=ZERO; i<400; i++ )
+    for( int i=0; i<400; i++ )
     {
         th = 0.001*t;
 
@@ -642,7 +637,7 @@ float treesShadow( in vec3 ro, in vec3 rd )
     float res = 1.0;
     float t = 0.02;
 #ifdef LOWQUALITY
-    for( int i=ZERO; i<64; i++ )
+    for( int i=0; i<64; i++ )
     {
         float kk1, kk2, kk3;
         vec3 pos = ro + rd*t;
@@ -652,7 +647,7 @@ float treesShadow( in vec3 ro, in vec3 rd )
         if( res<0.001 || t>50.0 || pos.y>kMaxHeight+kMaxTreeHeight ) break;
     }
 #else
-    for( int i=ZERO; i<150; i++ )
+    for( int i=0; i<150; i++ )
     {
         float kk1, kk2, kk3;
         float h = treesMap( ro + rd*t, t, kk1, kk2, kk3 );
@@ -677,9 +672,13 @@ vec3 treesNormal( in vec3 pos, in float t )
 #else
     // inspired by tdhooper and klems - a way to prevent the compiler from inlining map() 4 times
     vec3 n = vec3(0.0);
-    for( int i=ZERO; i<4; i++ )
+    const vec3 e0 = vec3( 1.0, -1.0, -1.0) * 0.5773;
+    const vec3 e1 = vec3(-1.0, -1.0,  1.0) * 0.5773;
+    const vec3 e2 = vec3(-1.0,  1.0, -1.0) * 0.5773;
+    const vec3 e3 = vec3( 1.0,  1.0,  1.0) * 0.5773;
+    for( int i=0; i<4; i++ )
     {
-        vec3 e = 0.5773*(2.0*vec3((((i+3)>>1)&1),((i>>1)&1),(i&1))-1.0);
+        vec3 e = i == 0 ? e0 : (i == 1 ? e1 : (i == 2 ? e2 : e3));
         n += e*treesMap(pos+0.005*e, t, kk1, kk2, kk3);
     }
     return normalize(n);
@@ -774,7 +773,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
         float tf = t.y;
         float tfMax = (t.x>0.0)?t.x:tmax;
-        for(int i=ZERO; i<64; i++) 
+        for(int i=0; i<64; i++)
         { 
             vec3  pos = ro + tf*rd; 
             float dis = treesMap( pos, tf, hei, mid, displa); 
@@ -934,12 +933,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec4 cam0 = texture(iChannel0, vec2(0.5, 0.5) / bufferSize);
     vec4 cam1 = texture(iChannel0, vec2(1.5, 0.5) / bufferSize);
     vec4 cam2 = texture(iChannel0, vec2(2.5, 0.5) / bufferSize);
-    mat3x4 oldCam = mat3x4( cam0, cam1, cam2 );
-    
     // world space
     vec4 wpos = vec4(ro + rd*resT,1.0);
     // camera space
-    vec3 cpos = (wpos*oldCam); // note inverse multiply
+    // SkSL does not support mat3x4; vec4 * mat3x4 is the dot product
+    // of the vector with each of the matrix's three vec4 columns.
+    vec3 cpos = vec3(dot(wpos, cam0), dot(wpos, cam1), dot(wpos, cam2));
     // ndc space
     vec2 npos = 1.5 * cpos.xy / cpos.z;
     // screen space
@@ -963,7 +962,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     ivec2 ip = ivec2(fragCoord);
 	if( ip.y==0 && ip.x<=2 )
     {
-        fragColor = vec4( ca[ip.x], -dot(ca[ip.x],ro) );
+        vec3 camColumn = ip.x == 0 ? ca[0] : (ip.x == 1 ? ca[1] : ca[2]);
+        fragColor = vec4( camColumn, -dot(camColumn,ro) );
     }
     else
     {

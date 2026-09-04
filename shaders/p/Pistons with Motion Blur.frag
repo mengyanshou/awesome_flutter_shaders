@@ -4,10 +4,12 @@
 // - 声明缺失的 sampler2D (`iChannel0`, `iChannel1`)
 // - 将部分 loop 计数器从 `float` 改为 `int`，并把需要的类型转换显式化
 // - 初始化并避免未定义行为（例如移除在 for 头部使用的算术）
-// English change summary:
+// - 用 getter 替代 MSAA 数组初始化，并移除整数取模与位运算
+//
 // - Added common header include, declared samplers,
 // - Converted some float loop counters to int and made explicit casts,
 // - Initialized variables to avoid undefined behavior.
+// - Replaced the initialized MSAA array with a getter and removed integer remainder and bitwise operations.
 
 #include <../common/common_header.frag>
 
@@ -128,8 +130,11 @@ vec3 sceneNormal(vec3 point, float worldTime) {
     // Snagged from iq's "Raymarching - Primitives" shader,
     // which in turn says this is inspired by tdhooper and klems.
     vec3 n = vec3(0.0);
-    for(int i = ZERO; i < 4; i += 1) {
-        vec3 e = 0.5773 * (2.0 * vec3((((i + 3) >> 1) & 1), ((i >> 1) & 1), (i & 1)) - 1.0);
+    for(int i = 0; i < 4; i += 1) {
+        vec3 e = i == 0 ? vec3(1.0, -1.0, -1.0) :
+                 i == 1 ? vec3(-1.0, -1.0, 1.0) :
+                 i == 2 ? vec3(-1.0, 1.0, -1.0) : vec3(1.0);
+        e *= 0.5773;
         n += e * sceneDistance(point + 0.0005 * e, worldTime);
     }
 
@@ -277,24 +282,24 @@ vec3 bluenoise(vec2 coord) {
 const float a = (3.0 / 8.0);
 const float b = (1.0 / 8.0);
 
-const vec2 msaaOffsets[] = vec2[](
-    vec2(0.5625, 0.5625),
-    vec2(0.4375, 0.3125),
-    vec2(0.3125, 0.6250),
-    vec2(0.7500, 0.4375),
-    vec2(0.1875, 0.3750),
-    vec2(0.6250, 0.8125),
-    vec2(0.8125, 0.6875),
-    vec2(0.6875, 0.1875),
-    vec2(0.3750, 0.8750),
-    vec2(0.5000, 0.0625),
-    vec2(0.2500, 0.1250),
-    vec2(0.1250, 0.2500),
-    vec2(0.0000, 0.5000),
-    vec2(0.9375, 0.2500),
-    vec2(0.8750, 0.9375),
-    vec2(0.0625, 0.0000)
-);
+vec2 msaaOffset(int index) {
+    if (index == 0) return vec2(0.5625, 0.5625);
+    if (index == 1) return vec2(0.4375, 0.3125);
+    if (index == 2) return vec2(0.3125, 0.6250);
+    if (index == 3) return vec2(0.7500, 0.4375);
+    if (index == 4) return vec2(0.1875, 0.3750);
+    if (index == 5) return vec2(0.6250, 0.8125);
+    if (index == 6) return vec2(0.8125, 0.6875);
+    if (index == 7) return vec2(0.6875, 0.1875);
+    if (index == 8) return vec2(0.3750, 0.8750);
+    if (index == 9) return vec2(0.5000, 0.0625);
+    if (index == 10) return vec2(0.2500, 0.1250);
+    if (index == 11) return vec2(0.1250, 0.2500);
+    if (index == 12) return vec2(0.0000, 0.5000);
+    if (index == 13) return vec2(0.9375, 0.2500);
+    if (index == 14) return vec2(0.8750, 0.9375);
+    return vec2(0.0625, 0.0000);
+}
 
 // Doing a brute force trace of the scene at different times
 // within the frame and mixing them together.
@@ -302,27 +307,26 @@ vec3 temporalSample(vec2 coord, float worldTime) {
     // Using iTimeDelta here for a natural looking motion blur.
     // Looks particularly nice at 144hz w/ 16 samples (:
     float shutterTime = iTimeDelta;
-    int sampleCount = temporalSamples;
-    float slice = shutterTime / float(sampleCount);
+    float slice = shutterTime / float(temporalSamples);
     vec3 jitter = bluenoise(coord);
     
     vec3 color = vec3(0.0);
-    for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+    for (int sampleIndex = 0; sampleIndex < temporalSamples; sampleIndex++) {
         float jitterTime = (float(sampleIndex) + 1.0) + float(iFrame + 1);
         vec3 adjustedJitter = fract(jitter + jitterTime * goldenRatioConjugate);
 
-        float t = float(sampleIndex) / float(sampleCount);
+        float t = float(sampleIndex) / float(temporalSamples);
         float sampleTime = useTemporalJitter
             ? (worldTime - shutterTime) + adjustedJitter.z * shutterTime
             : (worldTime - shutterTime * t);
 
-        vec2 offset = msaaOffsets[sampleIndex % 16];
+        vec2 offset = msaaOffset(sampleIndex);
 
         vec2 uv = coordToUv(coord + offset);
         color += sceneColor(uv, sampleTime);
     }
 
-    return color / float(sampleCount);
+    return color / float(temporalSamples);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {

@@ -1,10 +1,12 @@
 // --- Migrate Log ---
 // 初始化局部变量（初始化 d, tempFresnel），并把对 iChannel0 的 texelFetch 替换为 SG_TEXELFETCH0；
 // 在文件顶部加入共用 include，并补充缺失的 `uniform sampler2D iChannel0`。
+// 将后减条件循环改为规范整数循环，并用固定上限加提前退出替代动态循环上限，以兼容 SkSL。
 // 未对算法或相机作其它更改。
 //
 // Initialize local variables (initialize d, tempFresnel) and replace texelFetch(iChannel0) with SG_TEXELFETCH0;
 // Add common include at top and declare missing `uniform sampler2D iChannel0`.
+// Replace the post-decrement condition loop with a canonical integer loop and use a fixed bound plus early exit instead of a dynamic loop limit for SkSL compatibility.
 // No other algorithmic/camera changes were made.
 
 #include <../common/common_header.frag>
@@ -84,11 +86,16 @@ void mainImage( out vec4 O, vec2 U ){
 
     vec3 p = o;
     float d = 0.0, t = 0.0;
-    for (int i = 128; i-->0;){
+    int marchBudget = 128;
+    for (int marchStep = 0; marchStep < 128; marchStep++){
+        if (marchBudget <= 0) {
+            break;
+        }
+        marchBudget--;
         p = o + dirV * t;
         d = df(p);
         t += d*1.1;
-        if (d < 0.) i--;
+        if (d < 0.) marchBudget--;
     }
     
     vec3 normal = norm(p, 1e-4);
@@ -138,13 +145,22 @@ void mainImage( out vec4 O, vec2 U ){
     }
 
     for (int b = 0; b<bounces; b++){
-        for (int i = 0; i<
+        int reflectionSteps =
         #ifdef ultra
-        int(max(exp(-float(b))*128., 32.))
+        int(max(exp(-float(b))*128., 32.));
         #else
-        int(max(exp(-float(b))*64., 12.))
+        int(max(exp(-float(b))*64., 12.));
+        #endif
+        for (int i = 0; i <
+        #ifdef ultra
+        128
+        #else
+        64
         #endif
         ; i++){
+            if (i >= reflectionSteps) {
+                break;
+            }
             
             d = df(p);
             p -= dirV * d;

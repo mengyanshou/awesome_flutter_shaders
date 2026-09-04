@@ -1,7 +1,6 @@
-
 // --- Migrate Log ---
-// 在文件顶端加入 common include 并声明缺失的采样器 `iChannel0`；将对纹理的采样改为使用 `SG_TEX0/SG_TEXELFETCH0`，并把基于 float 的循环改为 int 索引以兼容 SkSL/Impeller。
-// Add top-level common include and declare missing sampler `iChannel0`; switch texture sampling to SG_TEX0/SG_TEXELFETCH0 and convert float loops to int indexed loops for SkSL/Impeller compatibility.
+// 加入 Flutter 公共头和采样器声明；使用 SG_TEX0/SG_TEXELFETCH0；将循环改为 SkSL 要求的常量初值和整数索引。
+// Added Flutter common header and sampler declaration; use SG_TEX0/SG_TEXELFETCH0; changed loops to SkSL-compatible constant initializers and integer indices.
 
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
@@ -343,7 +342,7 @@ vec3 env(vec3 origin, vec3 rayDir) {
 vec3 normal( in vec3 pos )
 {
     vec3 n = vec3(0.0);
-    for( int i=ZERO; i<4; i++ )
+    for( int i=0; i<4; i++ )
     {
         // SkSL-safe replacement for bit shifts / bit-and on `i`
         float b0 = mod(floor(float(i + 3) / 2.0), 2.0);

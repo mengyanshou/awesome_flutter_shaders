@@ -1,6 +1,9 @@
 // --- Migrate Log ---
 // 初始化全局变量以避免未定义行为；添加精度声明和公共 include；在文件末尾加入 main_shadertoy include。
+// 将动态光线步进上限改为固定 128 次，以兼容 SkSL 并保持唯一调用行为。
+//
 // Initialized globals to avoid undefined behavior; added common includes; appended main_shadertoy include at file end.
+// Fixed the ray-march loop to 128 iterations for SkSL compatibility, preserving its only call site.
 
 // Winning shader made at Revision 2021 Shader Showdown Semi-Final
 
@@ -76,10 +79,10 @@ vec2 mp( vec3 p,float ga)
   cp=p;
   return t;
 }
-vec2 tr( vec3 ro,vec3 rd,int it)
+vec2 tr( vec3 ro,vec3 rd)
 {
   vec2 h,t=vec2(-3.); 
-  for(int i=0;i<it;i++){
+  for(int i=0;i<128;i++){
   h=mp(ro+rd*t.x,1.);     
     if(h.x<.0001||t.x>17.) break;
     t.x+=h.x;t.y=h.y;
@@ -98,7 +101,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
   rd=vec3(0.,0.,1.),co,fo;
   co=fo=vec3(.13,.1,.12)-length(uv)*.12;
   ld=normalize(vec3(-.5,.5,-.3));
-  z=tr(ro,rd,128);t=z.x;  
+  z=tr(ro,rd);t=z.x;
   if(z.y>0.){   
     po=ro+rd*t;
     no=normalize(e.xyy*mp(po+e.xyy,0.).x+e.yyx*mp(po+e.yyx,0.).x+e.yxy*mp(po+e.yxy,0.).x+e.xxx*mp(po+e.xxx,0.).x);

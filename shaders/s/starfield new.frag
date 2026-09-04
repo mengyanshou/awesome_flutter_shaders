@@ -1,9 +1,11 @@
 // --- Migrate Log ---
 // 移除自定义的 Shadertoy uniforms 与宏；使用工程统一的 common_header 定义（iResolution/iTime/iMouse 等）
 // 初始化未赋值的局部变量（例如 a）以避免未定义行为；修复 texture() 的参数并替换 gl_FragCoord 用法
-// --- Migrate Log (EN) ---
+// 固定噪声为唯一使用的 23 个 octave 和 3 个 step，并用 SG_TEX1 直接采样全局通道
+//
 // Removed custom Shadertoy uniforms/macros; rely on common_header for iResolution/iTime/iMouse
 // Initialize uninitialized locals (e.g. a) to avoid undefined behavior; fixed texture() arg and replaced gl_FragCoord usage
+// Fixed noise to its only 23 octaves and 3 steps, and sample the global channel directly through SG_TEX1
 #include <../common/common_header.frag>
 uniform sampler2D iChannel1;
 
@@ -48,13 +50,13 @@ float noise(vec3 p){
     return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
-float ridgednoise(vec3 d, int octaves)
+float ridgednoise(vec3 d)
 {
     float outsum = 0.0;
     float div = 0.5;
     float divsum = 0.0;
     
-    for(int i = 0; i != octaves; i++)
+    for(int i = 0; i < 23; i++)
     {
         outsum += noise(d / div) * div;
         divsum += div;
@@ -64,13 +66,13 @@ float ridgednoise(vec3 d, int octaves)
     return 2.0 * (0.5 - abs(0.5 - (outsum / divsum)));
 }
 
-float iqnoise(vec3 d, int octaves, int steps)
+float iqnoise(vec3 d)
 {
     float _out = 0.0;
     float sign_ = 1.0;
-    for(int i = 0; i != steps; i++)
+    for(int i = 0; i < 3; i++)
     {
-        _out = ridgednoise(d - float(i) / float(steps), octaves);
+        _out = ridgednoise(d - float(i) / 3.0);
         d += _out * sign_;
         sign_ *= -1.0;
     }
@@ -80,12 +82,12 @@ float iqnoise(vec3 d, int octaves, int steps)
     return 2.0 * (0.5 - abs(0.5 - _out));
 }
 
-vec3 coloriqnoise(vec3 d, int octaves, int steps)
+vec3 coloriqnoise(vec3 d)
 {
     return normalize(vec3(
-        iqnoise(d, octaves, steps),
-        iqnoise(d - vec3(0.0, 0.0, 0.05), octaves, steps),
-        iqnoise(d - vec3(0.0, 0.0, 0.1), octaves, steps)
+        iqnoise(d),
+        iqnoise(d - vec3(0.0, 0.0, 0.05)),
+        iqnoise(d - vec3(0.0, 0.0, 0.1))
     ));
 }
 
@@ -114,7 +116,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uvTex = uv * 0.5 + 0.5;
 
     // Get the color from the distortion texture, adding time to make it move (use vec2 to offset UV)
-    vec4 dist = sg_texture0(iChannel1, uvTex + vec2(iTime * 0.02));
+    vec4 dist = SG_TEX1(iChannel1, uvTex + vec2(iTime * 0.02));
 
     // Use the red channel of the distortion texture to create a small offset
     vec2 distortionOffset = dist.rr * vec2(0.0155, 0.0155);
@@ -163,8 +165,8 @@ output2 = mix(vec3(length(output2)), output2, 0.7);
 
 fragColor = vec4(output2 * 0.013 + col, 1.0);
 
-    fragColor *= vec4(iqnoise(vec3(uv, iTime / 10.0), 23, 3));
-    fragColor.a *= iqnoise(vec3(uv, iTime / 10.0), 23, 3);
+    fragColor *= vec4(iqnoise(vec3(uv, iTime / 10.0)));
+    fragColor.a *= iqnoise(vec3(uv, iTime / 10.0));
     uv *= 2.0 * (cos(iTime * 2.0) - 2.5); // scale
 
     fragColor += vec4(happy_star(uv, anim) * vec3(0.05, 0.1, 1.55) * 0.1, 1.0);

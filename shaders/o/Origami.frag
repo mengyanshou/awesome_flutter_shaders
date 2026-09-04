@@ -1,9 +1,9 @@
 // --- Migrate Log ---
-// 初始化局部变量 L 以避免未定义行为
-// 初始化 a 变量
-// --- Migrate Log (EN) ---
-// Initialize local variable L to avoid undefined behavior
-// Initialize variable a
+// 1) 初始化 h、u、L 和 a，避免未定义行为
+// 2) 将浮点条件/step 表达式循环改为固定 6 次的整数循环，并保持原运算顺序，以兼容 SkSL
+//
+// 1) Initialized h, u, L, and a to avoid undefined behavior
+// 2) Replaced the float condition/step-expression loop with a fixed six-iteration integer loop while preserving operation order for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -26,27 +26,26 @@
 void mainImage(out vec4 O, vec2 I )
 {
     //Initialize hue and clear fragcolor
-    vec4 h; O=++h;
+    vec4 h = vec4(0.0); O=++h;
     
     //Uvs and resolution for scaling
-    vec2 u,r=iResolution.xy;
+    vec2 u = vec2(0.0), r=iResolution.xy;
     //Alpha, length, angle and iterator/radius
     float A = 0.0; float l = 0.0; float L = 0.0; float a = 0.0;
-    for(float i=7.;--i>0.;
-            //A = anti-aliased alpha using SDF
-            //Pick layer color
-            O=mix(h=sin(i+a/3.+vec4(1,3,5,0))*.2+.7,O, A=min(--l*r.y*.02,1.))*
-            //Soft shading
-            (l + h + .5*A*u.y/L )/L)
-        
+    for(int layer = 6; layer >= 1; layer--) {
+        float i = float(layer);
         //Smoothly rotate a quarter at a time
-        a-=sin(a-=sin(a=iTime*4.+i*.4)),
+        a-=sin(a-=sin(a=iTime*4.+i*.4));
         //Scale and center
-        u=(I+I-r)/r.y/.1,
+        u=(I+I-r)/r.y/.1;
         //Compute round square SDF
         L = l = max(length(u -= R*clamp(u*R,-i,i)),1.);
-        
-        
+        //A = anti-aliased alpha using SDF
+        A=min(--l*r.y*.02,1.);
+        //Pick layer color and apply soft shading
+        h=sin(i+a/3.+vec4(1,3,5,0))*.2+.7;
+        O=mix(h,O,A)*(l + h + .5*A*u.y/L)/L;
+    }
 }
 
 #include <../common/main_shadertoy.frag>

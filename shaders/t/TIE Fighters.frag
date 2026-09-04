@@ -1,13 +1,6 @@
 // --- Migrate Log ---
-// 初始化局部变量以避免未定义行为
-// 将位移/位与操作替换为兼容函数（SkSL 不支持 >> 和 &）
-// 将 for 循环的浮点索引替换为整数索引
-// 定义 ZERO 宏以替换 min(iFrame, 0) 的混合类型用法
-// --- Migrate Log (EN) ---
-// Initialize local variables to avoid undefined behavior
-// Replace bitshift/bitwise ops with compatible helper functions (SkSL doesn't support >> and &)
-// Replace float loop counters with int counters
-// Define ZERO macro to replace min(iFrame, 0) mixed-type usage
+// 初始化局部变量；用算术函数替代位运算；循环使用常量整数初值以兼容 SkSL。
+// Initialize local variables; replace bitwise operations with arithmetic helpers; use constant integer loop initializers for SkSL.
 
 #include <../common/common_header.frag>
 
@@ -211,7 +204,7 @@ Hit map(vec3 p) {
 vec3 calcN(vec3 p, float t) {
 	float h = t * .2;
 	vec3 n = vec3(0);
-	for (int i = ZERO; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		vec3 bits = vec3(float(bit(i + 3, 1)), float(bit(i, 1)), float(bit(i, 0)));
 		vec3 e = .005773 * (2. * bits - 1.);
 		n += e * sdTies(p + e * h).d;
@@ -225,7 +218,7 @@ vec3 calcN(vec3 p, float t) {
 vec3 calcTN(vec3 p, float t) {
 	float h = t * 2.;
 	vec3 n = vec3(0);
-	for (int i = ZERO; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		vec3 bits = vec3(float(bit(i + 3, 1)), float(bit(i, 1)), float(bit(i, 0)));
 		vec3 e = .005773 * (2. * bits - 1.);
 		n += e * sdTerrain(p + e * h).d;

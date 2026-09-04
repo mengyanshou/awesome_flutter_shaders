@@ -1,7 +1,9 @@
 // --- Migrate Log ---
 // 添加 include 和迁移日志，初始化变量，修复浮点常量格式，声明 iChannel0 sampler
-// --- Migrate Log (EN) ---
+// 移除 tex3D 的 sampler 参数，直接通过 SG_TEX0 采样全局 iChannel0，以兼容 SkSL
+//
 // Added include and migration log, initialized variables, fixed float constant format, declared iChannel0 sampler
+// Removed the tex3D sampler parameter and sample global iChannel0 through SG_TEX0 for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -51,12 +53,12 @@ int id = 0; // Object ID - Red perspex: 0; Black lattice: 1.
 
 // Tri-Planar blending function. Based on an old Nvidia writeup:
 // GPU Gems 3 - Ryan Geiss: https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch01.html
-vec3 tex3D( sampler2D tex, in vec3 p, in vec3 n ){
+vec3 tex3D( in vec3 p, in vec3 n ){
    
     n = max((abs(n) - 0.2), 0.001);
     n /= (n.x + n.y + n.z ); // Roughly normalized.
     
-	p = (texture(tex, p.yz)*n.x + texture(tex, p.zx)*n.y + texture(tex, p.xy)*n.z).xyz;
+	p = (SG_TEX0(iChannel0, p.yz)*n.x + SG_TEX0(iChannel0, p.zx)*n.y + SG_TEX0(iChannel0, p.xy)*n.z).xyz;
     
     // Loose sRGB to RGB conversion to counter final value gamma correction...
     // in case you're wondering.
@@ -209,7 +211,8 @@ vec3 nr(vec3 p, inout float edge) {
 float cAO(in vec3 p, in vec3 n)
 {
 	float sca = 3., occ = 0.;
-    for(float i=0.; i<5.; i++){
+    for(int step=0; step<5; step++){
+        float i = float(step);
     
         float hr = .01 + i*.5/4.;        
         float dd = m(n * hr + p);
@@ -312,7 +315,7 @@ void mainImage(out vec4 c, vec2 u){
         
         // Texture value at the surface. Use the heighmap value above to distort the
         // texture a bit.
-        vec3 tx = tex3D(iChannel0, (p*2.0 + hm*0.2), n);
+        vec3 tx = tex3D((p*2.0 + hm*0.2), n);
         //tx = floor(tx*15.999)/15.; // Quantized cartoony colors, if you get bored enough.
 
         c.xyz = vec3(1.0)*(hm*0.8 + 0.2); // Applying the shading to the final color.

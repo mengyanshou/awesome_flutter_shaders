@@ -1,9 +1,11 @@
 // --- Migrate Log ---
 // 初始化局部变量以避免未定义行为
 // 调整 for 循环结构，将累加逻辑移入循环体
+// 将空/表达式型初始化循环改为固定次数的整数循环，以兼容 SkSL
 //
 // Initialize local variables to avoid undefined behavior
 // Adjust for loop structure, move accumulation logic into loop body
+// Replace empty/expression-style loop initializers with fixed-count integer loops for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -28,15 +30,13 @@ void mainImage(out vec4 O, vec2 I) {
   O = vec4(0.0);
   // Time for animation
   float t = iTime;
-  // Raymarch loop iterator
-  int i = 0;
   // Raymarched depth
   float z = 0.0;
   // Raymarch step size and "Turbulence" frequency
   float d = 0.0;
 
   // Raymarching loop with 50 iterations
-  for (; i < 50; i++) {
+  for (int i = 0; i < 50; i++) {
     // Compute raymarch sample point
     vec3 p = z * normalize(vec3(I + I, 0) - iResolution.xyy);
     // Shift back and animate
@@ -46,9 +46,12 @@ void mainImage(out vec4 O, vec2 I) {
             // Expand upward
             / max(p.y * .1 + 1., .1);
     // Turbulence loop (increase frequency)
-    for (d = 2.; d < 15.; d /= .6)
+    d = 2.0;
+    for (int octave = 0; octave < 4; octave++) {
       // Add a turbulence wave
       p += cos((p.yzx - vec3(t / .1, t, d)) * d) / d;
+      d /= 0.6;
+    }
     // Sample approximate distance to hollow cone
     z += d = .01 + abs(length(p.xz) + p.y * .3 - .5) / 7.;
     // Add color and glow attenuation

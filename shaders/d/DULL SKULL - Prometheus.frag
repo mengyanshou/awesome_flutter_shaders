@@ -1,6 +1,6 @@
 // --- Migrate Log ---
-// 添加 Flutter 兼容性 includes，声明 iChannel0，添加 ZERO 宏，修复 Finger 函数中的 for 循环使用 int 计数器，导入 Common.frag，修复 texture 调用使用 r.xy 以兼容 vec2 参数
-// Added Flutter compatibility includes, declared iChannel0, added ZERO macro, fixed Finger function for loop to use int counter, imported Common.frag, fixed texture call to use r.xy for vec2 compatibility
+// 添加 Flutter 兼容层；移除运行时循环初值、动态循环上界及位运算；修复纹理坐标类型。
+// Added Flutter compatibility; removed runtime loop initializers, dynamic loop bounds, and bitwise operations; fixed texture coordinate types.
 
 #include <../common/common_header.frag>
 
@@ -66,7 +66,8 @@ float Finger(vec3 p, float scale, float iter, float r, float r2, float bb, float
     float eps = .1;
     float dist = (b-a).z;
         
-    for (int i=ZERO;i<int(iter);i++){
+    for (int i=0; i<3; i++){
+            if (i >= int(iter)) break;
             a.z = b.z+.08;
             b.z = a.z+dist;
             delta = a.z+(dist)/2.;
@@ -95,9 +96,9 @@ float map(vec3 p){
         vec3 p_vert = p_spine+vec3(0,.15,0);
         vec3 sSpine = vec3(.13,.09,.13);
     float spine = Ellipsoid(p_vert,sSpine);//vertebrae - no anatomical accuracy, just an indication that there are vertebrae :)
-        for (float i=0.;i<4.;i++){
+        for (int i=0; i<4; i++){
             p_vert.y += .2;
-            p_vert.z += i*.09;
+            p_vert.z += float(i)*.09;
             spine = min(spine,Ellipsoid(p_vert,sSpine));  
         }
     spine -= sin(29.*p_vert.x)*sin(21.*p_vert.y)*sin(12.*p_vert.z*.003);//deformation
@@ -345,8 +346,12 @@ float March(vec3 ro, vec3 rd){
 vec3 CalcNormal (vec3 p){
     // inspired by tdhooper and klems - a way to prevent the compiler from inlining map() 4 times
     vec3 n = vec3(0.0);
-    for( int i=ZERO; i<4; i++ ){
-        vec3 e = 0.5773*(2.0*vec3((((i+3)>>1)&1),((i>>1)&1),(i&1))-1.0);
+    const vec3 e0 = vec3( 1.0, -1.0, -1.0) * 0.5773;
+    const vec3 e1 = vec3(-1.0, -1.0,  1.0) * 0.5773;
+    const vec3 e2 = vec3(-1.0,  1.0, -1.0) * 0.5773;
+    const vec3 e3 = vec3( 1.0,  1.0,  1.0) * 0.5773;
+    for( int i=0; i<4; i++ ){
+        vec3 e = i == 0 ? e0 : (i == 1 ? e1 : (i == 2 ? e2 : e3));
         n += e*map(p+.001*e);
     }
     return normalize(n);

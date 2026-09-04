@@ -1,7 +1,9 @@
 // --- Migrate Log ---
 // 添加 common_header 引入与迁移日志；未修改算法，仅保证文件能在 Flutter/SkSL 环境中编译
-// --- Migrate Log (EN) ---
+// 使用固定最大 36 次循环加提前退出，保留 12/36 次波浪迭代并兼容 SkSL
+//
 // Added common_header include and migration log; no algorithmic changes, only ensure compatibility with Flutter/SkSL
+// Use a fixed maximum loop of 36 plus early exit to preserve the 12/36 wave iterations and support SkSL
 
 #include <../common/common_header.frag>
 
@@ -36,7 +38,8 @@ float getwaves(vec2 position, int iterations) {
   float weight = 1.0;// weight in final sum for the wave, this will change every iteration
   float sumOfValues = 0.0; // will store final sum of values
   float sumOfWeights = 0.0; // will store final sum of weights
-  for(int i=0; i < iterations; i++) {
+  for(int i=0; i < ITERATIONS_NORMAL; i++) {
+    if (i >= iterations) break;
     // generate some wave direction that looks kind of random
     vec2 p = vec2(sin(iter), cos(iter));
     

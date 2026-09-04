@@ -1,7 +1,9 @@
 // --- Migrate Log ---
 // 按迁移规范添加 common_header 引入；显式设置输出 alpha 为 1.0 以避免未初始化；未修改渲染算法
-// --- Migrate Log (EN) ---
+// 将复合循环条件中的命中状态移到循环体内提前退出，以兼容 SkSL
+//
 // Added common_header include per migration rules; set output alpha explicitly to 1.0 to avoid uninitialized alpha; no algorithmic changes
+// Moved the hit state from the compound loop condition to an early body exit for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -39,7 +41,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     // basic raymarcher from @blackle
     vec3 p = init;
     bool hit = false;
-    for ( int i = 0; i < 100 && !hit; i++) {
+    for ( int i = 0; i < 100; i++) {
+        if (hit) break;
         if (distance(p,init) > 8.) break;
         float d = scene(p);
         if (d*d < 0.00001) hit = true;

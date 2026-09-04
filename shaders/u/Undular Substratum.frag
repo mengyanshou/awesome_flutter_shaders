@@ -1,11 +1,12 @@
 // --- Migrate Log ---
 // 添加 common_header 引入并补充缺失的采样器与分辨率数组声明；替换 texelFetch 为兼容的 texture() 采样；初始化输出 alpha（1.0）并在文件末尾添加入口 include
-// --- Migrate Log (EN) ---
+// 将 ivec2 整数取模改为 float mod，并通过 SG_TEX3 使用公共通道分辨率，以兼容 SkSL
+//
 // Added common_header include and missing sampler + iChannelResolution declarations; replaced texelFetch with compatible texture() sampling; set output alpha to 1.0 and appended main include
+// Replaced ivec2 integer remainder with float mod and use the shared channel resolution through SG_TEX3 for SkSL compatibility
 
 #include <../common/common_header.frag>
 uniform sampler2D iChannel3;
-uniform vec2 iChannelResolution[4];
 
 /*
     -------------------------------------------------------------
@@ -67,9 +68,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float c = cos(angle), s = sin(angle);
     rd.yz *= mat2(c,s,-s,c);
     
-    ivec2 _idx = (ivec2(iFrame * 331) + ivec2(fragCoord)) % 1024;
-    vec2 _texUV = (vec2(_idx) + 0.5) / iChannelResolution[3].xy;
-    float t = 0.1 * texture(iChannel3, _texUV).a; // replaced texelFetch with texture() for Impeller compatibility
+    ivec2 _idx = ivec2(mod(vec2(int(iFrame * 331.0)) + floor(fragCoord), vec2(1024.0)));
+    vec2 _texUV = (vec2(_idx) + 0.5) / iChannelResolution3;
+    float t = 0.1 * SG_TEX3(iChannel3, _texUV).a;
     float op = 1.;
     for(int i = 0; i < 99; i++)
     {

@@ -2,10 +2,12 @@
 // 使用 SG_TEX0 宏替换 textureLod(iChannel0)，以支持 wrap/filter uniforms
 // 初始化局部变量以避免未定义行为
 // 保护除以0操作 (depthAlphaSum 分母)
+// 将预声明计数器循环改为规范静态整数循环，并保留调试迭代计数
 //
 // Replace textureLod(iChannel0) with SG_TEX0 macro for wrap/filter support
 // Initialize local variables to avoid undefined behavior
 // Protect division by zero (depthAlphaSum denominator)
+// Replace the predeclared-counter loop with a canonical static integer loop while preserving the debug iteration count
 
 #include <../common/common_header.frag>
 
@@ -150,8 +152,9 @@ vec4 rm(vec3 ro, vec3 rd, vec2 uv) {
     float ambient = gm(_SunColor.a);
 
     int n = 0;
-    for (; n < Loop_Max; ++n)
+    for (int step = 0; step < Loop_Max; ++step)
     {
+        n = step;
         vec3 p = ro + len * rd;
         p *= _BaseSize;
         float d = cloudDensity(p, len * _BaseSize);
@@ -200,6 +203,7 @@ vec4 rm(vec3 ro, vec3 rd, vec2 uv) {
 
         if (len > _Far || sum.a > _AlphaMax)
             break;
+        n = step + 1;
     }
 
     if (_Debug >= 0.75)

@@ -1,11 +1,9 @@
-// --- Migration Log ---
-// 将 FXAA 抗锯齿着色器迁移到 Flutter/Skia SkSL 环境
-// Migration: FXAA anti-aliasing shader to Flutter/Skia SkSL
+// --- Migrate Log ---
+// 1) 添加必要的 include 并声明 iChannel0
+// 2) 移除 FXAA 的 sampler2D 函数参数，直接通过 SG_TEX0 采样全局 iChannel0，以兼容 SkSL
 //
-// 关键修改 Key Changes:
-// 1. 添加必要的 include 指令 / Add required include directives
-// 2. 声明 iChannel0 采样器 / Declare iChannel0 sampler uniform
-// 保留原始 FXAA 算法 / Keep original FXAA algorithm
+// 1) Added the required include and declared iChannel0
+// 2) Removed the FXAA sampler2D function parameter and sample global iChannel0 through SG_TEX0 for SkSL compatibility
 
 // CC0: Inside the mandelbulb II
 //  Received some "complaints" about the old mandelbulb suffering from 
@@ -23,7 +21,7 @@ uniform sampler2D iChannel0;
 #define RESOLUTION      iResolution
 
 // License: Unknowon, author: XorDev, found: https://github.com/XorDev/GM_FXAA
-vec4 fxaa(sampler2D tex, vec2 uv, vec2 texelSz) {
+vec4 fxaa(vec2 uv, vec2 texelSz) {
   // See this blog
   // https://mini.gmshaders.com/p/gm-shaders-mini-fxaa
 
@@ -38,11 +36,11 @@ vec4 fxaa(sampler2D tex, vec2 uv, vec2 texelSz) {
   const vec3  luma        = vec3(0.299, 0.587, 0.114);
 
   // Sample center and 4 corners
-  vec3 rgbCC = texture(tex, uv).rgb;
-  vec3 rgb00 = texture(tex, uv+vec2(-0.5,-0.5)*texelSz).rgb;
-  vec3 rgb10 = texture(tex, uv+vec2(+0.5,-0.5)*texelSz).rgb;
-  vec3 rgb01 = texture(tex, uv+vec2(-0.5,+0.5)*texelSz).rgb;
-  vec3 rgb11 = texture(tex, uv+vec2(+0.5,+0.5)*texelSz).rgb;
+  vec3 rgbCC = SG_TEX0(iChannel0, uv).rgb;
+  vec3 rgb00 = SG_TEX0(iChannel0, uv+vec2(-0.5,-0.5)*texelSz).rgb;
+  vec3 rgb10 = SG_TEX0(iChannel0, uv+vec2(+0.5,-0.5)*texelSz).rgb;
+  vec3 rgb01 = SG_TEX0(iChannel0, uv+vec2(-0.5,+0.5)*texelSz).rgb;
+  vec3 rgb11 = SG_TEX0(iChannel0, uv+vec2(+0.5,+0.5)*texelSz).rgb;
 
   //Get luma from the 5 samples
   float lumaCC = dot(rgbCC, luma);
@@ -65,14 +63,14 @@ vec4 fxaa(sampler2D tex, vec2 uv, vec2 texelSz) {
 
   // Average middle texels along dir line
   vec4 A = 0.5 * (
-      texture(tex, uv - dir * (1.0/6.0))
-    + texture(tex, uv + dir * (1.0/6.0))
+      SG_TEX0(iChannel0, uv - dir * (1.0/6.0))
+    + SG_TEX0(iChannel0, uv + dir * (1.0/6.0))
     );
 
   // Average with outer texels along dir line
   vec4 B = A * 0.5 + 0.25 * (
-      texture(tex, uv - dir * (0.5))
-    + texture(tex, uv + dir * (0.5))
+      SG_TEX0(iChannel0, uv - dir * (0.5))
+    + SG_TEX0(iChannel0, uv + dir * (0.5))
     );
 
 
@@ -90,7 +88,7 @@ vec4 fxaa(sampler2D tex, vec2 uv, vec2 texelSz) {
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
   vec2 q = fragCoord/RESOLUTION.xy;
   
-  fragColor = fxaa(iChannel0, q, sqrt(2.0)/RESOLUTION.xy);
+  fragColor = fxaa(q, sqrt(2.0)/RESOLUTION.xy);
 }
 
 // 修改 2 / Change 2: 添加必要的 include 指令 / Add required include directive

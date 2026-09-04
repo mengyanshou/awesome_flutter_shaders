@@ -1,9 +1,9 @@
 // --- Migrate Log ---
-// 本次迁移修改:
-// 重写 mainImage 参数为 fragColor 和 fragCoord，初始化局部变量，改为 int 循环，移累加到循环体
-// change summary:
-// Rewrite mainImage parameters to fragColor and fragCoord, initialize local variables, change to int loop, move accumulation to loop body
-// -------------------
+// 1) 重写 mainImage 参数并初始化局部变量
+// 2) 将空/表达式型初始化循环改为固定次数的整数循环，以兼容 SkSL
+//
+// 1) Rewrote the mainImage parameters and initialized local variables
+// 2) Replaced empty/expression-style loop initializers with fixed-count integer loops for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -16,8 +16,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     //Time for waves and coloring
     float t = 0.0;
-    //Raymarch iterator
-    int step = 0;
     //Raymarch depth
     float z = 0.0;
     //Raymarch step distance
@@ -29,7 +27,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     
     //Clear fragcolor and raymarch loop 100 times
     fragColor = vec4(0.0);
-    for (; step < 100; step++)
+    for (int step = 0; step < 100; step++)
     {
         //Raymarch sample point
         vec3 p = z * normalize(vec3(fragCoord + fragCoord, 0.0) - iResolution.xyy),
@@ -41,8 +39,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         v = p;
         //Apply turbulence waves
         //https://mini.gmshaders.com/p/turbulence
-        for (d = 1.0; d < 9.0; d += d)
+        d = 1.0;
+        for (int octave = 0; octave < 4; octave++) {
             p += 0.5 * sin(p.yzx * d + t) / d;
+            d += d;
+        }
         //Distance to gyroid
         z += d = 0.2 * (0.01 + abs(s = dot(cos(p), sin(p / 0.7).yzx))
         //Spherical boundary

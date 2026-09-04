@@ -1,9 +1,11 @@
 // --- Migrate Log ---
 // 初始化局部变量，避免未定义行为：初始化 t,s,d,e,c，使用 int 计数器替代浮点 i
 // 重命名函数参数为 Shadertoy 约定 (fragColor, fragCoord)，并将 fragCoord 明确归一化为 uv
+// 将循环计数器声明移入 for 初始化，并用循环体内 break 保留距离终止条件，以兼容 SkSL
 //
 // Initialize local variables to avoid undefined behavior: init t,s,d,e,c and use int loop counter
 // Rename function parameters to (fragColor, fragCoord) and normalize fragCoord to uv
+// Declare the loop counter in the for initializer and preserve the distance exit with a body break for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -25,7 +27,6 @@
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Explicit initialization to avoid undefined behaviour
     float t = 0.0, s = 1.0, d = 0.0, e = 0.0;
-    int step = 0;
     vec3 c = vec3(0.0);
     vec3 r = vec3(iResolution, 1.0);
     fragColor = vec4(0.0);
@@ -40,7 +41,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
          X = normalize(vec3(Z.z, 0.0, -Z)),
          D = vec3(uv, 1.0) * mat3(-X, cross(X, Z), Z);
 
-    for (step = 0; step < 28 && d < 30.0; step++) {
+    for (int step = 0; step < 28; step++) {
+        if (d >= 30.0) {
+            break;
+        }
         // march
         p += D * s;
 

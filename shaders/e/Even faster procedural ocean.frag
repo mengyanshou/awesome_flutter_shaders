@@ -1,7 +1,7 @@
 // --- Migrate Log ---
-// 添加 common header；已验证使用 int 循环和显式初始化，无其他必要更改
-// Added common header; verified int loops and explicit initializations, no further changes required
+// 添加 common header；使用固定最大循环次数加提前退出，保留 13/48 次波浪迭代并兼容 SkSL
 //
+// Added the common header; use a fixed maximum loop plus early exit to preserve the 13/48 wave iterations and support SkSL
 #include <../common/common_header.frag>
 
 //afl_ext 2017-2019
@@ -28,7 +28,10 @@ float getwaves(vec2 position, int iterations){
     float weight = 1.0;
     float w = 0.0;
     float ws = 0.0;
-    for(int i=0;i<iterations;i++){
+    for(int i=0;i<ITERATIONS_NORMAL;i++){
+        if (i >= iterations) {
+            break;
+        }
         vec2 p = vec2(sin(iter), cos(iter));
         vec2 res = wavedx(position, p, speed, phase, Time);
         position += p * res.y * weight * DRAG_MULT;

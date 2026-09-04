@@ -1,8 +1,11 @@
 // --- Migrate Log ---
 // 添加必要的 include 指令以兼容 Flutter/Skia
 // 将全局变量改为局部变量以防止状态污染
+// 将整数取模索引改为显式环绕索引，以兼容 SkSL
+//
 // Add required include directives for Flutter/Skia compatibility
 // Converted global variables to local variables to prevent state pollution
+// Replaced integer remainder indices with explicit wrapped indices for SkSL compatibility
 
 #include <../common/common_header.frag>
 
@@ -150,9 +153,8 @@ float de(vec3 p) {
     
         ////////////////////
         // Icosahedron face and vertices.
-        vec3 face;
-        vec3[3] v;
-        icosahedronVerts(pp, face, v[0], v[1], v[2]);
+        vec3 face, v0, v1, v2;
+        icosahedronVerts(pp, face, v0, v1, v2);
         float rad = 1.; // Sphere radius.
 
         // Two points on either side of each triangle edge midpoint. There
@@ -163,17 +165,19 @@ float de(vec3 p) {
         // to do it. However, I'm not aware of space folding techniques
         // that can achieve this pattern. Someone like TdHooper, knighty,
         // MLA, or Djinn Kahn might, however.
-        vec3[6] mid;
-        for(int i = 0; i<3; i++){
-            mid[i*2] = mix(v[i], v[(i + 1)%3], 1./3.);
-            mid[i*2 + 1] = mix(v[i], v[(i + 1)%3], 2./3.);
-        }
+        vec3 mid0 = mix(v0, v1, 1./3.);
+        vec3 mid1 = mix(v0, v1, 2./3.);
+        vec3 mid2 = mix(v1, v2, 1./3.);
+        vec3 mid3 = mix(v1, v2, 2./3.);
+        vec3 mid4 = mix(v2, v0, 1./3.);
+        vec3 mid5 = mix(v2, v0, 2./3.);
         // Constructing a hexagon in the triangle face center.
-        float poly = -1e5;
-        for(int i = 0; i<6; i++){
-           poly = max(poly, sphereLineAB(pp, mid[i], mid[(i + 1)%6], rad));
-
-        }
+        float poly = sphereLineAB(pp, mid0, mid1, rad);
+        poly = max(poly, sphereLineAB(pp, mid1, mid2, rad));
+        poly = max(poly, sphereLineAB(pp, mid2, mid3, rad));
+        poly = max(poly, sphereLineAB(pp, mid3, mid4, rad));
+        poly = max(poly, sphereLineAB(pp, mid4, mid5, rad));
+        poly = max(poly, sphereLineAB(pp, mid5, mid0, rad));
         // Taking the absolute will fill in the outside. This saves rendering
         // more polygons.
         bcol = smoothstep(0., .05, abs(poly));

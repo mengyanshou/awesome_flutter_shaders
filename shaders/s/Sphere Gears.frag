@@ -197,7 +197,7 @@ vec3 calcNormal( in vec3 pos, in float time )
 #else
     // klems's trick to prevent the compiler from inlining map() 4 times
     vec3 n = vec3(0.0);
-    for( int i=ZERO; i<4; i++ )
+    for( int i=0; i<4; i++ )
     {
         int b0 = int(mod(floor(float(i + 3) / 2.0), 2.0));
         int b1 = int(mod(floor(float(i) / 2.0), 2.0));
@@ -214,7 +214,7 @@ float calcAO( in vec3 pos, in vec3 nor, in float time )
 {
 	float occ = 0.0;
     float sca = 1.0;
-    for( int i=ZERO; i<5; i++ )
+    for( int i=0; i<5; i++ )
     {
         float h = 0.01 + 0.12*float(i)/4.0;
         float d = map( pos+h*nor, time ).x;
@@ -258,8 +258,9 @@ vec4 intersect( in vec3 ro, in vec3 rd, in float time )
     {
         // raymarch
         float t = max(tminmax.x,0.001);
-        for( int i=0; i<128 && t<tminmax.y; i++ )
+        for( int i=0; i<128; i++ )
         {
+            if( t>=tminmax.y ) break;
             vec4 h = map(ro+t*rd,time);
             if( h.x<0.001 ) { res=vec4(t,h.yzw); break; }
             t += h.x;
@@ -283,8 +284,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec3 tot = vec3(0.0);
     
     #if AA>1
-    for( int m=ZERO; m<AA; m++ )
-    for( int n=ZERO; n<AA; n++ )
+    for( int m=0; m<AA; m++ )
+    for( int n=0; n<AA; n++ )
     {
         // pixel coordinates
         vec2 o = vec2(float(m),float(n)) / float(AA) - 0.5;

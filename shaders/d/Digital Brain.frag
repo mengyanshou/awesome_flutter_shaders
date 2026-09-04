@@ -133,7 +133,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 	v *= exp(-0.6 * length(suv)) * 1.2;
 	
 	// use texture channel0 for color? why not.
-	vec3 cexp = texture(iChannel0, uv * 0.001).xyz * 3.0 + texture(iChannel0, uv * 0.01).xyz;
+	vec3 cexp = SG_TEX0(iChannel0, uv * 0.001).xyz * 3.0 + SG_TEX0(iChannel0, uv * 0.01).xyz;
 	cexp *= 1.4;
 	
 	// old blueish color set

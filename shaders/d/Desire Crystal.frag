@@ -1,7 +1,11 @@
 // --- Migrate Log ---
-// 插入 common_header，初始化未初始化的整型/累加器，并把基于 float 的循环改写为基于 int 的循环以提高兼容性（最小改动）。
-// --- Migrate Log (EN) ---
-// Insert common_header, initialize previously-uninitialized ints/accumulators, and convert float-based loops to int-based loops for better compatibility (minimal changes).
+// 1) 插入 common_header，初始化未初始化的整型和累加器
+// 2) 将 lattice/shatter 的动态循环上限固定为唯一调用实际使用的 3 次和 1 次，以兼容 SkSL
+// 3) 将整数取模和整数 max 改为 float mod/max 等价表达式
+//
+// 1) Inserted common_header and initialized previously uninitialized integers and accumulators
+// 2) Fixed the dynamic lattice/shatter loops to the three and one iterations used by their only call sites for SkSL compatibility
+// 3) Replaced integer remainder and integer max with equivalent float mod/max expressions
 
 #include <../common/common_header.frag>
 
@@ -18,9 +22,9 @@ int ec = 0;
 float bx(vec3 p,vec3 s){vec3 q=abs(p)-s;return min(max(q.x,max(q.y,q.z)),0.)+length(max(q,0.));}
 float cy(vec3 p, vec2 s){p.y+=s.x/2.;p.y-=clamp(p.y,0.,s.x);return length(p)-s.y;}
 
-float shatter(vec3 p, float d, float n, float a, float s)
+float shatter(vec3 p, float d, float a, float s)
 {
-	for (int _i = 0; _i < int(n); _i++)
+	for (int _i = 0; _i < 1; _i++)
 	{
 		float i = float(_i);
 		p.xy*=rot(a);p.xz*=rot(a*0.5);p.yz*=rot(a+a);
@@ -31,9 +35,9 @@ float shatter(vec3 p, float d, float n, float a, float s)
 	return d; 
 }
 
-vec3 lattice(vec3 p, int iter)
+vec3 lattice(vec3 p)
 {
-		for(int i = 0; i < iter; i++)
+			for(int i = 0; i < 3; i++)
 		{
 		  p.xy *= rot(45.*DTR);
 			p.xz *= rot(45.*DTR);
@@ -57,11 +61,11 @@ if(iMouse.z>0.){
 		p.xz*=rot(tt*0.2);
 		p.xy*=rot(tt*0.2);
 	
-		p = lattice(p, 3);
+			p = lattice(p);
 	
 		sd=cy(p,vec2(1.)) - 0.05;
 	
-		sd = shatter(p,sd, 1.,sin(tt*0.1),0.2);
+			sd = shatter(p,sd,sin(tt*0.1),0.2);
 	
 		sd = min(sd, bx(p,vec3(0.1,2.1,8.)) - 0.3);
 	
@@ -109,12 +113,13 @@ void render(vec2 frag, vec2 res, float time, out vec4 col)
   
 	for(int i=0;i<20;i++)
   {
-		tr(); cp = ro + rd * cd;
-    nm(); ro = cp - cn * 0.01;
-    cr = refract(rd, cn, (i % 2 == 0) ? (1.0 / io) : io);
-    if(length(cr) == 0.0 && es <= 0) { cr = reflect(rd, cn); es = ec; }
-    if ((max(es,0) % 3) == 0 && cd < 128.0) rd = cr; es--;
-		if(vb.x > 0.0 && (i % 2) == 1) oa = pow(clamp(cd / vb.y, 0.0, 1.0), vb.z);
+			tr(); cp = ro + rd * cd;
+	    nm(); ro = cp - cn * 0.01;
+	    float parity = mod(float(i), 2.0);
+	    cr = refract(rd, cn, (parity == 0.0) ? (1.0 / io) : io);
+	    if(length(cr) == 0.0 && es <= 0) { cr = reflect(rd, cn); es = ec; }
+	    if (mod(max(float(es), 0.0), 3.0) == 0.0 && cd < 128.0) rd = cr; es--;
+			if(vb.x > 0.0 && parity == 1.0) oa = pow(clamp(cd / vb.y, 0.0, 1.0), vb.z);
 		px(); fc = fc + vec4(cc*oa, oa) * (1.0 - fc.a);
 		if ((fc.a >= 1.0 || cd > 128.0)) break;
   }

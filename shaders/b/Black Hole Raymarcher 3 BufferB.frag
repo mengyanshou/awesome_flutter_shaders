@@ -1,21 +1,21 @@
 // --- Migrate Log ---
-// 本次迁移修改:
-// - 初始化局部变量并修正循环计数器；替换所有位操作为纯数学实现；插入迁移头文件并保持算法等价。
-// change summary:
-// - Initialize locals and fix loop counters; replace all bitwise ops with pure math; kept algorithm equivalence.
-// -------------------
+// 1) 初始化局部变量并修正循环计数器
+// 2) 将基于 uint、uvec3 和位运算的随机函数替换为纯 float 实现，以兼容 SkSL
+// 3) 将噪声 octave 的动态循环上限固定为原先使用的 3 次迭代
+//
+// 1) Initialized local variables and fixed loop counters
+// 2) Replaced the uint, uvec3, and bitwise random functions with a float-only implementation for SkSL compatibility
+// 3) Fixed the dynamic noise octave loop to the original three iterations
 
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
 
-// Simple pseudo-random generator without any bitwise operations
-float hash(uint x)
+// Float-only pseudo-random generator for Flutter/SkSL runtime effects.
+float hash(float x)
 {
-    x = uint(int(x) * 2654435761);  // Multiplicative hash
-    return fract(sin(float(x)) * 43758.5453);
+    return fract(sin(x * 12.9898) * 43758.5453);
 }
 
-#define hashi(x) uint(hash(x) * float(0xffffffffU))
 #define steps  90
 const int starAA = 8; //Multisamples the stars
 vec3 camPos = vec3(0.0, 220.0, 0.0);
@@ -29,24 +29,10 @@ const float vol = 8.0;    //brightness of volume
 const float volDen = 0.7; //opacity of volume, between 0 and 1
 
 
-//Random function and hash from https://www.shadertoy.com/view/WttXWX
-// Simplified hash without bitwise operations for SkSL compatibility
-uint lowbias32(uint x)
-{
-    x = (x ^ uint(43668522)) * 3812423987u;
-    x = (x ^ (x / 65536u)) * 3699529241u;
-    x = x ^ (x / 65536u);
-    return x;
-}
-
-
 float rand(vec3 position)
 {
-    uvec3 V = uvec3(floor(position + 0.5));
-    // Use multiplication-based mixing instead of bit shifting
-    float h = hash(V.x + (V.y * 65536u) + (V.z * 256u));  // Converted 3D hash without << operator
-    return h;
-
+    vec3 V = floor(position + 0.5);
+    return hash(dot(V, vec3(1.0, 57.0, 113.0)));
 }
 //=====================================================================
 //3d noise functions
@@ -90,13 +76,13 @@ float interpolate(vec3 position)
 }
 
 //Octaves of noise, sligtly less than a perfect octave to hide bilinear filtering artifatcs
-float octave(vec3 coord, float octaves, float div)
+float octave(vec3 coord, float div)
 {
     
     float col = 0.0;
     float it = 1.0;
     float cnt = 1.0;
-    for(int iter = 1; iter <= int(octaves); iter++)
+    for(int iter = 1; iter <= 3; iter++)
     {
         col += interpolate((it * coord / (div))) / it;
         it = it * 1.9;
@@ -148,7 +134,7 @@ vec2 distField(vec3 position, vec3 origin)
     float spiral = 0.0;
     float occ = 0.0;
     spiral = octave(vec3(dist, 50.0 * (1.0 + sin(angle))
-    , 1.0 * distance(origin.z + 3.0 * iTime, position.z)), detail, density);//3d noise function
+    , 1.0 * distance(origin.z + 3.0 * iTime, position.z)), density);//3d noise function
 
     //Merge components
     float finalDF = cloud * clamp(spiral / (fieldZ), 0.0, 1.0);

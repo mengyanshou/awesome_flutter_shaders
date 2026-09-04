@@ -1,3 +1,8 @@
+// --- Migrate Log ---
+// 将动态光线步进上限改为固定最大 100 次加提前退出，保留 30/100 次调用行为并兼容 SkSL
+//
+// Replaced the dynamic ray-march bound with a fixed maximum of 100 plus early exit, preserving the 30/100 call behavior for SkSL compatibility
+
 #include <../common/common_header.frag>
 
 #define lofi(i,j) (floor((i)/(j))*(j))
@@ -340,7 +345,8 @@ March domarch(vec3 ro,vec3 rd,int iter){
   Grid grid;
   float gridlen=rl;
   
-  for(int i=0;i<iter;i++){
+  for(int i=0;i<100;i++){
+    if (i >= iter) break;
     if(gridlen<=rl){
       grid=dogrid(rp,rd);
       gridlen+=grid.d;

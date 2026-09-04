@@ -1,6 +1,9 @@
 // --- Migrate Log ---
 // 添加 Flutter 兼容性 includes，修复 ZERO 宏定义为 int(min(iFrame, 0.0))
-// Added Flutter compatibility includes, fixed ZERO macro to int(min(iFrame, 0.0))
+// 使用固定最大循环次数加提前退出，保留参数指定的波浪迭代次数并兼容 SkSL
+//
+// Added Flutter compatibility includes and fixed ZERO to int(min(iFrame, 0.0))
+// Use a fixed maximum loop plus early exit to preserve parameterized wave iterations and support SkSL
 
 #include <../common/common_header.frag>
 
@@ -200,8 +203,11 @@ float calculate_wave_at_p(vec2 position, int iterations)
   float sum_of_values = 0.0; // will store final sum of values
   float sum_of_weights = 0.0; // will store final sum of weights
   
-  for(int i=0; i < iterations; i++) 
+  for(int i=0; i < RaymarchNormalSteps; i++)
   {
+    if (i >= iterations) {
+      break;
+    }
     vec2 p = vec2(sin(iter), cos(iter));
     vec2 wave_data = wave_dx(position, p, frequency, iTime * time_mult);
 

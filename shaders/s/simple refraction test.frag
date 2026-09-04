@@ -1,6 +1,9 @@
 // --- Migrate Log ---
 // 兼容 Flutter/Skia：结构与 Shadertoy 保持一致，mainImage 签名、变量命名、include/ 顺序修正，texture 采样兼容 Flutter。
+// 将动态浮点反弹循环改为固定 6 次整数循环，以兼容 SkSL。
+//
 // Flutter/Skia compatibility: structure matches Shadertoy, mainImage signature/vars/include/ order fixed, texture sampling for Flutter.
+// Replaced the dynamic float bounce loop with a fixed six-iteration integer loop for SkSL compatibility.
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
 // "RayMarching starting point" 
@@ -161,13 +164,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     ro.xz *= Rot(T / 2.);
     vec3 rd = GetRayDir(uv, ro, vec3(0, 0., 0), 1.);
     vec3 col = vec3(0);
-    float bo = 6.;
     float fresnel = 1.;
     bool issecond = false;
     Hit h;
-    float i = 0.;
     vec3 p;
-    for(; i < bo; i++){
+    for(int bounce = 0; bounce < 6; bounce++){
+        float i = float(bounce);
         h = RayMarch(ro, rd, 1.);
         float IOR = 1.35;
         if(h.d < MAX_DIST){
@@ -229,4 +231,3 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 }
 
 #include <../common/main_shadertoy.frag>
-

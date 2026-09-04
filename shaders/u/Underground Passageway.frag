@@ -1,3 +1,8 @@
+// --- Migrate Log ---
+// 移除三平面纹理和纹理凹凸函数的 sampler 参数，直接通过 SG_TEX1 采样全局 iChannel1，以兼容 SkSL
+//
+// Removed sampler parameters from tri-planar texture and texture-bump helpers and sample global iChannel1 directly through SG_TEX1 for SkSL compatibility
+
 /*
 
     Underground Passageway
@@ -139,7 +144,7 @@ vec2 hash22(vec2 p) {
 
 // Tri-Planar blending function. Based on an old Nvidia writeup:
 // GPU Gems 3 - Ryan Geiss: https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch01.html
-vec3 tex3D(sampler2D t, in vec3 p, in vec3 n){
+vec3 tex3D(in vec3 p, in vec3 n){
     
     // We only want positive normal weightings. The normal is manipulated to suit
     // your needs.
@@ -147,9 +152,9 @@ vec3 tex3D(sampler2D t, in vec3 p, in vec3 n){
     //n /= dot(n, vec3(1)); // Rough renormalization approximation.
     n /= length(n); // Renormalizing.
     
-	vec3 tx = texture(t, p.yz).xyz; // Left and right sides.
-    vec3 ty = texture(t, p.zx).xyz; // Top and bottom.
-    vec3 tz = texture(t, p.xy).xyz; // Front and back.
+		vec3 tx = SG_TEX1(iChannel1, p.yz).xyz; // Left and right sides.
+    vec3 ty = SG_TEX1(iChannel1, p.zx).xyz; // Top and bottom.
+    vec3 tz = SG_TEX1(iChannel1, p.xy).xyz; // Front and back.
     
     // Blending the surrounding textures with the normal weightings. If the surface is facing
     // more up or down, then a larger "n.y" weighting would make sense, etc.
@@ -691,15 +696,15 @@ vec3 doBumpMap(in vec3 p, in vec3 nor, float bumpfactor){
 
 // Texture bump mapping. Four tri-planar lookups, or 12 texture lookups in total. I tried to 
 // make it as concise as possible. Whether that translates to speed, or not, I couldn't say.
-vec3 doBumpMap(sampler2D tx, in vec3 p, in vec3 n, float bf){
+vec3 doTextureBumpMap(in vec3 p, in vec3 n, float bf){
    
     const vec2 e = vec2(0.001, 0);
     
     // Three gradient vectors rolled into a matrix, constructed with offset greyscale texture values.    
-    mat3 m = mat3( tex3D(tx, p - e.xyy, n), tex3D(tx, p - e.yxy, n), tex3D(tx, p - e.yyx, n));
+    mat3 m = mat3( tex3D(p - e.xyy, n), tex3D(p - e.yxy, n), tex3D(p - e.yyx, n));
     
     vec3 g = vec3(0.299, 0.587, 0.114)*m; // Converting to greyscale.
-    g = (g - dot(tex3D(tx,  p , n), vec3(0.299, 0.587, 0.114)) )/e.x; g -= n*dot(n, g);
+    g = (g - dot(tex3D(p, n), vec3(0.299, 0.587, 0.114)) )/e.x; g -= n*dot(n, g);
                       
     return normalize( n + g*bf ); // Bumped normal. "bf" - bump factor.
     
@@ -914,7 +919,7 @@ void mainImage(out vec4 O, vec2 I){
         
         float bf = .05;
         if(svObjID == 1. || svObjID == 3.) bf = .01;
-        sn = doBumpMap(iChannel1, tSp*tSize, sn, bf);
+        sn = doTextureBumpMap(tSp*tSize, sn, bf);
         // Getting picky, and hacky. With no anisotropic filtering, I need a finer grad of
         // texture bumping on the rocks, but a wider coloring spread... It's not important. :)
         if(svObjID == 0.) tSize /= 2.;
@@ -977,7 +982,7 @@ void mainImage(out vec4 O, vec2 I){
 
         // I couldn't be bothered going through the trouble to make a detailed texture like the
         // one below, so I used the one you see below. 
-        vec3 tx = tex3D(iChannel1, tSp*tSize, sn);
+        vec3 tx = tex3D(tSp*tSize, sn);
         if(svObjID!=2.) col *= smoothstep(-.1, .7, tx)*2.;
         
         // Concreat shaft.

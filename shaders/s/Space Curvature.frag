@@ -13,8 +13,10 @@
 
 // --- Migrate Log ---
 // 添加 common_header 引入并声明缺失的 iChannel 采样器；移除 texture() 的 bias 第三个参数（通过保留参数但在函数内忽略）以兼容 SkSL；把 ZERO 宏改为 int(min(iFrame,0.0)) 以避免 int/float 混用
-// --- Migrate Log (EN) ---
+// 将 sampler 参数辅助函数拆成 iChannel0/iChannel1 专用函数，并通过 SG_TEX0/1 直接采样
+//
 // Added common_header include and declared missing iChannel samplers; removed texture(...) bias third arg (ignored inside helper) for SkSL; changed ZERO macro to int(min(iFrame,0.0)) to avoid int/float mixing
+// Split the sampler-parameter helper into iChannel0/iChannel1-specific functions that sample directly through SG_TEX0/1
 #include <../common/common_header.frag>
 uniform sampler2D iChannel0;
 uniform sampler2D iChannel1;
@@ -62,12 +64,20 @@ vec3 sphNormal( in vec3 pos, in vec4 sph )
     return (pos - sph.xyz)/sph.w;    
 }
 
-// TODO: 为什么这里可以传 sampler2D ？
-vec3 fancyCube(int idx, sampler2D sam, in vec3 d, in float s, in float b )
+vec3 fancyCube0(in vec3 d, in float s, in float b )
 {
-    vec3 colx = sg_texture(idx, sam, 0.5 + s * d.yz / d.x ).xyz;
-    vec3 coly = sg_texture(idx, sam, 0.5 + s * d.zx / d.y ).xyz;
-    vec3 colz = sg_texture(idx, sam, 0.5 + s * d.xy / d.z ).xyz;
+    vec3 colx = SG_TEX0(iChannel0, 0.5 + s * d.yz / d.x ).xyz;
+    vec3 coly = SG_TEX0(iChannel0, 0.5 + s * d.zx / d.y ).xyz;
+    vec3 colz = SG_TEX0(iChannel0, 0.5 + s * d.xy / d.z ).xyz;
+    vec3 n = d*d;
+    return (colx*n.x + coly*n.y + colz*n.z)/(n.x+n.y+n.z);
+}
+
+vec3 fancyCube1(in vec3 d, in float s, in float b )
+{
+    vec3 colx = SG_TEX1(iChannel1, 0.5 + s * d.yz / d.x ).xyz;
+    vec3 coly = SG_TEX1(iChannel1, 0.5 + s * d.zx / d.y ).xyz;
+    vec3 colz = SG_TEX1(iChannel1, 0.5 + s * d.xy / d.z ).xyz;
     vec3 n = d*d;
     return (colx*n.x + coly*n.y + colz*n.z)/(n.x+n.y+n.z);
 }
@@ -98,10 +108,10 @@ vec2 voronoi( in vec2 x )
 vec3 background( in vec3 d, in vec3 l )
 {
     vec3 col = vec3(0.0);
-         col += 0.5*pow( fancyCube( 1, iChannel1, d, 0.05, 5.0 ).zyx, vec3(2.0) );
-         col += 0.2*pow( fancyCube( 1, iChannel1, d, 0.10, 3.0 ).zyx, vec3(1.5) );
-         col += 0.8*vec3(0.80,0.5,0.6)*pow( fancyCube( 1, iChannel1, d, 0.1, 0.0 ).xxx, vec3(6.0) );
-    float stars = smoothstep( 0.3, 0.7, fancyCube( 1, iChannel1, d, 0.91, 0.0 ).x );
+         col += 0.5*pow( fancyCube1( d, 0.05, 5.0 ).zyx, vec3(2.0) );
+         col += 0.2*pow( fancyCube1( d, 0.10, 3.0 ).zyx, vec3(1.5) );
+         col += 0.8*vec3(0.80,0.5,0.6)*pow( fancyCube1( d, 0.1, 0.0 ).xxx, vec3(6.0) );
+    float stars = smoothstep( 0.3, 0.7, fancyCube1( d, 0.91, 0.0 ).x );
 
     vec3 n = abs(d);
     n = n*n*n;
@@ -184,22 +194,22 @@ vec3 render( in vec3 ro, in vec3 rd )
         vec3 ref = reflect( rd, nor );
         float fre = clamp( 1.0+dot( nor, rd ), 0.0 ,1.0 );
 
-        float l = fancyCube( 0, iChannel0, tnor, 0.03, 0.0 ).x;
-        l += -0.1 + 0.3*fancyCube( 0, iChannel0, tnor, 8.0, 0.0 ).x;
+        float l = fancyCube0( tnor, 0.03, 0.0 ).x;
+        l += -0.1 + 0.3*fancyCube0( tnor, 8.0, 0.0 ).x;
 
         vec3 sea  = mix( vec3(0.0,0.07,0.2), vec3(0.0,0.01,0.3), fre );
         sea *= 0.15;
 
         vec3 land = vec3(0.02,0.04,0.0);
-        land = mix( land, vec3(0.05,0.1,0.0), smoothstep(0.4,1.0,fancyCube( 0, iChannel0, tnor, 0.1, 0.0 ).x ));
-        land *= fancyCube( 0, iChannel0, tnor, 0.3, 0.0 ).xyz;
+        land = mix( land, vec3(0.05,0.1,0.0), smoothstep(0.4,1.0,fancyCube0( tnor, 0.1, 0.0 ).x ));
+        land *= fancyCube0( tnor, 0.3, 0.0 ).xyz;
         land *= 0.5;
 
         float los = smoothstep(0.45,0.46, l);
         mat = mix( sea, land, los );
 
-        vec3 wrap = -1.0 + 2.0*fancyCube( 1, iChannel1, tnor2.xzy, 0.025, 0.0 ).xyz;
-        float cc1 = fancyCube( 1, iChannel1, tnor2 + 0.2*wrap, 0.05, 0.0 ).y;
+        vec3 wrap = -1.0 + 2.0*fancyCube1( tnor2.xzy, 0.025, 0.0 ).xyz;
+        float cc1 = fancyCube1( tnor2 + 0.2*wrap, 0.05, 0.0 ).y;
         float clouds = smoothstep( 0.3, 0.6, cc1 );
 
         mat = mix( mat, vec3(0.93*0.15), clouds );

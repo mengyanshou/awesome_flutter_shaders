@@ -9,7 +9,10 @@
 
 // --- Migrate Log ---
 // 添加精度声明和公共 include；在文件末尾加入 main_shadertoy include。
+// 将预声明计数器的 for 循环改为规范静态整数循环，并保留迭代计数结果。
+//
 // Added common includes; appended main_shadertoy include at file end.
+// Replaced for loops using predeclared counters with canonical static integer loops while preserving iteration counts.
 
 #include <../common/common_header.frag>
 
@@ -205,8 +208,9 @@ float rayMarch2(vec3 ro, vec3 rd, float tinit) {
 #if defined(BACKSTEP2)
   vec2 dti = vec2(1e10,0.0);
 #endif
-  int i;
-  for (i = 0; i < MAX_RAY_MARCHES2; ++i) {
+  int i = 0;
+  for (int step = 0; step < MAX_RAY_MARCHES2; ++step) {
+    i = step;
     float d = df2(ro + rd*t);
 #if defined(BACKSTEP2)
     if (d<dti.x) { dti=vec2(d,t); }
@@ -216,6 +220,7 @@ float rayMarch2(vec3 ro, vec3 rd, float tinit) {
       break;
     }
     t += d;
+    i = step + 1;
   }
 #if defined(BACKSTEP2)
   if(i==MAX_RAY_MARCHES2) { t=dti.y; };
@@ -282,13 +287,15 @@ float df3(vec3 p) {
 
 float rayMarch3(vec3 ro, vec3 rd, float tinit, out int iter) {
   float t = tinit;
-  int i;
-  for (i = 0; i < MAX_RAY_MARCHES3; ++i) {
+  int i = 0;
+  for (int step = 0; step < MAX_RAY_MARCHES3; ++step) {
+    i = step;
     float d = df3(ro + rd*t);
     if (d < TOLERANCE3 || t > MAX_RAY_LENGTH3) {
       break;
     }
     t += d;
+    i = step + 1;
   }
   iter = i;
   return t;
@@ -374,4 +381,3 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 }
 
 #include <../common/main_shadertoy.frag>
-
