@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:shader_buffers/shader_buffers.dart' hide ShaderController;
 import 'package:shader_graph/shader_graph.dart';
 import 'package:signale/signale.dart';
 import 'bricks_game.dart';
@@ -95,8 +94,6 @@ class AwesomeShader extends StatelessWidget {
   final KeyboardController? keyboardController;
   final buffers = <ShaderBuffer>[];
 
-  /// See https://github.com/flutter/flutter/issues/180959
-
   @override
   Widget build(BuildContext context) {
     for (final buf in buffers) {
@@ -155,31 +152,6 @@ Future<void> main() async {
 }
 
 TextStyle shaderTitleStyle = const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold);
-// Map<String, ShaderController> controllers = {};
-// Widget shader(String asset, {List<String> channels = const [], bool upSideDown = true}) {
-//   // ! 0.5 to reduce GPU load
-//   LayerBuffer layerBuffer = LayerBuffer(shaderAssetsName: asset, scaleRenderView: 0.5);
-//   layerBuffer.setChannels(channels.map((channel) => IChannel(assetsTexturePath: channel)).toList());
-//   return Column(
-//     mainAxisSize: MainAxisSize.min,
-//     children: [
-//       Transform.flip(
-//         flipY: upSideDown,
-//         child: LayoutBuilder(
-//           builder: (context, con) {
-//             return ShaderBuffers(
-//               key: UniqueKey(),
-//               height: con.maxWidth * 9 / 16,
-//               controller: ShaderController(),
-//               mainImage: layerBuffer,
-//             );
-//           },
-//         ),
-//       ),
-//       Text(basenameWithoutExtension(asset), style: shaderTitleStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
-//     ],
-//   );
-// }
 
 bool enableImpller = false;
 

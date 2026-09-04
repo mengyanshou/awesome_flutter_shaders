@@ -30,7 +30,7 @@ class _BricksGameState extends State<BricksGame> {
                   height: height,
                   child: ShaderSurface.builder(
                     () {
-                      final bufferA = '${SA.package}shaders/game/Bricks Game BufferA.frag'.feedback().feedKeyboard();
+                      final bufferA = '${SA.package}shaders/game/Bricks Game BufferA.frag'.shaderBuffer.feedback().feedKeyboard();
                       final mainBuffer = '${SA.package}shaders/game/Bricks Game.frag'.feed(bufferA);
                       // Standard scheme: physical width = virtual * 4
                       bufferA.fixedOutputSize = const Size(14 * 4.0, 14);

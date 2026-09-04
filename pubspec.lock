@@ -192,14 +192,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
-  shader_buffers:
-    dependency: "direct main"
-    description:
-      name: shader_buffers
-      sha256: "3a9cea23dcf8da9e618fdbaa046deaffd22de73ae990159b63da48e0f67521d9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   shader_graph:
     dependency: "direct main"
     description:
