@@ -7,11 +7,21 @@ import 'package:shader_graph/shader_graph.dart';
 List<Widget> buildShaderWidgets() {
   return [
     if (!kIsWeb) AwesomeShader(SA.inerciaIntendedOne),
+    // keep this code for compare different noise inputs
+    // AwesomeShader(
+    //   () {
+    //     final buffer = SA.inkBlotSpread.shaderBuffer;
+    //     buffer.feed(SA.textureRgbaNoiseMedium, wrap: .repeat, filter: .linear);
+    //     return [buffer];
+    //   },
+    //   upSideDown: false,
+    //   inputs: [SA.textureLondon],
+    // ),
     // TODO: The effect is a bit different, the reson mabey is the linear filter
     AwesomeShader(
       () {
         final buffer = SA.inkBlotSpread.shaderBuffer;
-        buffer.feed(SA.textureRgbaNoiseMedium, wrap: WrapMode.repeat, filter: FilterMode.linear);
+        buffer.feed(rgbaNoiseMediumInput);
         return [buffer];
       },
       upSideDown: false,

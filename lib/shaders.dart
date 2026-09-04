@@ -11,7 +11,6 @@ class SA {
   }
 
   // assets used by shader_widgets
-  static String get wall => path('assets/Wall.jpg');
   static String get bricks => path('assets/bricks.jpg');
 
   // textures/cubemaps
@@ -25,13 +24,7 @@ class SA {
   static String get textureWood => path('assets/texture/Wood.jpg');
   static String get texturePebbles => path('assets/texture/Pebbles.png');
   static String get textureRockTiles => path('assets/texture/Rock Tiles.jpg');
-
-  ///
-  static String get cubemapUffiziGallery => path('assets/cubemaps/Uffizi Gallery.png');
-  static String get textureRgbaNoiseMedium => path('assets/texture/RGBA Noise Medium.png');
-  static String get textureRgbaNoiseSmall => path('assets/texture/RGBA Noise Small.png');
-  static String get textureGreyNoiseMedium => path('assets/texture/Grey Noise Medium.png');
-  static String get textureGreyNoiseSmall => path('assets/texture/Grey Noise Small.png');
+  static String get cubemapUffiziGalleryBlurred => path('assets/cubemaps/Uffizi Gallery Blurred.png');
 
   /// a
   static String get aLotOfSpheres => path('shaders/a/A lot of spheres.frag');

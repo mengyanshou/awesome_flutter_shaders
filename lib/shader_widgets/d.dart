@@ -10,9 +10,12 @@ List<Widget> buildShaderWidgets() {
     if (!kIsWeb) AwesomeShader(SA.desireCrystal),
     AwesomeShader(SA.devilGlass),
     AwesomeShader(SA.diveToCloud),
-    // TODO: Effect not match
+    // for compare different noise inputs
+    // AwesomeShader(
+    //   SA.digitalBrain.feed(SA.textureRgbaNoiseSmall, wrap: WrapMode.repeat, filter: FilterMode.linear),
+    // ),
     AwesomeShader(
-      SA.digitalBrain.feed(SA.textureRgbaNoiseSmall, wrap: WrapMode.repeat, filter: FilterMode.linear),
+      SA.digitalBrain.feed(rgbaNoiseSmallInput),
     ),
     // ! It is quite laggy but works fine, so comment it out for now
     // AwesomeShader('shaders/d/divergence-free flow curly noise.frag'),
@@ -24,16 +27,14 @@ List<Widget> buildShaderWidgets() {
       }),
     if (!kIsWeb) AwesomeShader(SA.drifting),
     AwesomeShader(SA.driveHome6RainWindow),
-    if (!kIsWeb) AwesomeShader(SA.dullSkullPrometheus.feed(SA.wall)),
+    if (!kIsWeb) AwesomeShader(SA.dullSkullPrometheus.feed(SA.cubemapUffiziGalleryBlurred)),
     // TODO: Look into the function of this keyboard input
-    AwesomeShader(
-      SA.dustyNebula4
-          .feed(
-            SA.textureRgbaNoiseMedium,
-            wrap: WrapMode.mirror,
-            filter: FilterMode.linear,
-          )
-          .feedKeyboard(),
-    ),
+    AwesomeShader(() {
+      final buffer = SA.dustyNebula4.shaderBuffer;
+      buffer.feedInput(rgbaNoiseMediumInput).feedKeyboard();
+
+      // buffer.input(SA.textureRgbaNoiseMedium, wrap: .repeat, filter: .linear).inputKeyboard();
+      return [buffer];
+    }),
   ];
 }

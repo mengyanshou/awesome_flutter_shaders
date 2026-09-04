@@ -29,16 +29,20 @@ List<Widget> buildShaderWidgets() {
     //     return AwesomeShader([bufferA, bufferB, bufferC, mainBuffer]);
     //   },
     // ),
+    // AwesomeShader(
+    //   SA.brokenTimeGate.feed(
+    //     SA.textureGreyNoiseMedium,
+    //     wrap: .repeat,
+    //     filter: .linear,
+    //   ),
+    // ),
     AwesomeShader(
-      SA.brokenTimeGate.feed(
-        SA.textureGreyNoiseMedium,
-        wrap: .repeat,
-        filter: .linear,
-      ),
+      SA.brokenTimeGate.shaderBuffer.feedInput(greyNoiseMediumInput),
     ),
     AwesomeShader(SA.bubbles),
     AwesomeShader(SA.bumpedSinusoidalWarp.feed(SA.textureRustyMetal)),
-    AwesomeShader(SA.buoy.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),
+    // AwesomeShader(SA.buoy.feed(SA.textureRgbaNoiseMedium, wrap: .repeat, filter: .linear)),
+    AwesomeShader(SA.buoy.feed(rgbaNoiseMediumInput)),
     AwesomeShader(SA.byt3Daily013),
   ];
 }

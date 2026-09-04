@@ -11,7 +11,7 @@ List<Widget> buildShaderWidgets() {
     AwesomeShader(SA.serverRoom),
     AwesomeShader(SA.shaderArtCodingIntroduction),
     AwesomeShader(SA.shockWaveWithSaturation.feed(SA.textureStars)),
-    if (!kIsWeb) AwesomeShader(SA.simpleRefractionTest.feed(SA.cubemapUffiziGallery)),
+    if (!kIsWeb) AwesomeShader(SA.simpleRefractionTest.feed(SA.cubemapUffiziGalleryBlurred)),
     AwesomeShader(SA.simpleRippleShader.feed(SA.textureStars)),
     AwesomeShader(SA.singularity),
     if (!kIsWeb)
@@ -27,7 +27,9 @@ List<Widget> buildShaderWidgets() {
       shader.feed(SA.textureOrganic2);
       return [shader];
     }),
-    if (!kIsWeb) AwesomeShader(SA.starfieldNew.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),
+    // keep this code for compare different noise inputs
+    // if (!kIsWeb) AwesomeShader(SA.starfieldNew.feed(SA.textureRgbaNoiseMedium, wrap: .repeat)),
+    if (!kIsWeb) AwesomeShader(SA.starfieldNew.feed(rgbaNoiseMediumInput)),
 
     // TODO
     // Builder(builder: (_) {

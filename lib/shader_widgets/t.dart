@@ -6,12 +6,16 @@ import 'package:shader_graph/shader_graph.dart';
 
 List<Widget> buildShaderWidgets() {
   return [
+    // for compare different noise inputs
+    // AwesomeShader(
+    //   SA.theSunTheSkyAndTheClouds.feed(
+    //     SA.textureRgbaNoiseMedium,
+    //     filter: .linear,
+    //     wrap: .repeat,
+    //   ),
+    // ),
     AwesomeShader(
-      SA.theSunTheSkyAndTheClouds.feed(
-        SA.textureRgbaNoiseMedium,
-        filter: .linear,
-        wrap: .repeat,
-      ),
+      SA.theSunTheSkyAndTheClouds.feed(rgbaNoiseMediumInput),
     ),
     if (!kIsWeb) AwesomeShader(SA.tieFighters),
     if (!kIsWeb) AwesomeShader(SA.tmGyroids),

@@ -25,9 +25,12 @@ List<Widget> buildShaderWidgets() {
     AwesomeShader(SA.cubeLines.feed(SA.textureLondon)),
     AwesomeShader(SA.cubular),
     AwesomeShader(
-      SA.curlNoiseImageTransition,
+      () {
+        final main = SA.curlNoiseImageTransition.shaderBuffer;
+        main.feed(SA.textureAbstract1).feed(SA.textureLondon);
+        return [main];
+      },
       upSideDown: false,
-      inputs: [SA.wall, SA.textureLondon],
     ),
   ];
 }

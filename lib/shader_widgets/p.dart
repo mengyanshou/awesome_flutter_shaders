@@ -7,10 +7,7 @@ import 'package:shader_graph/shader_graph.dart';
 List<Widget> buildShaderWidgets() {
   return [
     AwesomeShader(
-      SA.pageCurlEffectOnBall.shaderBuffer
-          .feed(SA.cubemapUffiziGallery)
-          .feed(SA.textureAbstract1)
-          .feed(SA.textureOrganic2),
+      SA.pageCurlEffectOnBall.shaderBuffer.feed(SA.cubemapUffiziGalleryBlurred).feed(SA.textureAbstract1).feed(SA.textureOrganic2),
     ),
     AwesomeShader(SA.pulsarExplained),
     AwesomeShader(SA.palaceOfMind),
@@ -22,11 +19,22 @@ List<Widget> buildShaderWidgets() {
     if (!kIsWeb) AwesomeShader(SA.perspexWebLattice.shaderBuffer.feed(SA.textureLondon), upSideDown: false),
     AwesomeShader(SA.phantomStarForCineShader),
     AwesomeShader(SA.pigSquad9YearAnniversary),
+    // keep this code for compare different noise inputs
+    // if (!kIsWeb)
+    //   AwesomeShader(() {
+    //     final buffer = SA.pistonsWithMotionBlur.buffer;
+    //     buffer.feed(SA.cubemapUffiziGalleryBlurred).feed(SA.textureRgbaNoiseMedium);
+    //     return buffer;
+    //   }),
     if (!kIsWeb)
-      AwesomeShader(
-        SA.pistonsWithMotionBlur.shaderBuffer.feed(SA.cubemapUffiziGallery).feed(SA.textureRgbaNoiseMedium),
-      ),
-    AwesomeShader(SA.plasmaGlobe.feed(SA.textureRgbaNoiseMedium)),
+      AwesomeShader(() {
+        final buffer = SA.pistonsWithMotionBlur.shaderBuffer;
+        buffer.feed(SA.cubemapUffiziGalleryBlurred).feed(rgbaNoiseMediumInput);
+        return buffer;
+      }),
+    // keep this code for compare different noise inputs
+    // AwesomeShader(SA.plasmaGlobe.feed(SA.textureRgbaNoiseMedium)),
+    AwesomeShader(SA.plasmaGlobe.feed(rgbaNoiseMediumInput)),
     if (!kIsWeb)
       AwesomeShader(() {
         final shader = SA.portalIosAr.shaderBuffer;

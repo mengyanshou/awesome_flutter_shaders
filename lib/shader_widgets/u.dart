@@ -18,6 +18,8 @@ List<Widget> buildShaderWidgets() {
     //     return AwesomeShader([bufferA, main]);
     //   },
     // ),
-    if (!kIsWeb) AwesomeShader(SA.undularSubstratum.feed(SA.textureRgbaNoiseSmall, wrap: .repeat)),
+    // for compare different noise inputs
+    // if (!kIsWeb) AwesomeShader(SA.undularSubstratum.feed(SA.textureRgbaNoiseSmall, wrap: .repeat)),
+    if (!kIsWeb) AwesomeShader(SA.undularSubstratum.feed(rgbaNoiseMediumInput)),
   ];
 }

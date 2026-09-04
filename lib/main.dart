@@ -1,4 +1,6 @@
 import 'dart:ui' as ui;
+
+import 'package:awesome_flutter_shaders/noise_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +35,8 @@ import 'shader_widgets/z.dart' as z;
 import 'shaders.dart';
 
 typedef Shaders = List<ShaderBuffer>;
-typedef ShaderBuilder = Shaders Function();
+typedef ShadersBuilder = Shaders Function();
+typedef ShaderBuilder = ShaderBuffer Function();
 
 class AwesomeShader extends StatelessWidget {
   AwesomeShader(
@@ -46,6 +49,14 @@ class AwesomeShader extends StatelessWidget {
   }) {
     switch (buffer) {
       case ShaderBuilder builder:
+        final buf = builder();
+        buffers.add(buf);
+        if (inputs != null) {
+          for (var inp in inputs!) {
+            buf.feed(inp);
+          }
+        }
+      case ShadersBuilder builder:
         final buffer = builder();
         buffers.addAll(buffer);
         if (buffer.length == 1) {
@@ -106,7 +117,28 @@ class AwesomeShader extends StatelessWidget {
   }
 }
 
-void main() {
+// 对于 SA.theSunTheSkyAndTheClouds，生成的噪声，比原始 ShaderToy 的噪声有更好的效果
+late final GeneratedNoiseInput rgbaNoiseSmallInput;
+late final GeneratedNoiseInput rgbaNoiseMediumInput;
+late final GeneratedNoiseInput greyNoiseSmallInput;
+late final GeneratedNoiseInput greyNoiseMediumInput;
+
+Future<void> generateNoiseInputs() async {
+  final images = await Future.wait<ui.Image>([
+    generateShaderToyRGBNoise(64, 64, gamma: 1.8, useSinHash: true),
+    generateShaderToyRGBNoise(256, 256, gamma: 1.8, useSinHash: true),
+    generateShaderToyGreyNoise(64, 64, gamma: 1.0, useSinHash: true),
+    generateShaderToyGreyNoise(256, 256, gamma: 1.0, useSinHash: true),
+  ]);
+  rgbaNoiseSmallInput = GeneratedNoiseInput(images[0], wrap: .repeat, filter: .linear);
+  rgbaNoiseMediumInput = GeneratedNoiseInput(images[1], wrap: .repeat, filter: .linear);
+  greyNoiseSmallInput = GeneratedNoiseInput(images[2], wrap: .repeat, filter: .linear);
+  greyNoiseMediumInput = GeneratedNoiseInput(images[3], wrap: .repeat, filter: .linear);
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await generateNoiseInputs();
   runApp(const MyApp());
   if (GetPlatform.isMacOS) {
     enableImpller = true;

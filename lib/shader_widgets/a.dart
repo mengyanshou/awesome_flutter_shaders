@@ -7,22 +7,30 @@ List<Widget> buildShaderWidgets() {
   return [
     AwesomeShader(SA.aLotOfSpheres),
     AwesomeShader(SA.aStudyOfGlass),
+    // AwesomeShader(() {
+    //   final mainBuffer = SA.alienOcean.buffer;
+    //   final bufferA = SA.alienOceanBufferA.buffer;
+    //   mainBuffer.feed(bufferA).feed(SA.textureRgbaNoiseSmall);
+    //   return [bufferA, mainBuffer];
+    // }),
     AwesomeShader(() {
       final mainBuffer = SA.alienOcean.shaderBuffer;
       final bufferA = SA.alienOceanBufferA.shaderBuffer;
-      mainBuffer.feed(bufferA).feed(SA.textureRgbaNoiseSmall);
+      mainBuffer.feed(bufferA).feedInput(rgbaNoiseSmallInput);
       return [bufferA, mainBuffer];
     }),
     AwesomeShader(SA.alienSpaceJockey),
-    AwesomeShader(
-      SA.alphaClip1BitDissolve.feed(
-        SA.textureGreyNoiseSmall,
-        wrap: .repeat,
-        filter: .linear,
-      ),
-      upSideDown: false,
-      inputs: [SA.textureLondon],
-    ),
+    AwesomeShader(() {
+      final buffer = SA.alphaClip1BitDissolve.shaderBuffer;
+      // buffer.feed(
+      //   SA.textureGreyNoiseMedium,
+      //   wrap: .repeat,
+      //   filter: .linear,
+      // );
+      buffer.feedInput(greyNoiseSmallInput);
+      buffer.feed(SA.textureLondon);
+      return [buffer];
+    }),
     AwesomeShader('shaders/a/Analytic Motionblur 2D.frag'),
     AwesomeShader(
       'shaders/a/anamorphic rendering.frag',

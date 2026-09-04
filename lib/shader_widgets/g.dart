@@ -9,14 +9,23 @@ List<Widget> buildShaderWidgets() {
     AwesomeShader(SA.galaxyOfUniverses),
     AwesomeShader(SA.galvanize),
     AwesomeShader(SA.ghosts),
+    // for compare different noise inputs
+    // if (!kIsWeb)
+    //   AwesomeShader(() {
+    //     final buffer = SA.goodbyeDreamClouds.shaderBuffer;
+    //     buffer..feed(
+    //       SA.textureRgbaNoiseMedium,
+    //       wrap: WrapMode.repeat,
+    //       filter: FilterMode.linear,
+    //     );
+    //     return buffer;
+    //   }),
     if (!kIsWeb)
-      AwesomeShader(
-        SA.goodbyeDreamClouds.feed(
-          SA.textureRgbaNoiseMedium,
-          wrap: WrapMode.repeat,
-          filter: FilterMode.linear,
-        ),
-      ),
+      AwesomeShader(() {
+        final buffer = SA.goodbyeDreamClouds.shaderBuffer;
+        buffer.feed(rgbaNoiseMediumInput);
+        return buffer;
+      }),
     AwesomeShader(SA.gradientFlow),
   ];
 }
