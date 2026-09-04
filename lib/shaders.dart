@@ -76,8 +76,8 @@ class SA {
   static String get darkTransit => path('shaders/d/Dark Transit.frag');
   static String get desireCrystal => path('shaders/d/Desire Crystal.frag');
   static String get digitalBrain => path('shaders/d/Digital Brain.frag');
-  static String get dodecahedronBufferA => path('shaders/d/dodecahedron͏ BufferA.frag');
-  static String get dodecahedron => path('shaders/d/dodecahedron͏.frag');
+  static String get dodecahedronBufferA => path('shaders/d/dodecahedron BufferA.frag');
+  static String get dodecahedron => path('shaders/d/dodecahedron.frag');
   static String get driveHome6RainWindow => path('shaders/d/Drive Home 6 - Rain Window.frag');
   static String get dustyNebula4 => path('shaders/d/Dusty nebula 4.frag');
 
@@ -121,8 +121,8 @@ class SA {
   static String get mandelbulb3DFractal => path('shaders/m/Mandelbulb 3D Fractal.frag');
   static String get marioWorld11 => path('shaders/m/Mario World 1-1.frag');
   static String get moFromWallE => path('shaders/m/M-O (from Wall-E).frag');
-  static String get macOsMonterey2BufferA => path('shaders/m/MacOS Monterey 2 BufferA.frag');
-  static String get macOsMonterey2 => path('shaders/m/MacOS Monterey 2.frag');
+  static String get macOsMonterey2BufferA => path('shaders/m/macOS Monterey 2 BufferA.frag');
+  static String get macOsMonterey2 => path('shaders/m/macOS Monterey 2.frag');
   static String get montereyWannabe => path('shaders/m/Monterey wannabe.frag');
   static String get macOsMontereyWallpaperBufferA => path('shaders/m/MacOS Monterey wallpaper BufferA.frag');
   static String get macOsMontereyWallpaper => path('shaders/m/MacOS Monterey wallpaper.frag');
